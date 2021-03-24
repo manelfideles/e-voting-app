@@ -30,13 +30,16 @@ public class MulticastServer extends Thread {
              * 'terminal_thread', que está responsável por comunicar com os terminais, e
              * 'voting_thread' que recebe os votos.
              */
+
+            ThreadOps op = new ThreadOps();
+
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket);
+            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op);
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op);
             while (true) {
                 // recebeu um eleitor na mesa:
                 // 1 - membro da mesa faz uma query à bd de eleitores
@@ -68,51 +71,29 @@ class TerminalThread extends Thread {
     InetAddress group;
     MulticastSocket s;
     Thread t;
+    ThreadOps op;
 
-    public TerminalThread(InetAddress group, MulticastSocket s) {
+    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op) {
         this.group = group;
         this.s = s;
+        this.op = op;
         t = new Thread(this);
         t.start();
     }
 
-    public DatagramPacket receivePacket() {
-        byte[] received = new byte[256];
-        DatagramPacket receivedPacket = new DatagramPacket(received, received.length);
-        try {
-            this.s.receive(receivedPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return receivedPacket;
-    }
-
-    public void sendPacket(String msg, int PORT) {
-        // só envia Strings -> necessário mudar para enviar objetos serializados
-        byte[] buffer = msg.getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.group, PORT);
-        try {
-            this.s.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void run() {
         try {
-            s.joinGroup(this.group);
+            s.joinGroup(group);
             while (true) {
                 // envia req para terminals_group
-                this.sendPacket("# req", PORT); // substituir por um protocolo de comunicação
+                op.sendPacket("# req", s, group, PORT); // substituir por um protocolo de comunicação
 
-                DatagramPacket reply_packet = this.receivePacket();
-                String reply_string = new String(reply_packet.getData(), 0, reply_packet.getLength());
-
-                if (reply_string.charAt(0) != '#') {
-                    System.out.println("Terminal " + reply_string + " replied.");
-
-                    // o cliente receber o seu proprio uuid é o mesmo que mandar ir votar
-                    this.sendPacket("# " + reply_string, PORT);
+                // Handshake
+                DatagramPacket id_packet = op.receivePacket(s);
+                String id_string = op.packetToString(id_packet);
+                if (id_string.charAt(0) != '#') {
+                    System.out.println("Terminal " + id_string + " replied.");
+                    op.sendPacket("# " + id_string, s, group, PORT); // "Vai votar!"
                 }
             }
         } catch (IOException e) {
@@ -126,10 +107,12 @@ class VotingThread extends Thread {
     InetAddress group;
     MulticastSocket s;
     Thread t;
+    ThreadOps op;
 
-    public VotingThread(InetAddress group, MulticastSocket s) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op) {
         this.group = group;
         this.s = s;
+        this.op = op;
         t = new Thread(this);
         t.start();
     }
@@ -139,49 +122,36 @@ class VotingThread extends Thread {
         return true;
     }
 
-    public void sendPacket(String msg, int PORT) {
-        // só envia Strings -> necessário mudar para enviar objetos serializados
-        byte[] buffer = msg.getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.group, PORT);
-        try {
-            this.s.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public DatagramPacket receivePacket() {
-        byte[] received = new byte[256];
-        DatagramPacket receivedPacket = new DatagramPacket(received, received.length);
-        try {
-            this.s.receive(receivedPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return receivedPacket;
-    }
-
     public void run() {
         try {
             s.joinGroup(group);
             while (true) {
-                DatagramPacket login_packet = this.receivePacket();
-                String login_string = new String(login_packet.getData(), 0, login_packet.getLength());
+                DatagramPacket login_packet = op.receivePacket(s);
+                String login_string = op.packetToString(login_packet);
 
+                // Treat user login input
                 String[] login_data = login_string.split("; ");
                 String terminal_id = login_data[0].substring(1, login_data[0].length() - 1);
                 String username = login_data[2].split(" | ")[2];
                 String password = login_data[3].split(" | ")[2];
 
-                // verifica user, pede ao rmi para autenticar - fetchVoter()
+                // Verifica user
                 if (fetchVoter(username, password) == true) {
+                    // Logged in
                     System.out.println("[" + terminal_id + "]" + " User '" + username + "' logged in.");
-                    this.sendPacket("# [" + terminal_id + "]; type | status; logged | on", PORT);
-                    DatagramPacket vote_packet = this.receivePacket();
-                    String vote_string = new String(vote_packet.getData(), 0, vote_packet.getLength());
+                    s.leaveGroup(group);
+                    op.sendPacket("# [" + terminal_id + "]; type | status; logged | on", s, group, PORT);
+
+                    // Recebe Voto
+                    s.joinGroup(group);
+                    DatagramPacket vote_packet = op.receivePacket(s);
+                    String vote_string = op.packetToString(vote_packet);
                     if (vote_string.charAt(0) != '#') {
-                        System.out.println("Vote: TINO DE RANS");
+                        System.out.println(vote_string);
                     }
+
+                    // Enviar para o rmi, que escreve na base de dados
+
                 } else {
                     // recusa user
                 }
