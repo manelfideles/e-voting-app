@@ -16,8 +16,6 @@ public interface RMIServer_I extends Remote {
 
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException;
 
-    //public void altera_lista_candidatos(String nome_lista, String tipo_lista, String novo_nome_lista, int num_pessoas_lista, ArrayList<String> lista) throws RemoteException;
-
     public void cria_mesa(Mesa mesa) throws RemoteException;
 
     public void remove_mesa(Mesa mesa) throws RemoteException;

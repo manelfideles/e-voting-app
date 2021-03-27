@@ -43,8 +43,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("RMI SERVER - regista_pessoa");
 
         HashMap<String,Pessoa> map = new HashMap<>();
+        map.put(pessoa.num_cc, new Pessoa(pessoa.funcao, pessoa.nome, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
 
-        map.put("pessoa", new Pessoa(pessoa.funcao, pessoa.nome, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        HashMap<String,HashMap<String,Pessoa>> hmp = new HashMap<>();
+        hmp.put("HashMapPessoas", map);
+
+        //HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
 
         File file = new File(outputFilePath);
 
@@ -53,8 +57,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         try {
             bf = new BufferedWriter(new FileWriter(file,true));
 
-            for (String i : map.keySet()) {
-                bf.append(i + ": " + map.get(i));
+            for (String i : hmp.keySet()) {
+                bf.append("HashMapPessoas" + ": " + hmp.get(i));
                 bf.newLine();
             }
 
@@ -106,10 +110,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         HashMap<String,ListaCandidato> map = new HashMap<>();
 
-        map.put("lista_candidato", lista_candidato);
-        //map.put("tipo_lista", lista_candidato);
-        //map.put("num_pessoas_lista", lista_candidato.num_pessoas_lista);
-        //map.put("lista", lista_candidato.lista);
+        map.put("lista_candidato", new ListaCandidato(lista_candidato.nome_lista, lista_candidato.tipo_lista, lista_candidato.num_pessoas_lista, lista_candidato.lista));
 
         File file = new File(outputFilePath);
 

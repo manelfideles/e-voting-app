@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Mesa implements Serializable {
     public String dep;
@@ -15,8 +14,6 @@ public class Mesa implements Serializable {
     }
 
     public String toString() {
-        return "{" +
-                "dep='" + dep + '\'' +
-                '}';
+        return "{" + "dep='" + dep + '\'' + '}';
     }
 }

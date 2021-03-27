@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I {
@@ -88,7 +89,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         funcao = reader.readLine();
 
                         if (funcao.equals("4")) {
-                            System.out.println("Vou sair!");
                             break;
                         }
 
@@ -254,7 +254,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     tipo_lista = reader.readLine();
 
                                     if (tipo_lista.equals("4")) {
-                                        System.out.println("Vou sair!");
                                         break;
                                     }
 
@@ -269,6 +268,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                         nome_pessoa = reader.readLine();
                                         lista.add(nome_pessoa);
                                     }
+
+                                    Collections.sort(lista);
 
                                     switch (tipo_lista) {
                                         case "1":
@@ -307,7 +308,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     tipo_lista = reader.readLine();
 
                                     if (tipo_lista.equals("4")) {
-                                        System.out.println("Vou sair!");
                                         break;
                                     }
 
@@ -333,60 +333,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     rmis.remove_lista_candidatos(lista_candidato);
 
                                     break;
-                                /*case "3":
-                                    System.out.println("> ---------MENU ALTERA INFORMAÇÃO LISTA----------\n" +
-                                            "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                            "_________________________________________________\n" +
-                                            "1.Estudantes\n" +
-                                            "2.Docentes\n" +
-                                            "3.Funcionári@s\n" +
-                                            "4.Sair\n" +
-                                            "_________________________________________________\n");
-                                    System.out.print("Escolha: ");
-                                    tipo_lista = reader.readLine();
-
-                                    if (tipo_lista.equals("4")) {
-                                        System.out.println("Vou sair!");
-                                        break;
-                                    }
-
-                                    System.out.print("> Nome da Lista a ser alterada: ");
-                                    nome_lista = reader.readLine();
-                                    System.out.print("> Nome da Nova Lista: ");
-                                    novo_nome_lista = reader.readLine();
-                                    System.out.println("> Novo Número de Pessoas Pertencentes à Lista: ");
-                                    Scanner scanner2 = new Scanner(System.in);
-                                    num_pessoas_lista = Integer.parseInt(scanner2.nextLine());
-
-                                    for (int i=0; i<num_pessoas_lista; i++) {
-                                        System.out.print("> Nome: ");
-                                        nome_pessoa = reader.readLine();
-                                        lista.add(nome_pessoa);
-                                    }
-
-                                    switch (tipo_lista) {
-                                        case "1":
-                                            System.out.println("Vou alterar os dados de uma lista candidata do tipo Estudantes");
-                                            break;
-                                        case "2":
-                                            System.out.println("Vou alterar os dados de uma lista candidata do tipo Docentes");
-                                            break;
-                                        case "3":
-                                            System.out.println("Vou alterar os dados de uma lista candidata do tipo Funcionári@s");
-                                            break;
-                                    }
-                                    System.out.println("> Novo Nome da Lista: " + novo_nome_lista);
-                                    System.out.println("Vou printar o nome das pessoas pertencentes à lista");
-                                    for (String l : lista) {
-                                        System.out.println("> " + l);
-                                    }
-                                    System.out.println("________________________________________________________________\n");
-
-                                    rmis.altera_lista_candidatos(nome_lista, novo_nome_lista, tipo_lista, num_pessoas_lista, lista);
-
-                                    break;*/
                                 case "3":
-                                    System.out.println("Vou sair!");
                                     break;
                             }
 
@@ -438,7 +385,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                                     break;
                                 case "4":
-                                    System.out.println("> Consultar Estado das Mesas");
                                     break;
                             }
 
@@ -459,7 +405,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         rmis.consulta_resultados();
                         break;
                     case "9": // "9.Sair"
-                        System.out.println("Vou sair!");
                         break;
                 }
             }

@@ -14,4 +14,44 @@ public class ListaCandidato implements Serializable {
         this.num_pessoas_lista = num_pessoas_lista;
         this.lista = lista;
     }
+
+    public String getNome_lista() {
+        return this.nome_lista;
+    }
+
+    public String getTipo_lista() {
+        return this.tipo_lista;
+    }
+
+    public Integer getNum_pessoas_lista() {
+        return this.num_pessoas_lista;
+    }
+
+    public ArrayList<String> getLista() {
+        return this.lista;
+    }
+
+    public void setNome_lista() {
+        this.nome_lista = this.nome_lista;
+    }
+
+    public void setTipo_lista() {
+        this.tipo_lista = this.tipo_lista;
+    }
+
+    public void setNum_pessoas_lista() {
+        this.num_pessoas_lista = this.num_pessoas_lista;
+    }
+
+    public void setLista() {
+        this.lista = this.lista;
+    }
+
+    public String toString() {
+        return "{nome_lista='" + this.nome_lista +
+                "', tipo_lista='" + this.tipo_lista +
+                "', num_pessoas_lista='" + this.num_pessoas_lista +
+                "', lista=" + this.lista +
+                "}";
+    }
 }
