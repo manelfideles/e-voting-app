@@ -125,35 +125,47 @@ class VotingThread extends Thread {
     public void run() {
         try {
             s.joinGroup(group);
+            String username = null, password = null, terminal_id = null;
             while (true) {
-                DatagramPacket login_packet = op.receivePacket(s);
-                String login_string = op.packetToString(login_packet);
+                DatagramPacket packet = op.receivePacket(s);
+
+                String packet_string = op.packetToString(packet);
+                String type_string = packet_string.substring(packet_string.indexOf("type"), packet_string.indexOf(";"));
+                String type = type_string.split(" | ")[2];
 
                 // Treat user login input
-                String[] login_data = login_string.split("; ");
-                String terminal_id = login_data[0].substring(1, login_data[0].length() - 1);
-                String username = login_data[2].split(" | ")[2];
-                String password = login_data[3].split(" | ")[2];
+                if (packet_string.charAt(0) != '#') {
+                    if (type.equals("login")) {
+                        try {
+                            String[] login_data = packet_string.split("; ");
+                            terminal_id = login_data[0].substring(1, login_data[0].indexOf(" ") - 1);
+                            username = login_data[1].split(" | ")[2];
+                            password = login_data[2].split(" | ")[2];
 
-                // Verifica user
-                if (fetchVoter(username, password) == true) {
-                    // Logged in
-                    System.out.println("[" + terminal_id + "]" + " User '" + username + "' logged in.");
-                    s.leaveGroup(group);
-                    op.sendPacket("# [" + terminal_id + "]; type | status; logged | on", s, group, PORT);
+                            // Logged in
+                            if (fetchVoter(username, password) == true) {
+                                System.out.println("[" + terminal_id + "]" + " User '" + username + "' logged in.");
+                                s.leaveGroup(group);
+                                op.sendPacket("# [" + terminal_id + "] type | status; logged | on", s, group, PORT);
+                                s.joinGroup(group);
+                            } else {
+                                // recusa user
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (type.equals("vote")) {
+                        if (fetchVoter(username, password) == true) {
+                            // Recebe Voto
+                            String id = op.getIdFromPacket(packet);
+                            if (id.equals(terminal_id)) {
+                                System.out.println("Terminal " + id + "just voted.");
+                            }
 
-                    // Recebe Voto
-                    s.joinGroup(group);
-                    DatagramPacket vote_packet = op.receivePacket(s);
-                    String vote_string = op.packetToString(vote_packet);
-                    if (vote_string.charAt(0) != '#') {
-                        System.out.println(vote_string);
+                            // Enviar para o rmi, que escreve na base de dados
+
+                        }
                     }
-
-                    // Enviar para o rmi, que escreve na base de dados
-
-                } else {
-                    // recusa user
                 }
 
             }

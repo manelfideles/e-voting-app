@@ -37,4 +37,10 @@ public class ThreadOps {
     public String packetToString(DatagramPacket p) {
         return new String(p.getData(), 0, p.getLength());
     }
+
+    public String getIdFromPacket(DatagramPacket p) {
+        String login_string = this.packetToString(p);
+        String[] login_data = login_string.split(" ");
+        return login_data[0].substring(1, login_data[0].length() - 1);
+    }
 }
