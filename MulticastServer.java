@@ -92,7 +92,7 @@ class TerminalThread extends Thread {
                 DatagramPacket id_packet = op.receivePacket(s);
                 String id_string = op.packetToString(id_packet);
                 if (id_string.charAt(0) != '#') {
-                    System.out.println("Terminal " + id_string + " replied.");
+                    System.out.println("REPLY [" + id_string + "]");
                     op.sendPacket("# " + id_string, s, group, PORT); // "Vai votar!"
                 }
             }
@@ -144,7 +144,7 @@ class VotingThread extends Thread {
 
                             // Logged in
                             if (fetchVoter(username, password) == true) {
-                                System.out.println("[" + terminal_id + "]" + " User '" + username + "' logged in.");
+                                System.out.println("LOGIN [" + terminal_id + "]");
                                 s.leaveGroup(group);
                                 op.sendPacket("# [" + terminal_id + "] type | status; logged | on", s, group, PORT);
                                 s.joinGroup(group);
@@ -155,16 +155,13 @@ class VotingThread extends Thread {
                             e.printStackTrace();
                         }
                     } else if (type.equals("vote")) {
-                        if (fetchVoter(username, password) == true) {
-                            // Recebe Voto
-                            String id = op.getIdFromPacket(packet);
-                            if (id.equals(terminal_id)) {
-                                System.out.println("Terminal " + id + "just voted.");
-                            }
+                        // Recebe Voto
+                        String id = op.getIdFromPacket(packet);
+                        System.out.println("VOTE  [" + id + "]: " + packet_string
+                                .substring(packet_string.indexOf(":") + 2, packet_string.length()).toUpperCase());
 
-                            // Enviar para o rmi, que escreve na base de dados
+                        // Enviar para o rmi, que escreve na base de dados
 
-                        }
                     }
                 }
 

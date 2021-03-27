@@ -21,7 +21,7 @@ public class MulticastClient extends Thread {
         MulticastSocket terminal_socket = null;
         MulticastSocket voting_socket = null;
 
-        System.out.println("Client " + id + "running.");
+        System.out.println("Client " + id + " running.");
         try {
             ThreadOps op = new ThreadOps();
             terminal_socket = new MulticastSocket(PORT); // create socket and bind it
