@@ -1,26 +1,27 @@
-import java.net.MalformedURLException;
-import java.rmi.Naming;
+//import java.rmi.Naming;
+//import java.util.Iterator;
+//import java.util.Map;
+//import java.util.stream.Stream;
+//import java.rmi.*;
+//import java.rmi.server.*;
+//import java.net.*;
+//import java.util.*;
+//import java.io.FileNotFoundException;
+//import java.util.Scanner;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.rmi.*;
-import java.rmi.server.*;
-import java.net.*;
 import java.io.*;
-import java.util.*;
 import java.util.ArrayList;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Stream;
+
 
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
+    // Admin Consoles
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<AdminConsole_I>();
 
     // Pessoas
@@ -196,10 +197,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(6969);
             r.rebind("RMI_Server", rmis);
-            System.out.println("Hello Server ready.");
+            System.out.println("RMIServer ready.");
 
         } catch (Exception re) {
-            System.out.println("Exception in HelloImpl.main: " + re);
+            System.out.println("Exception in RMIServer.main: " + re);
         }
     }
 }

@@ -1,5 +1,4 @@
 import java.rmi.*;
-import java.util.ArrayList;
 
 public interface RMIServer_I extends Remote {
     public void print_on_rmi_server(String s) throws RemoteException;
