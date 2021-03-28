@@ -35,9 +35,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
         // Variáveis OPTION 4
         String nome_lista, tipo_lista, nome_pessoa;
-        String novo_nome_lista;
         int num_pessoas_lista;
-        ArrayList<String> lista = new ArrayList<String>();
+        ArrayList<String> lista = new ArrayList<>();
         ListaCandidato lista_candidato;
 
         // Variáveis OPTION 5
@@ -53,7 +52,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         try {
             RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
             AdminConsole ac = new AdminConsole();
-            rmis.subscribe("Admin Console", (AdminConsole_I) ac);
+            rmis.subscribe("Admin Console", ac);
             System.out.println("Client sent subscription to RMIServer");
 
             while (true) {
@@ -74,7 +73,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 System.out.print("Escolha: ");
                 option = reader.readLine();
 
-                switch (option) { // done: 1/2/3/4       falta: 5.3/6/7/8/9
+                switch (option) { // done: 1/2/3/4  falta: 5.3/6/7/8/9
                     case "1": // "1.Registar Pessoas"
                         System.out.println("> Escolha uma das opções abaixo disponíveis de acordo com a Função da pessoa:\n" +
                                            "_____________________________________________________________________________\n" +

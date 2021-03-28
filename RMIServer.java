@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Admin Consoles
-    static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<AdminConsole_I>();
+    static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
 
     // Pessoas
     HashMap<String,Pessoa> mapp = new HashMap<>();
@@ -61,7 +61,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
 
-        mapp.put(pessoa.num_cc, new Pessoa(pessoa.funcao, pessoa.nome, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
 
         hmp.put("HashMapPessoas", mapp);
 
