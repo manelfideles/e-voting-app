@@ -9,7 +9,11 @@ public class Objeto implements Serializable {
         this.hme = hme;
     }
 
-    public HashMapPessoas getEleicao() {
+    public String toString() {
+        return this.hmp + "\n" + this.hme;
+    }
+
+    /*public HashMapPessoas getEleicao() {
         return hmp;
     }
 
@@ -23,9 +27,6 @@ public class Objeto implements Serializable {
 
     public void setLista_candidato() {
         this.hme = hme;
-    }
+    }*/
 
-    public String toString() {
-        return this.hmp + "\n" + this.hme;
-    }
 }

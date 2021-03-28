@@ -8,15 +8,16 @@ public class HashMapPessoas implements Serializable {
         this.hmp = hmp;
     }
 
-    public HashMap<String,HashMap<String,Pessoa>> getHashMapPessoas() {
+    public String toString() {
+        return hmp + "\n";
+    }
+
+    /*public HashMap<String,HashMap<String,Pessoa>> getHashMapPessoas() {
         return hmp;
     }
 
     public void setHashMapPessoas() {
         this.hmp = hmp;
-    }
+    }*/
 
-    public String toString() {
-        return hmp + "\n";
-    }
 }

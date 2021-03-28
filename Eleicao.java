@@ -24,7 +24,21 @@ public class Eleicao implements Serializable {
         this.restricao = restricao;
     }
 
-    public String getData_i() {
+    public String toString() {
+        return "{" +
+                "data_i='" + data_i + '\'' +
+                ", hora_i='" + hora_i + '\'' +
+                ", minuto_i='" + minuto_i + '\'' +
+                ", data_f='" + data_f + '\'' +
+                ", hora_f='" + hora_f + '\'' +
+                ", minuto_f='" + minuto_f + '\'' +
+                ", titulo='" + titulo + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", restricao='" + restricao + '\'' +
+                '}';
+    }
+
+    /*public String getData_i() {
         return data_i;
     }
 
@@ -94,19 +108,6 @@ public class Eleicao implements Serializable {
 
     public void setRestricao() {
         this.restricao = restricao;
-    }
+    }*/
 
-    public String toString() {
-        return "{" +
-                "data_i='" + data_i + '\'' +
-                ", hora_i='" + hora_i + '\'' +
-                ", minuto_i='" + minuto_i + '\'' +
-                ", data_f='" + data_f + '\'' +
-                ", hora_f='" + hora_f + '\'' +
-                ", minuto_f='" + minuto_f + '\'' +
-                ", titulo='" + titulo + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", restricao='" + restricao + '\'' +
-                '}';
-    }
 }

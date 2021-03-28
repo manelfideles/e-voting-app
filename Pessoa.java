@@ -22,7 +22,20 @@ public class Pessoa implements Serializable {
         this.val_cc = val_cc;
     }
 
-    public String getNome() {
+    public String toString() {
+        return "{" +
+                "nome='" + nome + '\'' +
+                ", funcao='" + funcao + '\'' +
+                ", password='" + password + '\'' +
+                ", dep_fac='" + dep_fac + '\'' +
+                ", contacto='" + contacto + '\'' +
+                ", morada='" + morada + '\'' +
+                ", num_cc='" + num_cc + '\'' +
+                ", val_cc='" + val_cc + '\'' +
+                '}';
+    }
+
+    /*public String getNome() {
         return nome;
     }
 
@@ -84,18 +97,6 @@ public class Pessoa implements Serializable {
 
     public void setVal_CC() {
         this.val_cc = val_cc;
-    }
+    }*/
 
-    public String toString() {
-        return "{" +
-               "nome='" + nome + '\'' +
-               ", funcao='" + funcao + '\'' +
-               ", password='" + password + '\'' +
-               ", dep_fac='" + dep_fac + '\'' +
-               ", contacto='" + contacto + '\'' +
-               ", morada='" + morada + '\'' +
-               ", num_cc='" + num_cc + '\'' +
-               ", val_cc='" + val_cc + '\'' +
-               '}';
-    }
 }

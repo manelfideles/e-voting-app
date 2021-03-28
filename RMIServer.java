@@ -138,6 +138,26 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - remove_lista_candidatos");
+
+        mapc.remove(lista_candidato.nome_lista);
+
+        File file = new File(outputFilePath);
+
+        BufferedWriter bf = null;
+
+        try {
+            bf = new BufferedWriter(new FileWriter(file));
+
+            bf.write(objeto.toString());
+
+            bf.flush();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            try { bf.close(); }
+            catch (Exception e) {}
+        }
     }
 
     public void cria_mesa(Mesa mesa) throws RemoteException {

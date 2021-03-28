@@ -12,7 +12,14 @@ public class HashMapEleicao implements Serializable {
         this.mapm = mapm;
     }
 
-    public HashMap<String,Eleicao> getMape() {
+    public String toString() {
+        return "{eleicao=" + this.mape +
+                ",\n lista_candidato=" + this.mapc +
+                ",\n mesa=" + this.mapm +
+                "}";
+    }
+
+    /*public HashMap<String,Eleicao> getMape() {
         return mape;
     }
 
@@ -34,12 +41,6 @@ public class HashMapEleicao implements Serializable {
 
     public void setMapm() {
         this.mapm = mapm;
-    }
+    }*/
 
-    public String toString() {
-        return "{eleicao=" + this.mape +
-                ",\n lista_candidato=" + this.mapc +
-                ",\n mesa=" + this.mapm +
-                "}";
-    }
 }

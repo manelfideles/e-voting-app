@@ -1,5 +1,5 @@
-{HashMapPessoas={13456557={nome='2', funcao='Jorge', password='jorge', dep_fac='DEI', contacto='934725555', morada='pousada', num_cc='13456557', val_cc='12/12/2025'}, 123123={nome='1', funcao='Pedro', password='pedro', dep_fac='DEI', contacto='934725545', morada='coimbra', num_cc='123123', val_cc='12/12/2022'}}}
+{}
 
-{eleicao={LOL={data_i='8', hora_i='8', minuto_i='8', data_f='8', hora_f='8', minuto_f='8', titulo='LOL', descricao='nada', restricao='DEEC'}, foda-se={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='foda-se', descricao='nada', restricao='DEI'}},
- lista_candidato={OS PENIS={nome_lista='OS PENIS', tipo_lista='1', num_pessoas_lista='5', lista=[Andre, Fabio, Jesus, Namibia, Pedro]}},
- mesa={DEEC=DEEC, DEI=DEI}}
+{eleicao={},
+ lista_candidato={p={nome_lista='p', tipo_lista='1', num_pessoas_lista='2', lista=[j, k]}, 2={nome_lista='2', tipo_lista='v', num_pessoas_lista='2', lista=[d, e, j, k]}},
+ mesa={}}

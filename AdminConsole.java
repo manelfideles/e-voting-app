@@ -359,7 +359,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     dep = reader.readLine();
                                     System.out.println("Vou guardar os dados de uma mesa de voto");
                                     System.out.println("> Departamento onde está localizada: " + dep);
-                                    System.out.println("----------------------------------------\n");
+                                    System.out.println("-----------------------------------------------------\n");
 
                                     mesa = new Mesa(dep);
 
@@ -370,7 +370,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     System.out.print("> Departamento/Faculdade onde está localizada: ");
                                     dep = reader.readLine();
                                     System.out.println("Vou apagar os dados de uma mesa de voto");
-                                    System.out.println("---------------------------------------\n");
+                                    System.out.println("-----------------------------------------------------\n");
 
                                     mesa = new Mesa(dep);
 
