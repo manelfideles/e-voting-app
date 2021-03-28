@@ -87,7 +87,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
 
-        mape.put(eleicao.titulo, new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao));
+        mape.put(eleicao.titulo, new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, ""));
 
         File file = new File(outputFilePath);
 
@@ -110,6 +110,28 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
+
+        mape.replace(eleicao.old_titulo, new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, eleicao.old_titulo));
+
+        mape.put(eleicao.titulo, mape.remove(eleicao.old_titulo));
+
+        File file = new File(outputFilePath);
+
+        BufferedWriter bf = null;
+
+        try {
+            bf = new BufferedWriter(new FileWriter(file));
+
+            bf.write(objeto.toString());
+
+            bf.flush();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            try { bf.close(); }
+            catch (Exception e) {}
+        }
     }
 
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
@@ -186,6 +208,26 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void remove_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - remove_mesa");
+
+        mapm.remove(mesa.dep);
+
+        File file = new File(outputFilePath);
+
+        BufferedWriter bf = null;
+
+        try {
+            bf = new BufferedWriter(new FileWriter(file));
+
+            bf.write(objeto.toString());
+
+            bf.flush();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            try { bf.close(); }
+            catch (Exception e) {}
+        }
     }
 
     public void consulta_estado_mesas() throws RemoteException {

@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Eleicao implements Serializable {
     public String data_i;
@@ -11,8 +10,9 @@ public class Eleicao implements Serializable {
     public String titulo;
     public String descricao;
     public String restricao;
+    public String old_titulo;
 
-    public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f, String titulo, String descricao, String restricao) {
+    public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f, String titulo, String descricao, String restricao, String old_titulo) {
         this.data_i = data_i;
         this.hora_i = hora_i;
         this.minuto_i = minuto_i;
@@ -22,6 +22,7 @@ public class Eleicao implements Serializable {
         this.titulo = titulo;
         this.descricao = descricao;
         this.restricao = restricao;
+        this.old_titulo = old_titulo;
     }
 
     public String toString() {

@@ -1,5 +1,5 @@
 {}
 
-{eleicao={},
- lista_candidato={p={nome_lista='p', tipo_lista='1', num_pessoas_lista='2', lista=[j, k]}, 2={nome_lista='2', tipo_lista='v', num_pessoas_lista='2', lista=[d, e, j, k]}},
+{eleicao={penis={data_i='6', hora_i='6', minuto_i='6', data_f='7', hora_f='7', minuto_f='7', titulo='penis', descricao='d', restricao='dei'}},
+ lista_candidato={},
  mesa={}}

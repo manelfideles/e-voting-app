@@ -30,7 +30,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         Pessoa pessoa;
 
         // Variáveis OPTION 2/3
-        String data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao;
+        String data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo;
         Eleicao eleicao;
 
         // Variáveis OPTION 4
@@ -74,7 +74,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 System.out.print("Escolha: ");
                 option = reader.readLine();
 
-                switch (option) {
+                switch (option) { // done: 1/2/3/4       falta: 5.3/6/7/8/9
                     case "1": // "1.Registar Pessoas"
                         System.out.println("> Escolha uma das opções abaixo disponíveis de acordo com a Função da pessoa:\n" +
                                            "_____________________________________________________________________________\n" +
@@ -172,7 +172,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("> Descrição: " + descricao);
                         System.out.println("____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao);
+                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, "");
 
                         rmis.cria_eleicao(eleicao);
 
@@ -180,7 +180,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                     case "3": // "3.Alterar Propriedades de uma Eleição"
                         System.out.print("> Título da Eleição: ");
-                        titulo = reader.readLine();
+                        old_titulo = reader.readLine();
 
                         System.out.print("> Nova Data Início: ");
                         data_i = reader.readLine();
@@ -222,7 +222,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("> Descrição: " + descricao);
                         System.out.println("____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao);
+                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo);
 
                         rmis.altera_eleicao(eleicao);
 
@@ -258,9 +258,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
-                                    System.out.println("> Número de Pessoas Pertencentes à Lista: ");
+                                    System.out.print("> Número de Pessoas Pertencentes à Lista: ");
                                     Scanner scanner = new Scanner(System.in);
                                     num_pessoas_lista = Integer.parseInt(scanner.nextLine());
+
+                                    lista.clear();
 
                                     for (int i=0; i<num_pessoas_lista; i++) {
                                         System.out.print("> Nome: ");
@@ -370,6 +372,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     System.out.print("> Departamento/Faculdade onde está localizada: ");
                                     dep = reader.readLine();
                                     System.out.println("Vou apagar os dados de uma mesa de voto");
+                                    System.out.println("> Departamento onde estava localizada: " + dep);
                                     System.out.println("-----------------------------------------------------\n");
 
                                     mesa = new Mesa(dep);
