@@ -1,0 +1,5 @@
+{HashMapPessoas={q={nome='2', funcao='q', password='q', dep_fac='q', contacto='q', morada='q', num_cc='q', val_cc='q'}}}
+
+{eleicao={w={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='w', descricao='w', restricao='0'}},
+ lista_candidato={t={nome_lista='t', tipo_lista='1', num_pessoas_lista='2', lista=[t, y]}},
+ mesa={i=i, o=o}}

@@ -1,0 +1,5 @@
+{}
+
+{eleicao='{}',
+ lista_candidato='{}',
+ mesa='{u=u, j=j}}

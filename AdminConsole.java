@@ -356,7 +356,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                             switch (opcao) {
                                 case "1":
-                                    System.out.print("> Departamento onde está localizada: ");
+                                    System.out.print("> Departamento/Faculdade onde está localizada: ");
                                     dep = reader.readLine();
                                     System.out.println("Vou guardar os dados de uma mesa de voto");
                                     System.out.println("> Departamento onde está localizada: " + dep);
@@ -368,7 +368,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                                     break;
                                 case "2":
-                                    System.out.print("> Departamento onde está localizada: ");
+                                    System.out.print("> Departamento/Faculdade onde está localizada: ");
                                     dep = reader.readLine();
                                     System.out.println("Vou apagar os dados de uma mesa de voto");
                                     System.out.println("---------------------------------------\n");

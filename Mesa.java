@@ -14,6 +14,6 @@ public class Mesa implements Serializable {
     }
 
     public String toString() {
-        return "{" + "dep='" + dep + '\'' + '}';
+        return dep + "";
     }
 }

@@ -2,44 +2,44 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class HashMapEleicao implements Serializable {
-    Eleicao eleicao;
-    ListaCandidato lista_candidato;
-    Mesa mesa;
+    HashMap<String,Eleicao> mape;
+    HashMap<String,ListaCandidato> mapc;
+    HashMap<String,Mesa> mapm;
 
-    public HashMapEleicao(Eleicao eleicao, ListaCandidato lista_candidato, Mesa mesa) {
-        this.eleicao = eleicao;
-        this.lista_candidato = lista_candidato;
-        this.mesa = mesa;
+    public HashMapEleicao(HashMap<String,Eleicao> mape, HashMap<String,ListaCandidato> mapc, HashMap<String,Mesa> mapm) {
+        this.mape = mape;
+        this.mapc = mapc;
+        this.mapm = mapm;
     }
 
-    public Eleicao getEleicao() {
-        return eleicao;
+    public HashMap<String,Eleicao> getMape() {
+        return mape;
     }
 
-    public void setEleicao() {
-        this.eleicao = eleicao;
+    public void setMape() {
+        this.mape = mape;
     }
 
-    public ListaCandidato getLista_candidato() {
-        return lista_candidato;
+    public HashMap<String,ListaCandidato> getMapc() {
+        return mapc;
     }
 
-    public void setLista_candidato() {
-        this.lista_candidato = lista_candidato;
+    public void setMapc() {
+        this.mapc = mapc;
     }
 
-    public Mesa getMesa() {
-        return mesa;
+    public HashMap<String,Mesa> getMapm() {
+        return mapm;
     }
 
-    public void setMesa() {
-        this.mesa = mesa;
+    public void setMapm() {
+        this.mapm = mapm;
     }
 
     public String toString() {
-        return "{eleicao='" + this.eleicao +
-                "', lista_candidato='" + this.lista_candidato +
-                "', mesa='" + this.mesa +
+        return "{eleicao=" + this.mape +
+                ",\n lista_candidato=" + this.mapc +
+                ",\n mesa=" + this.mapm +
                 "}";
     }
 }

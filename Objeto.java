@@ -26,8 +26,6 @@ public class Objeto implements Serializable {
     }
 
     public String toString() {
-        return "{hmp='" + this.hmp +
-                "', hme='" + this.hme +
-                "}";
+        return this.hmp + "\n" + this.hme;
     }
 }

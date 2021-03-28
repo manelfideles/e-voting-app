@@ -17,6 +17,6 @@ public class HashMapPessoas implements Serializable {
     }
 
     public String toString() {
-        return "{" + hmp + '}';
+        return hmp + "\n";
     }
 }

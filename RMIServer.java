@@ -23,6 +23,24 @@ import java.util.stream.Stream;
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<AdminConsole_I>();
 
+    // Pessoas
+    HashMap<String,Pessoa> mapp = new HashMap<>();
+    HashMap<String,HashMap<String,Pessoa>> hmp = new HashMap<>();
+
+    // Eleicoes
+    HashMap<String,Eleicao> mape = new HashMap<>();
+
+    // Candidatos
+    HashMap<String,ListaCandidato> mapc = new HashMap<>();
+
+    // Mesas
+    HashMap<String,Mesa> mapm = new HashMap<>();
+
+    // Objeto
+    HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
+    HashMapEleicao hashmapeleicao = new HashMapEleicao(mape, mapc, mapm);
+    Objeto objeto = new Objeto(hashmappessoas, hashmapeleicao);
+
     final static String outputFilePath = "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
 
     public RMIServer() throws RemoteException {
@@ -42,25 +60,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
 
-        HashMap<String,Pessoa> map = new HashMap<>();
-        map.put(pessoa.num_cc, new Pessoa(pessoa.funcao, pessoa.nome, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        mapp.put(pessoa.num_cc, new Pessoa(pessoa.funcao, pessoa.nome, pessoa.password, pessoa.dep_fac, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
 
-        HashMap<String,HashMap<String,Pessoa>> hmp = new HashMap<>();
-        hmp.put("HashMapPessoas", map);
-
-        //HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
+        hmp.put("HashMapPessoas", mapp);
 
         File file = new File(outputFilePath);
 
         BufferedWriter bf = null;
 
         try {
-            bf = new BufferedWriter(new FileWriter(file,true));
+            bf = new BufferedWriter(new FileWriter(file));
 
-            for (String i : hmp.keySet()) {
-                bf.append("HashMapPessoas" + ": " + hmp.get(i));
-                bf.newLine();
-            }
+            bf.write(objeto.toString());
 
             bf.flush();
 
@@ -75,21 +86,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
 
-        HashMap<String,Eleicao> map = new HashMap<>();
-
-        map.put("eleicao", new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao));
+        mape.put(eleicao.titulo, new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao));
 
         File file = new File(outputFilePath);
 
         BufferedWriter bf = null;
 
         try {
-            bf = new BufferedWriter(new FileWriter(file,true));
+            bf = new BufferedWriter(new FileWriter(file));
 
-            for (String i : map.keySet()) {
-                bf.append(i + ": " + map.get(i));
-                bf.newLine();
-            }
+            bf.write(objeto.toString());
 
             bf.flush();
 
@@ -108,21 +114,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - cria_lista_candidatos");
 
-        HashMap<String,ListaCandidato> map = new HashMap<>();
-
-        map.put("lista_candidato", new ListaCandidato(lista_candidato.nome_lista, lista_candidato.tipo_lista, lista_candidato.num_pessoas_lista, lista_candidato.lista));
+        mapc.put(lista_candidato.nome_lista, new ListaCandidato(lista_candidato.nome_lista, lista_candidato.tipo_lista, lista_candidato.num_pessoas_lista, lista_candidato.lista));
 
         File file = new File(outputFilePath);
 
         BufferedWriter bf = null;
 
         try {
-            bf = new BufferedWriter(new FileWriter(file,true));
+            bf = new BufferedWriter(new FileWriter(file));
 
-            for (String i : map.keySet()) {
-                bf.append(i + ": " + map.get(i));
-                bf.newLine();
-            }
+            bf.write(objeto.toString());
 
             bf.flush();
 
@@ -141,21 +142,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - cria_mesa");
 
-        HashMap<String,Mesa> map = new HashMap<>();
-
-        map.put("dep", new Mesa(mesa.dep));
+        mapm.put(mesa.dep, new Mesa(mesa.dep));
 
         File file = new File(outputFilePath);
 
         BufferedWriter bf = null;
 
         try {
-            bf = new BufferedWriter(new FileWriter(file,true));
+            bf = new BufferedWriter(new FileWriter(file));
 
-            for (String i : map.keySet()) {
-                bf.append(i + ": " + map.get(i));
-                bf.newLine();
-            }
+            bf.write(objeto.toString());
 
             bf.flush();
 
@@ -201,16 +197,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             Registry r = LocateRegistry.createRegistry(6969);
             r.rebind("RMI_Server", rmis);
             System.out.println("Hello Server ready.");
-
-            /*while (true) {
-
-                System.out.println("> Introduza word para print_on_admin_console");
-                s = reader.readLine();
-
-                for (AdminConsole_I ac : admin_consoles) {
-                    ac.print_on_admin_console(s);
-                }
-            }*/
 
         } catch (Exception re) {
             System.out.println("Exception in HelloImpl.main: " + re);
