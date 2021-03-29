@@ -1,4 +1,4 @@
 {}
 
-{eleicao={r={data_i='4', hora_i='4', minuto_i='4', data_f='4', hora_f='4', minuto_f='4', titulo='r', descricao='Estudante', restricao='0', lista_lista_candidato='[{a={nome_lista='a', tipo_lista='1', num_pessoas_lista='1', lista=[a]}}, {s={nome_lista='s', tipo_lista='1', num_pessoas_lista='1', lista=[s]}}]'}, e={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='e', descricao='Estudante', restricao='0', lista_lista_candidato='[{k={nome_lista='k', tipo_lista='1', num_pessoas_lista='1', lista=[k]}}, {l={nome_lista='l', tipo_lista='1', num_pessoas_lista='1', lista=[l]}}]'}},
+{eleicao={ç={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='ç', descricao='Estudante', restricao='0', lista_lista_candidato='[{l={nome_lista='l', tipo_lista='1', num_pessoas_lista='1', lista=[l]}}]'}},
  mesa={}}

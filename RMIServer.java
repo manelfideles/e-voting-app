@@ -311,7 +311,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         Scanner scanner = new Scanner(System.in);
 
-        Pessoa p = new Pessoa("Pedro", "Estudante", "pedrocas", "0", "934725545", "funchal", "122312123", "12/02/2025");
+        Pessoa p = new Pessoa("Pedro", "Estudante", "pedrocas", "DEI", "934725545", "funchal", "122312123", "12/02/2025");
 
         int i = 1, j = 1, opcao_eleicao, opcao_lista;
 
@@ -326,8 +326,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
 
-            if(e.descricao.equals(p.funcao) && (e.descricao.equals(p.dep) || p.dep.equals("0"))) {
-                resultado = resultado.concat(i + " - " + e.titulo + "\n");
+            if(e.descricao.equals(p.funcao) && (e.restricao.equals(p.dep) || e.restricao.equals("0"))) {
+                resultado = resultado.concat("\n" + i + " - " + e.titulo);
                 hme.put(i,e);
                 i++;
             }
@@ -336,6 +336,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         if(!resultado.equals("")) {
             System.out.print("Selecione a eleição na qual pretende exercer o seu voto:");
             System.out.println(resultado);
+            System.out.print("Escolha: ");
 
             opcao_eleicao = Integer.parseInt(scanner.nextLine());
 
@@ -349,24 +350,35 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             for (HashMap<String,ListaCandidato> llc : eleicao.lista_lista_candidato) {
 
                 for(Entry<String,ListaCandidato> entry: llc.entrySet()) {
-                    resultado = resultado.concat(j + " - " + entry.getKey() + "\n");
+                    resultado = resultado.concat("\n" + j + " - " + entry.getKey());
                     hmlc.put(j,entry.getValue());
                     j++;
                 }
             }
 
             if(!resultado.equals("")) {
-                System.out.println("Selecione a lista na qual pretende exercer o seu voto:");
+                System.out.print("Selecione a lista na qual pretende exercer o seu voto:");
                 System.out.println(resultado);
+
+                HashMap<Integer,String> hmbn = new HashMap<>();
+
                 System.out.println(j + " - " + "Branco");
+                hmbn.put(j,"Branco");
                 j++;
                 System.out.println(j + " - " + "Nulo");
+                hmbn.put(j,"Nulo");
+
+                System.out.print("Escolha: ");
 
                 opcao_lista = Integer.parseInt(scanner.nextLine());
 
-                ListaCandidato lista = hmlc.get(opcao_lista);
+                if(hmlc.containsKey(opcao_lista)) {
+                    ListaCandidato lista = hmlc.get(opcao_lista);
+                    System.out.println("Vou votar em " + lista.nome_lista);
+                }
 
-                System.out.println("Vou votar em " + lista.nome_lista);
+                else { System.out.println("Vou votar em " + hmbn.get(opcao_lista)); }
+
             }
 
             else { System.out.println("Não existe nenhuma lista na qual possa exercer o seu voto!"); }
