@@ -333,39 +333,46 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
         }
 
-        if(!resultado.equals("")) { System.out.print("Selecione a eleição na qual pretende exercer o seu voto:\n" + resultado); }
+        if(!resultado.equals("")) {
+            System.out.print("Selecione a eleição na qual pretende exercer o seu voto:");
+            System.out.println(resultado);
 
-        else { System.out.println("Não existe nenhuma eleição na qual possa exercer o seu voto!"); }
+            opcao_eleicao = Integer.parseInt(scanner.nextLine());
 
-        opcao_eleicao = Integer.parseInt(scanner.nextLine());
+            Eleicao eleicao = hme.get(opcao_eleicao);
 
-        Eleicao eleicao = hme.get(opcao_eleicao);
-
-        resultado = "";
+            resultado = "";
 
 
-        // Percorrer a ArrayList das listas
+            // Percorrer a ArrayList das listas
 
-        for (HashMap<String,ListaCandidato> llc : eleicao.lista_lista_candidato) {
+            for (HashMap<String,ListaCandidato> llc : eleicao.lista_lista_candidato) {
 
-            for(Entry<String,ListaCandidato> entry: llc.entrySet()) {
-                resultado = resultado.concat(j + " - " + entry.getKey() + "\n");
-                hmlc.put(j,entry.getValue());
-                j++;
+                for(Entry<String,ListaCandidato> entry: llc.entrySet()) {
+                    resultado = resultado.concat(j + " - " + entry.getKey() + "\n");
+                    hmlc.put(j,entry.getValue());
+                    j++;
+                }
             }
+
+            if(!resultado.equals("")) {
+                System.out.println("Selecione a lista na qual pretende exercer o seu voto:");
+                System.out.println(resultado);
+                System.out.println(j + " - " + "Branco");
+                j++;
+                System.out.println(j + " - " + "Nulo");
+
+                opcao_lista = Integer.parseInt(scanner.nextLine());
+
+                ListaCandidato lista = hmlc.get(opcao_lista);
+
+                System.out.println("Vou votar em " + lista.nome_lista);
+            }
+
+            else { System.out.println("Não existe nenhuma lista na qual possa exercer o seu voto!"); }
         }
 
-        if(!resultado.equals("")) { System.out.println("Selecione a lista na qual pretende exercer o seu voto:\n" + resultado); }
-
-        else { System.out.println("Não existe nenhuma lista na qual possa exercer o seu voto!"); }
-
-        opcao_lista = Integer.parseInt(scanner.nextLine());
-
-        ListaCandidato lista = hmlc.get(opcao_lista);
-
-
-        System.out.println("Vou votar em " + lista.nome_lista);
-
+        else { System.out.println("Não existe nenhuma eleição na qual possa exercer o seu voto!"); }
     }
 
     public static void main(String[] args) {
