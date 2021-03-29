@@ -24,6 +24,9 @@ public class MulticastClient extends Thread {
         System.out.println("Client " + id + " running.");
         try {
             ThreadOps op = new ThreadOps();
+            // Thread counterThread = new Thread();
+            // counterThread.start();
+
             terminal_socket = new MulticastSocket(PORT); // create socket and bind it
             voting_socket = new MulticastSocket(PORT); // create socket and bind it
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
@@ -40,10 +43,8 @@ public class MulticastClient extends Thread {
                         op.sendPacket(id, terminal_socket, terminals_group, PORT);
                         busy = true;
                     } else if (busy == true && ("# " + id).equals(msg)) {
-
                         terminal_socket.leaveGroup(terminals_group);
                         Scanner keyboardScanner = new Scanner(System.in);
-
                         // Recebe login data
                         System.out.print("User: ");
                         String read_user = keyboardScanner.nextLine();
@@ -78,6 +79,7 @@ public class MulticastClient extends Thread {
 
                         terminal_socket.joinGroup(terminals_group);
                         busy = false;
+                        break;
                     }
                 }
             }
@@ -89,3 +91,13 @@ public class MulticastClient extends Thread {
         }
     }
 }
+
+/*
+ * class CounterThread extends Thread { private boolean isRunning = false;
+ * 
+ * public CounterThread() { this.start(); }
+ * 
+ * public void run() {
+ * 
+ * } }
+ */

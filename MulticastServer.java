@@ -41,11 +41,6 @@ public class MulticastServer extends Thread {
             InetAddress vote_group = InetAddress.getByName(VOTE);
             VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op);
             while (true) {
-                // recebeu um eleitor na mesa:
-                // 1 - membro da mesa faz uma query à bd de eleitores
-                // através do rmi (i.e pesquisa o eleitor)
-                // - não implementado -
-
                 // 2 - recebe resposta - existe ou não existe
                 // (se não existir, espera pelo próximo eleitor)
                 // - não implementado -
@@ -85,7 +80,14 @@ class TerminalThread extends Thread {
         try {
             s.joinGroup(group);
             while (true) {
-                // envia req para terminals_group
+                // recebeu um eleitor na mesa:
+                // 1 - membro da mesa faz uma query à bd de eleitores
+                // através do rmi (i.e pesquisa o eleitor)
+                // - não implementado -
+
+                // 3 - Se existir, requisita um terminal
+                // i.e manda req ao grupo mc dos terminais - protocolos de comunicação entre
+                // dispositivos
                 op.sendPacket("# req", s, group, PORT); // substituir por um protocolo de comunicação
 
                 // Handshake
@@ -164,7 +166,6 @@ class VotingThread extends Thread {
 
                     }
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
