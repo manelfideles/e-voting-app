@@ -1,0 +1,4 @@
+{}
+
+{eleicao={ç={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='ç', descricao='Estudante', restricao='0', lista_lista_candidato='[{l={nome_lista='l', tipo_lista='1', num_pessoas_lista='1', lista=[l]}}]'}},
+ mesa={}}
