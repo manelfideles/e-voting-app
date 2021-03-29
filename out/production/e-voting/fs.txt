@@ -1,4 +1,4 @@
-{}
+{HashMapPessoas={123456789={nome='Pedro', funcao='1', password='pedrocas', dep='DEI', contacto='934725545', morada='pousada', num_cc='123456789', val_cc='12/12/2025'}}}
 
-{eleicao={p={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='p', descricao='Estudante', restricao='DEI', lista_lista_candidato='[{lista={nome_lista='lista', tipo_lista='1', num_pessoas_lista='2', lista=[j, k]}}]'}},
+{eleicao={e={data_i='5', hora_i='5', minuto_i='5', data_f='7', hora_f='7', minuto_f='7', titulo='e', descricao='Estudante', restricao='0', lista_lista_candidato='[{l={nome_lista='l', tipo_lista='1', num_pessoas_lista='5', lista=[e, q, r, t, w]}}]'}},
  mesa={}}
