@@ -1,4 +1,6 @@
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Eleicao implements Serializable {
     public String data_i;
@@ -11,8 +13,9 @@ public class Eleicao implements Serializable {
     public String descricao;
     public String restricao;
     public String old_titulo;
+    public ArrayList<HashMap<String,ListaCandidato>> lista_lista_candidato;
 
-    public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f, String titulo, String descricao, String restricao, String old_titulo) {
+    public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f, String titulo, String descricao, String restricao, String old_titulo, ArrayList<HashMap<String,ListaCandidato>> lista_lista_candidato) {
         this.data_i = data_i;
         this.hora_i = hora_i;
         this.minuto_i = minuto_i;
@@ -23,6 +26,7 @@ public class Eleicao implements Serializable {
         this.descricao = descricao;
         this.restricao = restricao;
         this.old_titulo = old_titulo;
+        this.lista_lista_candidato = lista_lista_candidato;
     }
 
     public String toString() {
@@ -36,6 +40,7 @@ public class Eleicao implements Serializable {
                 ", titulo='" + titulo + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", restricao='" + restricao + '\'' +
+                ", lista_lista_candidato='" + lista_lista_candidato + '\'' +
                 '}';
     }
 

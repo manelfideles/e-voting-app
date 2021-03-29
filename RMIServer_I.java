@@ -26,5 +26,7 @@ public interface RMIServer_I extends Remote {
     public void consulta_eleitores() throws RemoteException;
 
     public void consulta_resultados() throws RemoteException;
+
+    public void boletim_voto() throws RemoteException;
 }
  

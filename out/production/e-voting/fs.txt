@@ -1,5 +1,4 @@
-{HashMapPessoas={333={nome='p', funcao='1', password='p', dep_fac='dei', contacto='2', morada='o', num_cc='333', val_cc='3'}}}
+{}
 
-{eleicao={cona={data_i='2', hora_i='2', minuto_i='2', data_f='3', hora_f='3', minuto_f='3', titulo='cona', descricao='s', restricao='s'}, penis={data_i='4', hora_i='4', minuto_i='4', data_f='5', hora_f='5', minuto_f='5', titulo='penis', descricao='p', restricao='dei'}},
- lista_candidato={popo={nome_lista='popo', tipo_lista='1', num_pessoas_lista='2', lista=[+edro, luis]}},
+{eleicao={p={data_i='1', hora_i='1', minuto_i='1', data_f='1', hora_f='1', minuto_f='1', titulo='p', descricao='Estudante', restricao='DEI', lista_lista_candidato='[{lista={nome_lista='lista', tipo_lista='1', num_pessoas_lista='2', lista=[j, k]}}]'}},
  mesa={}}

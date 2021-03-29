@@ -4,17 +4,17 @@ public class Pessoa implements Serializable {
     public String nome;
     public String funcao;
     public String password;
-    public String dep_fac;
+    public String dep;
     public String contacto;
     public String morada;
     public String num_cc;
     public String val_cc;
 
-    public Pessoa(String nome, String funcao, String password, String dep_fac, String contacto, String morada, String num_cc, String val_cc) {
+    public Pessoa(String nome, String funcao, String password, String dep, String contacto, String morada, String num_cc, String val_cc) {
         this.nome = nome;
         this.funcao = funcao;
         this.password = password;
-        this.dep_fac = dep_fac;
+        this.dep = dep;
         this.contacto = contacto;
         this.morada = morada;
         this.num_cc = num_cc;
@@ -26,7 +26,7 @@ public class Pessoa implements Serializable {
                 "nome='" + nome + '\'' +
                 ", funcao='" + funcao + '\'' +
                 ", password='" + password + '\'' +
-                ", dep_fac='" + dep_fac + '\'' +
+                ", dep='" + dep + '\'' +
                 ", contacto='" + contacto + '\'' +
                 ", morada='" + morada + '\'' +
                 ", num_cc='" + num_cc + '\'' +

@@ -6,10 +6,8 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.rmi.registry.LocateRegistry;
-import java.util.Collections;
-import java.util.Scanner;
 
 public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I {
 
@@ -21,7 +19,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         System.out.println("> PRINT ON ADMIN CONSOLE\n> " + s);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // Variáveis Gerais
         String option, opcao;
 
@@ -31,6 +29,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
         // Variáveis OPTION 2/3
         String data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo;
+        ArrayList<HashMap<String,ListaCandidato>> lista_lista_candidato = new ArrayList<>();
         Eleicao eleicao;
 
         // Variáveis OPTION 4
@@ -38,6 +37,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         int num_pessoas_lista;
         ArrayList<String> lista = new ArrayList<>();
         ListaCandidato lista_candidato;
+        String nome_eleicao;
 
         // Variáveis OPTION 5
         String dep;
@@ -55,33 +55,32 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
             rmis.subscribe("Admin Console", ac);
             System.out.println("Client sent subscription to RMIServer");
 
-            while (true) {
+            do {
                 System.out.println("------------MENU PRINCIPAL------------\n" +
-                                   "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                   "______________________________________\n" +
-                                   "1.Registar Pessoa\n" +
-                                   "2.Criar Eleição\n" +
-                                   "3.Alterar Propriedades de uma Eleição\n" +
-                                   "4.Gerir Candidatos\n" +
-                                   "5.Gerir Mesas de Voto\n" +
-                                   "6.Consultar Informação de Voto\n" +
-                                   "7.Consultar Número de Eleitores\n" +
-                                   "8.Consultar Resultados\n" +
-                                   "9.Sair\n" +
-                                   "______________________________________\n");
-
+                        "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
+                        "______________________________________\n" +
+                        "1.Registar Pessoa\n" +
+                        "2.Criar Eleição\n" +
+                        "3.Alterar Propriedades de uma Eleição\n" +
+                        "4.Gerir Candidatos\n" +
+                        "5.Gerir Mesas de Voto\n" +
+                        "6.Consultar Informação de Voto\n" +
+                        "7.Consultar Número de Eleitores\n" +
+                        "8.Consultar Resultados\n" +
+                        "9.Sair\n" +
+                        "______________________________________\n");
                 System.out.print("Escolha: ");
                 option = reader.readLine();
 
-                switch (option) { // done: 1/2/3/4  falta: 5.3/6/7/8/9
+                switch (option) { // done: 1/2/3/4  falta: 5.3/6/7/8
                     case "1": // "1.Registar Pessoas"
                         System.out.println("> Escolha uma das opções abaixo disponíveis de acordo com a Função da pessoa:\n" +
-                                           "_____________________________________________________________________________\n" +
-                                           "1.Estudante\n" +
-                                           "2.Docente\n" +
-                                           "3.Funcionári@\n" +
-                                           "4.Sair\n" +
-                                           "_____________________________________________________________________________\n");
+                                "_____________________________________________________________________________\n" +
+                                "1.Estudante\n" +
+                                "2.Docente\n" +
+                                "3.Funcionári@\n" +
+                                "4.Sair\n" +
+                                "_____________________________________________________________________________\n");
                         System.out.print("Escolha: ");
                         funcao = reader.readLine();
 
@@ -89,7 +88,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             break;
                         }
 
-                        System.out.print("> Departamento/Faculdade: ");
+                        System.out.print("> Departamento: ");
                         dep_fac = reader.readLine();
                         System.out.print("> Nome: ");
                         nome = reader.readLine();
@@ -117,7 +116,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                         System.out.println("> Nome: " + nome);
                         System.out.println("> Password: " + password);
-                        System.out.println("> Departamento/Faculdade: " + dep_fac);
+                        System.out.println("> Departamento: " + dep_fac);
                         System.out.println("> Contacto Telefónico: " + contacto);
                         System.out.println("> Morada: " + morada);
                         System.out.println("> Número do Cartão de Cidadão: " + num_cc);
@@ -148,19 +147,18 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.print("> Descrição: ");
                         descricao = reader.readLine();
                         System.out.print("> Restrição:\n" +
-                                         "_____________________________________________________________\n" +
-                                         "* ESCREVA O NOME DO DEP/FAC OU '0' PARA NÃO HAVER RESTRIÇÃO *\n" +
-                                         "_____________________________________________________________\n");
+                                "_____________________________________________________________\n" +
+                                "* ESCREVA O NOME DO DEP/FAC OU '0' PARA NÃO HAVER RESTRIÇÃO *\n" +
+                                "_____________________________________________________________\n");
                         System.out.print("Escolha: ");
                         restricao = reader.readLine();
 
-                        switch (restricao) {
-                            case "0":
-                                System.out.println("Vou guardar os dados de uma eleicao que não tem restrição");
-                                break;
-                            default:
-                                System.out.println("Vou guardar os dados de uma eleição que tem a restrição de apenas poderem votar pessoas do Departamento/Faculdade: " + restricao);
+                        if (restricao.equals("0")) {
+                            System.out.println("Vou guardar os dados de uma eleicao que não tem restrição");
+                        } else {
+                            System.out.println("Vou guardar os dados de uma eleição que tem a restrição de apenas poderem votar pessoas do Departamento/Faculdade: " + restricao);
                         }
+
                         System.out.println("> Data Início: " + data_i);
                         System.out.println("> Hora Início: " + hora_i);
                         System.out.println("> Minuto Início: " + minuto_i);
@@ -171,7 +169,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("> Descrição: " + descricao);
                         System.out.println("____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, "");
+                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, "", lista_lista_candidato);
 
                         rmis.cria_eleicao(eleicao);
 
@@ -198,19 +196,18 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.print("> Nova Descrição: ");
                         descricao = reader.readLine();
                         System.out.print("> Nova Restricao:\n" +
-                                         "_____________________________________________________________\n" +
-                                         "* ESCREVA O NOME DO DEP/FAC OU '0' PARA NÃO HAVER RESTRIÇÃO *\n" +
-                                         "_____________________________________________________________\n");
+                                "_____________________________________________________________\n" +
+                                "* ESCREVA O NOME DO DEP/FAC OU '0' PARA NÃO HAVER RESTRIÇÃO *\n" +
+                                "_____________________________________________________________\n");
                         System.out.print("Escolha: ");
                         restricao = reader.readLine();
 
-                        switch (restricao) {
-                            case "0":
-                                System.out.println("Vou substituir os dados de uma eleição que não tem restrição");
-                                break;
-                            default:
-                                System.out.println("Vou substituir os dados de uma eleição que tem a restrição de apenas poderem votar pessoas do Departamento/Faculdade: " + restricao);
+                        if (restricao.equals("0")) {
+                            System.out.println("Vou substituir os dados de uma eleição que não tem restrição");
+                        } else {
+                            System.out.println("Vou substituir os dados de uma eleição que tem a restrição de apenas poderem votar pessoas do Departamento/Faculdade: " + restricao);
                         }
+
                         System.out.println("> Data Início: " + data_i);
                         System.out.println("> Hora Início: " + hora_i);
                         System.out.println("> Minuto Início: " + minuto_i);
@@ -221,7 +218,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("> Descrição: " + descricao);
                         System.out.println("____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo);
+                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo, lista_lista_candidato);
 
                         rmis.altera_eleicao(eleicao);
 
@@ -229,32 +226,33 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     case "4": // "4.Gerir Candidatos"
                         try {
                             System.out.println("-----MENU GERE LISTAS CANDIDATOS------\n" +
-                                               "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                               "______________________________________\n" +
-                                               "1.Adicionar Lista\n" +
-                                               "2.Remover Lista\n" +
-                                               "3.Sair\n" +
-                                               "______________________________________\n");
+                                    "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
+                                    "______________________________________\n" +
+                                    "1.Adicionar Lista\n" +
+                                    "2.Remover Lista\n" +
+                                    "3.Sair\n" +
+                                    "______________________________________\n");
                             System.out.print("Escolha: ");
                             opcao = reader.readLine();
 
                             switch (opcao) {
                                 case "1":
                                     System.out.println("> --------MENU ADICIONA LISTA---------\n" +
-                                                       "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                                       "______________________________________\n" +
-                                                       "1.Estudantes\n" +
-                                                       "2.Docentes\n" +
-                                                       "3.Funcionári@s\n" +
-                                                       "4.Sair\n" +
-                                                       "______________________________________\n");
+                                            "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
+                                            "______________________________________\n" +
+                                            "1.Estudantes\n" +
+                                            "2.Docentes\n" +
+                                            "3.Funcionári@s\n" +
+                                            "4.Sair\n" +
+                                            "______________________________________\n");
                                     System.out.print("Escolha: ");
                                     tipo_lista = reader.readLine();
 
                                     if (tipo_lista.equals("4")) {
                                         break;
                                     }
-
+                                    System.out.print("> Nome da Eleição: ");
+                                    nome_eleicao = reader.readLine();
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
                                     System.out.print("> Número de Pessoas Pertencentes à Lista: ");
@@ -263,7 +261,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                                     lista.clear();
 
-                                    for (int i=0; i<num_pessoas_lista; i++) {
+                                    for (int i = 0; i < num_pessoas_lista; i++) {
                                         System.out.print("> Nome: ");
                                         nome_pessoa = reader.readLine();
                                         lista.add(nome_pessoa);
@@ -290,20 +288,20 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     }
                                     System.out.println("----------------------------------------------------------------\n");
 
-                                    lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista);
+                                    lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista, nome_eleicao);
 
                                     rmis.cria_lista_candidatos(lista_candidato);
 
                                     break;
                                 case "2":
                                     System.out.println("> ---------MENU REMOVE LISTA----------\n" +
-                                                       "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                                       "______________________________________\n" +
-                                                       "1.Estudantes\n" +
-                                                       "2.Docentes\n" +
-                                                       "3.Funcionári@s\n" +
-                                                       "4.Sair\n" +
-                                                       "______________________________________\n");
+                                            "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
+                                            "______________________________________\n" +
+                                            "1.Estudantes\n" +
+                                            "2.Docentes\n" +
+                                            "3.Funcionári@s\n" +
+                                            "4.Sair\n" +
+                                            "______________________________________\n");
                                     System.out.print("Escolha: ");
                                     tipo_lista = reader.readLine();
 
@@ -311,6 +309,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                         break;
                                     }
 
+                                    System.out.print("> Nome da Eleição: ");
+                                    nome_eleicao = reader.readLine();
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
 
@@ -328,7 +328,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     System.out.println("> Nome da Lista: " + nome_lista);
                                     System.out.println("----------------------------------------------------------------\n");
 
-                                    lista_candidato = new ListaCandidato(nome_lista, tipo_lista, 0, lista);
+                                    lista_candidato = new ListaCandidato(nome_lista, tipo_lista, 0, lista, nome_eleicao);
 
                                     rmis.remove_lista_candidatos(lista_candidato);
 
@@ -344,13 +344,13 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     case "5": // "5.Gerir Mesas de Voto"
                         try {
                             System.out.println("-----------MENU GERE MESAS------------\n" +
-                                               "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
-                                               "______________________________________\n" +
-                                               "1.Criar Mesa\n" +
-                                               "2.Remover Mesa\n" +
-                                               "3.Consultar Estado das Mesas\n" +
-                                               "4.Sair\n" +
-                                               "______________________________________\n");
+                                    "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" +
+                                    "______________________________________\n" +
+                                    "1.Criar Mesa\n" +
+                                    "2.Remover Mesa\n" +
+                                    "3.Consultar Estado das Mesas\n" +
+                                    "4.Sair\n" +
+                                    "______________________________________\n");
                             System.out.print("Escolha: ");
                             opcao = reader.readLine();
 
@@ -407,8 +407,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         break;
                     case "9": // "9.Sair"
                         break;
+                    case "10":
+                        rmis.boletim_voto();
+                        break;
                 }
-            }
+            } while (!option.equals("9"));
         } catch (Exception re) {
             System.out.println("Exception in AdminConsole.main: " + re);
         }

@@ -3,18 +3,15 @@ import java.util.HashMap;
 
 public class HashMapEleicao implements Serializable {
     HashMap<String,Eleicao> mape;
-    HashMap<String,ListaCandidato> mapc;
     HashMap<String,Mesa> mapm;
 
-    public HashMapEleicao(HashMap<String,Eleicao> mape, HashMap<String,ListaCandidato> mapc, HashMap<String,Mesa> mapm) {
+    public HashMapEleicao(HashMap<String,Eleicao> mape, HashMap<String,Mesa> mapm) {
         this.mape = mape;
-        this.mapc = mapc;
         this.mapm = mapm;
     }
 
     public String toString() {
         return "{eleicao=" + this.mape +
-                ",\n lista_candidato=" + this.mapc +
                 ",\n mesa=" + this.mapm +
                 "}";
     }
