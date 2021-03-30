@@ -12,12 +12,12 @@ public class HashMapPessoas implements Serializable {
         return hmp + "\n";
     }
 
-    /*public HashMap<String,HashMap<String,Pessoa>> getHashMapPessoas() {
+    public HashMap<String,HashMap<String,Pessoa>> getHashMapPessoas() {
         return hmp;
     }
 
     public void setHashMapPessoas() {
         this.hmp = hmp;
-    }*/
+    }
 
 }

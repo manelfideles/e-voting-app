@@ -16,20 +16,12 @@ public class HashMapEleicao implements Serializable {
                 "}";
     }
 
-    /*public HashMap<String,Eleicao> getMape() {
+    public HashMap<String,Eleicao> getMape() {
         return mape;
     }
 
     public void setMape() {
         this.mape = mape;
-    }
-
-    public HashMap<String,ListaCandidato> getMapc() {
-        return mapc;
-    }
-
-    public void setMapc() {
-        this.mapc = mapc;
     }
 
     public HashMap<String,Mesa> getMapm() {
@@ -38,6 +30,6 @@ public class HashMapEleicao implements Serializable {
 
     public void setMapm() {
         this.mapm = mapm;
-    }*/
+    }
 
 }

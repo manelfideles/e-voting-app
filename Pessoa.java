@@ -34,7 +34,7 @@ public class Pessoa implements Serializable {
                 '}';
     }
 
-    /*public String getNome() {
+    public String getNome() {
         return nome;
     }
 
@@ -47,7 +47,7 @@ public class Pessoa implements Serializable {
     }
 
     public String getDep_Fac() {
-        return dep_fac;
+        return dep;
     }
 
     public String getContacto() {
@@ -79,7 +79,7 @@ public class Pessoa implements Serializable {
     }
 
     public void setDep_Fac() {
-        this.dep_fac = dep_fac;
+        this.dep = dep;
     }
 
     public void setContacto() {
@@ -96,6 +96,6 @@ public class Pessoa implements Serializable {
 
     public void setVal_CC() {
         this.val_cc = val_cc;
-    }*/
+    }
 
 }

@@ -8,6 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
 import java.util.*;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.RMISecurityManager;
 
 public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I {
 
@@ -43,8 +44,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         String dep;
         Mesa mesa;
 
-        //System.getProperties().put("java.security.policy", "policy.all");
-        //System.setSecurityManager(new RMISecurityManager());
+        System.getProperties().put("java.security.policy", "policy.all");
+        System.setSecurityManager(new RMISecurityManager());
 
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);

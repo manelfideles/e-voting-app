@@ -28,5 +28,13 @@ public interface RMIServer_I extends Remote {
     public void consulta_resultados() throws RemoteException;
 
     public void boletim_voto() throws RemoteException;
+
+    public void WriteObjectToFile(Object obj) throws RemoteException;
+
+    public Object ReadObjectFromFile(String outputFilePath) throws RemoteException;
+
+    //public void sayHello() throws RemoteException;
+
+    //public void ping() throws RemoteException;*/
 }
  

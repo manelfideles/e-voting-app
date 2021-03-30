@@ -24,7 +24,7 @@ public class ListaCandidato implements Serializable {
                 "}";
     }
 
-    /*public String getNome_lista() {
+    public String getNome_lista() {
         return this.nome_lista;
     }
 
@@ -58,6 +58,6 @@ public class ListaCandidato implements Serializable {
 
     public void setLista() {
         this.lista = lista;
-    }*/
+    }
 
 }

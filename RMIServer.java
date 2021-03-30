@@ -1,27 +1,32 @@
-//import java.rmi.Naming;
-//import java.util.Iterator;
-//import java.util.Map;
-//import java.util.stream.Stream;
-//import java.rmi.*;
-//import java.rmi.server.*;
-//import java.net.*;
-//import java.util.*;
-//import java.io.FileNotFoundException;
-//import java.util.Scanner;
-//import java.util.*;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.io.*;
-import java.util.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+/*import java.rmi.Naming;
+import java.util.Iterator;
+import java.util.stream.Stream;
+import java.rmi.*;
+import java.rmi.server.*;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
+import java.io.*;*/
+import java.util.Scanner;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
+
+    final static String outputFilePath = "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
+    static private int PORT_r = 6969;
 
     // Admin Consoles
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
@@ -40,8 +45,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
     HashMapEleicao hashmapeleicao = new HashMapEleicao(mape, mapm);
     Objeto objeto = new Objeto(hashmappessoas, hashmapeleicao);
-
-    final static String outputFilePath = "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
 
     public RMIServer() throws RemoteException {
         super();
@@ -64,27 +67,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         hmp.put("HashMapPessoas", mapp);
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
@@ -92,27 +75,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         mape.put(eleicao.titulo, new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, "", eleicao.lista_lista_candidato));
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
@@ -122,27 +85,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         mape.put(eleicao.titulo, mape.remove(eleicao.old_titulo));
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
@@ -162,27 +105,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
         }
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
@@ -212,27 +135,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         }
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void cria_mesa(Mesa mesa) throws RemoteException {
@@ -240,27 +143,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         mapm.put(mesa.dep, new Mesa(mesa.dep));
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void remove_mesa(Mesa mesa) throws RemoteException {
@@ -268,27 +151,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         mapm.remove(mesa.dep);
 
-        File file = new File(outputFilePath);
-
-        BufferedWriter bf = null;
-
-        try {
-            bf = new BufferedWriter(new FileWriter(file));
-
-            bf.write(objeto.toString());
-
-            bf.flush();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            try {
-                assert bf != null;
-                bf.close(); }
-            catch(NullPointerException | IOException e) {
-                System.out.print("NullPointerException caught");
-            }
-        }
+        WriteObjectToFile(objeto);
     }
 
     public void consulta_estado_mesas() throws RemoteException {
@@ -387,22 +250,54 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         else { System.out.println("Não existe nenhuma eleição na qual possa exercer o seu voto!"); }
     }
 
-    public static void main(String[] args) {
+    public void WriteObjectToFile(Object obj) throws RemoteException {
 
-        //System.getProperties().put("java.security.policy", "policy.all");
-        //System.setSecurityManager(new RMISecurityManager());
+        try {
+            FileOutputStream fileOut = new FileOutputStream(outputFilePath);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(obj);
+            objectOut.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Object ReadObjectFromFile(String outputFilePath) throws RemoteException {
+
+        try {
+            FileInputStream fileIn = new FileInputStream(outputFilePath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+            Object obj = objectIn.readObject();
+            objectIn.close();
+            return obj;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void main(String[] args) throws RemoteException {
+
+        System.getProperties().put("java.security.policy", "policy.all");
+        System.setSecurityManager(new RMISecurityManager());
 
         //InputStreamReader input = new InputStreamReader(System.in);
         //BufferedReader reader = new BufferedReader(input);
 
         try {
             RMIServer rmis = new RMIServer();
-            Registry r = LocateRegistry.createRegistry(6969);
+            Registry r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
+
+            Objeto ob = (Objeto) rmis.ReadObjectFromFile(outputFilePath);
+            System.out.println(ob.toString());
 
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
         }
     }
+
 }
