@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Scanner;
+import java.rmi.registry.*;
 
 public class MulticastServer extends Thread {
     private String TERMINALS = "224.3.2.1";
@@ -31,28 +33,20 @@ public class MulticastServer extends Thread {
              * 'voting_thread' que recebe os votos.
              */
 
+            RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
             ThreadOps op = new ThreadOps();
 
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op);
+            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis);
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis);
             while (true) {
-                // 2 - recebe resposta - existe ou não existe
-                // (se não existir, espera pelo próximo eleitor)
-                // - não implementado -
-
-                // 3 - Se existir, requisita um terminal
-                // i.e manda req ao grupo mc dos terminais - protocolos de comunicação entre
-                // dispositivos
-
-                // 4 - Se tiver resposta positiva
-                // manda o eleitor para o terminal que respondeu - cada terminal tem um id
+                //
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             terminal_socket.close();
@@ -67,11 +61,13 @@ class TerminalThread extends Thread {
     MulticastSocket s;
     Thread t;
     ThreadOps op;
+    RMIServer_I rmis;
 
-    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op) {
+    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
         this.group = group;
         this.s = s;
         this.op = op;
+        this.rmis = rmis;
         t = new Thread(this);
         t.start();
     }
@@ -79,23 +75,27 @@ class TerminalThread extends Thread {
     public void run() {
         try {
             s.joinGroup(group);
+            Scanner keyboardScanner = new Scanner(System.in);
+            Message msg = new Message();
             while (true) {
-                // recebeu um eleitor na mesa:
-                // 1 - membro da mesa faz uma query à bd de eleitores
-                // através do rmi (i.e pesquisa o eleitor)
-                // - não implementado -
+                System.out.print("Pressione '1' para identificar um novo utilizador: ");
+                if ("1".equals(keyboardScanner.nextLine())) {
+                    System.out.print("Insira o CC do eleitor para o identificar: ");
+                    String cc = keyboardScanner.nextLine();
+                    if (rmis.getVoter(cc) != null) {
+                        s.leaveGroup(group);
+                        op.sendPacket(msg.make("#", "request", null), s, group, PORT);
 
-                // 3 - Se existir, requisita um terminal
-                // i.e manda req ao grupo mc dos terminais - protocolos de comunicação entre
-                // dispositivos
-                op.sendPacket("# req", s, group, PORT); // substituir por um protocolo de comunicação
-
-                // Handshake
-                DatagramPacket id_packet = op.receivePacket(s);
-                String id_string = op.packetToString(id_packet);
-                if (id_string.charAt(0) != '#') {
-                    System.out.println("REPLY [" + id_string + "]");
-                    op.sendPacket("# " + id_string, s, group, PORT); // "Vai votar!"
+                        // Handshake
+                        s.joinGroup(group);
+                        DatagramPacket id_packet = op.receivePacket(s);
+                        String id_string = msg.packetToString(id_packet);
+                        if (id_string.charAt(0) != '#') {
+                            op.sendPacket(msg.make("#", "reqreply", "Request reply"), s, group, PORT);
+                        }
+                    } else {
+                        System.out.println("Nao existe nenhum eleitor com o CC inserido.");
+                    }
                 }
             }
         } catch (IOException e) {
@@ -110,60 +110,55 @@ class VotingThread extends Thread {
     MulticastSocket s;
     Thread t;
     ThreadOps op;
+    RMIServer_I rmis;
 
-    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
         this.group = group;
         this.s = s;
         this.op = op;
+        this.rmis = rmis;
         t = new Thread(this);
         t.start();
-    }
-
-    public boolean fetchVoter(String username, String password) {
-        // metodo remoto, pede ao rmi para ir buscar user
-        return true;
     }
 
     public void run() {
         try {
             s.joinGroup(group);
-            String username = null, password = null, terminal_id = null;
+            Message msg = new Message();
             while (true) {
                 DatagramPacket packet = op.receivePacket(s);
+                String type = msg.getTypeFromPacket(packet);
+                String sender = msg.getSenderFromPacket(packet);
 
-                String packet_string = op.packetToString(packet);
-                String type_string = packet_string.substring(packet_string.indexOf("type"), packet_string.indexOf(";"));
-                String type = type_string.split(" | ")[2];
-
-                // Treat user login input
-                if (packet_string.charAt(0) != '#') {
+                if (!sender.equals("#")) {
                     if (type.equals("login")) {
                         try {
-                            String[] login_data = packet_string.split("; ");
-                            terminal_id = login_data[0].substring(1, login_data[0].indexOf(" ") - 1);
-                            username = login_data[1].split(" | ")[2];
-                            password = login_data[2].split(" | ")[2];
+                            String cc = msg.getUserFromPacket(packet);
+                            String password = msg.getPasswordFromPacket(packet);
 
-                            // Logged in
-                            if (fetchVoter(username, password) == true) {
-                                System.out.println("LOGIN [" + terminal_id + "]");
-                                s.leaveGroup(group);
-                                op.sendPacket("# [" + terminal_id + "] type | status; logged | on", s, group, PORT);
-                                s.joinGroup(group);
+                            // Login verification
+                            Pessoa p = rmis.getVoter(cc);
+                            if (p != null) {
+                                if (p.getPassword().equals(password)) {
+                                    op.sendPacket(
+                                            msg.make("#", "status",
+                                                    "logged | on: Bem-vindo ao eVoting, " + p.getNome()),
+                                            s, group, PORT);
+                                } else {
+                                    op.sendPacket(msg.make("#", "error", "Wrong credentials"), s, group, PORT);
+                                }
                             } else {
-                                // recusa user
+                                System.out.println("User não existe.");
                             }
                         } catch (ArrayIndexOutOfBoundsException e) {
                             e.printStackTrace();
                         }
-                    } else if (type.equals("vote")) {
-                        // Recebe Voto
-                        String id = op.getIdFromPacket(packet);
-                        System.out.println("VOTE  [" + id + "]: " + packet_string
-                                .substring(packet_string.indexOf(":") + 2, packet_string.length()).toUpperCase());
-
-                        // Enviar para o rmi, que escreve na base de dados
-
+                    }
+                    if (type.equals("bulletin")) {
+                        // pede boletim ao rmi;
+                    }
+                    if (type.equals("vote")) {
+                        //
                     }
                 }
             }

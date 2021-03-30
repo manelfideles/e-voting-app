@@ -10,6 +10,7 @@ public class MulticastClient extends Thread {
     private String VOTE = "224.3.2.2";
     private int PORT = 4321;
     private boolean busy = false;
+    private boolean blocked = true;
     private String id = UUID.randomUUID().toString();
 
     public static void main(String[] args) {
@@ -23,63 +24,66 @@ public class MulticastClient extends Thread {
 
         System.out.println("Client " + id + " running.");
         try {
+            terminal_socket = new MulticastSocket(PORT);
+            voting_socket = new MulticastSocket(PORT);
+            InetAddress terminals_group = InetAddress.getByName(TERMINALS);
+            InetAddress voting_group = InetAddress.getByName(VOTE);
+            terminal_socket.joinGroup(terminals_group);
+
+            Scanner keyboardScanner = new Scanner(System.in);
+            Message msg = new Message();
             ThreadOps op = new ThreadOps();
+            DatagramPacket packet;
             // Thread counterThread = new Thread();
             // counterThread.start();
 
-            terminal_socket = new MulticastSocket(PORT); // create socket and bind it
-            voting_socket = new MulticastSocket(PORT); // create socket and bind it
-            InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            InetAddress voting_group = InetAddress.getByName(VOTE);
-
-            terminal_socket.joinGroup(terminals_group);
-
             while (true) {
-                DatagramPacket receivedPacket = op.receivePacket(terminal_socket);
-                String msg = op.packetToString(receivedPacket);
+                if (blocked) {
+                    System.out.println("Terminal Bloqueado. Dirija-se a mesa de voto para votar.");
+                }
+                if (!busy) {
+                    packet = op.receivePacket(terminal_socket);
+                } else {
+                    packet = op.receivePacket(voting_socket);
+                }
+                String type = msg.getTypeFromPacket(packet);
+                String sender = msg.getSenderFromPacket(packet);
 
-                if (msg.charAt(0) == '#') {
-                    if (busy == false && "# req".equals(msg)) {
-                        op.sendPacket(id, terminal_socket, terminals_group, PORT);
-                        busy = true;
-                    } else if (busy == true && ("# " + id).equals(msg)) {
-                        terminal_socket.leaveGroup(terminals_group);
-                        Scanner keyboardScanner = new Scanner(System.in);
-                        // Recebe login data
-                        System.out.print("User: ");
+                if (sender.equals("#")) {
+                    if (type.equals("request") && busy == false) {
+                        op.sendPacket(msg.make(id, "acknowledge", null), terminal_socket, terminals_group, PORT);
+                        blocked = false;
+                    }
+                    if (type.equals("reqreply")) {
+                        // Login data
+                        System.out.print("CC: ");
                         String read_user = keyboardScanner.nextLine();
                         System.out.print("Password: ");
                         String read_password = keyboardScanner.nextLine();
 
                         // Envia login data com id
-                        op.sendPacket("[" + this.id + "] " + "type | login; username | " + read_user + "; password | "
-                                + read_password, voting_socket, voting_group, PORT);
-
-                        // espera por autenticação - user valido ou nao?
+                        busy = true;
+                        op.sendPacket(
+                                msg.make(id, "login", "username | " + read_user + "; password | " + read_password),
+                                voting_socket, voting_group, PORT);
                         voting_socket.joinGroup(voting_group);
-
-                        // garante que recebe só a confirmação do login
-                        DatagramPacket auth_packet = op.receivePacket(voting_socket);
-                        String auth_string = op.packetToString(auth_packet);
-                        if (auth_string.charAt(0) == '#') {
-                            System.out.println(auth_string.substring(auth_string.indexOf(' ') + 1));
-                        }
-                        voting_socket.leaveGroup(voting_group);
+                    }
+                    if (type.equals("status")) {
+                        System.out.println("\n" + msg.packetToString(packet));
 
                         // Boletim - vai buscar ao rmi server
+                        System.out.println("Boletim:");
                         // apresenta boletim
                         // recebe input
                         System.out.print("Insert your vote: ");
                         String vote = keyboardScanner.nextLine();
-
-                        // envia voto secreto
-                        op.sendPacket("[" + this.id + "] " + "type | vote; Voted for: " + vote, voting_socket,
-                                voting_group, PORT);
+                        op.sendPacket(msg.make(id, "vote", "Voted for: " + vote), voting_socket, voting_group, PORT);
                         System.out.println("Vote sent!");
-
-                        terminal_socket.joinGroup(terminals_group);
                         busy = false;
-                        break;
+                        voting_socket.leaveGroup(voting_group);
+                    }
+                    if (type.equals("error")) {
+                        System.out.println("Wrong credentials!");
                     }
                 }
             }

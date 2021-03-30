@@ -1,4 +1,5 @@
 import java.rmi.*;
+import java.util.HashMap;
 
 public interface RMIServer_I extends Remote {
     public void print_on_rmi_server(String s) throws RemoteException;
@@ -28,5 +29,9 @@ public interface RMIServer_I extends Remote {
     public void consulta_resultados() throws RemoteException;
 
     public void boletim_voto() throws RemoteException;
+
+    public Pessoa getVoter(String cc) throws RemoteException;
+
+    // mudar return type
+    public boolean confereLogin(String cc, String password) throws RemoteException;
 }
- 
