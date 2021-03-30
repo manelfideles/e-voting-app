@@ -9,12 +9,12 @@ public class Mesa implements Serializable {
         return dep + "";
     }
 
-    /*public String getDep() {
+    public String getDep() {
         return dep;
     }
 
     public void setDep() {
         this.dep = dep;
-    }*/
+    }
 
 }

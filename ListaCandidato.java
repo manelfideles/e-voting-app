@@ -32,14 +32,16 @@ public class ListaCandidato implements Serializable {
         return this.tipo_lista;
     }
 
-    //public String getNome_pessoa() { return this.nome_pessoa; }
-
     public Integer getNum_pessoas_lista() {
         return this.num_pessoas_lista;
     }
 
     public ArrayList<String> getLista() {
         return this.lista;
+    }
+
+    public String getNome_eleicao() {
+        return this.nome_eleicao;
     }
 
     public void setNome_lista() {
@@ -50,14 +52,16 @@ public class ListaCandidato implements Serializable {
         this.tipo_lista = tipo_lista;
     }
 
-    //public void setNome_pessoa() { this.nome_pessoa = nome_pessoa; }
-
     public void setNum_pessoas_lista() {
         this.num_pessoas_lista = num_pessoas_lista;
     }
 
     public void setLista() {
         this.lista = lista;
+    }
+
+    public void setNome_eleicao() {
+        this.nome_eleicao = nome_eleicao;
     }
 
 }

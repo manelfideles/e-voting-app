@@ -29,8 +29,8 @@ public class Eleicao implements Serializable {
         this.restricao = restricao;
         this.old_titulo = old_titulo;
         this.lista_lista_candidato = lista_lista_candidato;
-        this.num_votos_branco = num_votos_branco;
-        this.num_votos_nulo = num_votos_nulo;
+        //this.num_votos_branco = num_votos_branco;
+        //this.num_votos_nulo = num_votos_nulo;
     }
 
     public String toString() {
