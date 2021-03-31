@@ -15,6 +15,9 @@ public class Eleicao implements Serializable {
     public String restricao;
     public String old_titulo;
     public ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato;
+    public int num_votos_branco;
+    public int num_votos_nulo;
+    public int num_total_votos;
 
     public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f,
             String titulo, String descricao, String restricao, String old_titulo,
@@ -39,42 +42,103 @@ public class Eleicao implements Serializable {
                 + ", lista_lista_candidato='" + lista_lista_candidato + '\'' + '}';
     }
 
-    /*
-     * public String getData_i() { return data_i; }
-     * 
-     * public String getHora_i() { return hora_i; }
-     * 
-     * public String getMinuto_i() { return minuto_i; }
-     * 
-     * public String getData_f() { return data_f; }
-     * 
-     * public String getHora_f() { return hora_f; }
-     * 
-     * public String getMinuto_f() { return minuto_f; }
-     * 
-     * public String getTitulo() { return titulo; }
-     * 
-     * public String getDescricao() { return descricao; }
-     * 
-     * public String getRestricao() { return restricao; }
-     * 
-     * public void setData_i() { this.data_i = data_i; }
-     * 
-     * public void setHora_i() { this.hora_i = hora_i; }
-     * 
-     * public void setMinuto_i() { this.minuto_i = minuto_i; }
-     * 
-     * public void setData_f() { this.data_f = data_f; }
-     * 
-     * public void setHora_f() { this.hora_f = hora_f; }
-     * 
-     * public void setMinuto_f() { this.minuto_f = minuto_f; }
-     * 
-     * public void setTitulo() { this.titulo = titulo; }
-     * 
-     * public void setDescricao() { this.descricao = descricao; }
-     * 
-     * public void setRestricao() { this.restricao = restricao; }
-     */
+    public ArrayList<HashMap<String, ListaCandidato>> getListaListaCandidato() {
+        return this.lista_lista_candidato;
+    }
 
+    public String getData_i() {
+        return data_i;
+    }
+
+    public String getHora_i() {
+        return hora_i;
+    }
+
+    public String getMinuto_i() {
+        return minuto_i;
+    }
+
+    public String getData_f() {
+        return data_f;
+    }
+
+    public String getHora_f() {
+        return hora_f;
+    }
+
+    public String getMinuto_f() {
+        return minuto_f;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public String getRestricao() {
+        return restricao;
+    }
+
+    public void setData_i() {
+        this.data_i = data_i;
+    }
+
+    public void setHora_i() {
+        this.hora_i = hora_i;
+    }
+
+    public void setMinuto_i() {
+        this.minuto_i = minuto_i;
+    }
+
+    public void setData_f() {
+        this.data_f = data_f;
+    }
+
+    public void setHora_f() {
+        this.hora_f = hora_f;
+    }
+
+    public void setMinuto_f() {
+        this.minuto_f = minuto_f;
+    }
+
+    public void setTitulo() {
+        this.titulo = titulo;
+    }
+
+    public void setDescricao() {
+        this.descricao = descricao;
+    }
+
+    public void setRestricao() {
+        this.restricao = restricao;
+    }
+
+    public Integer getNum_votos_branco() {
+        return num_votos_branco;
+    }
+
+    public void setNum_votos_branco(int num_votos_branco) {
+        this.num_votos_branco = num_votos_branco;
+    }
+
+    public Integer getNum_votos_nulo() {
+        return num_votos_nulo;
+    }
+
+    public void setNum_votos_nulo(int num_votos_nulo) {
+        this.num_votos_nulo = num_votos_nulo;
+    }
+
+    public Integer getNum_total_votos() {
+        return num_total_votos;
+    }
+
+    public void setNum_total_votos(int num_total_votos) {
+        this.num_total_votos = num_total_votos;
+    }
 }

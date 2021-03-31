@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -11,6 +12,7 @@ public class Pessoa implements Serializable {
     public String morada;
     public String num_cc;
     public String val_cc;
+    public ArrayList<String> verifica_eleicoes;
 
     public Pessoa(String nome, String funcao, String password, String dep, String contacto, String morada,
             String num_cc, String val_cc) {
@@ -22,6 +24,7 @@ public class Pessoa implements Serializable {
         this.morada = morada;
         this.num_cc = num_cc;
         this.val_cc = val_cc;
+        //// this.verifica_eleicoes = verifica_eleicoes;
     }
 
     public String toString() {
@@ -74,7 +77,7 @@ public class Pessoa implements Serializable {
         this.password = password;
     }
 
-    public void setDep(String dep) {
+    public void setDep_Fac() {
         this.dep = dep;
     }
 
@@ -92,6 +95,14 @@ public class Pessoa implements Serializable {
 
     public void setVal_CC(String val_cc) {
         this.val_cc = val_cc;
+    }
+
+    public ArrayList<String> getVerifica_eleicoes() {
+        return verifica_eleicoes;
+    }
+
+    public void setVerifica_eleicoes() {
+        this.verifica_eleicoes = verifica_eleicoes;
     }
 
 }

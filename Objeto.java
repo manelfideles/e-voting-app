@@ -13,20 +13,20 @@ public class Objeto implements Serializable {
         return this.hmp + "\n" + this.hme;
     }
 
-    /*public HashMapPessoas getEleicao() {
+    public HashMapPessoas getHMP() {
         return hmp;
     }
 
-    public void setEleicao() {
+    public void setHMP() {
         this.hmp = hmp;
     }
 
-    public HashMapEleicao getLista_candidato() {
+    public HashMapEleicao getHME() {
         return hme;
     }
 
-    public void setLista_candidato() {
+    public void setHME() {
         this.hme = hme;
-    }*/
+    }
 
 }

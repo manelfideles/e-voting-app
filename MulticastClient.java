@@ -1,9 +1,14 @@
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.HashMap;
 
 public class MulticastClient extends Thread {
     private String TERMINALS = "224.3.2.1";
@@ -16,6 +21,22 @@ public class MulticastClient extends Thread {
     public static void main(String[] args) {
         MulticastClient client = new MulticastClient();
         client.start();
+    }
+
+    public HashMap<Integer, String> deserializeEleicao(String in) {
+        // string to byte array
+        HashMap<Integer, String> eleicao = null;
+        try {
+            byte[] serializedEleicao = in.getBytes();
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(serializedEleicao);
+            ObjectInputStream ois = new ObjectInputStream(byteIn);
+            eleicao = (HashMap<Integer, String>) ois.readObject();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return eleicao;
     }
 
     public void run() {
@@ -34,6 +55,7 @@ public class MulticastClient extends Thread {
             Message msg = new Message();
             ThreadOps op = new ThreadOps();
             DatagramPacket packet;
+            HashMap<Integer, String> eleicao = null;
             // Thread counterThread = new Thread();
             // counterThread.start();
 
@@ -55,6 +77,10 @@ public class MulticastClient extends Thread {
                         blocked = false;
                     }
                     if (type.equals("reqreply")) {
+
+                        // getContentFromPacket ainda
+                        // nao esta 100%
+                        // eleicao = deserializeEleicao(msg.getContentFromPacket(packet));
                         // Login data
                         System.out.print("CC: ");
                         String read_user = keyboardScanner.nextLine();
@@ -71,7 +97,6 @@ public class MulticastClient extends Thread {
                     if (type.equals("status")) {
                         System.out.println("\n"
                                 + msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(":") + 2));
-                        op.sendPacket(msg.make(id, "bulletin", null), voting_socket, voting_group, PORT);
                     }
                     if (type.equals("bulletin")) {
                         // apresenta boletim

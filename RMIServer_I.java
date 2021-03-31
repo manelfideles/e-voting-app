@@ -26,12 +26,17 @@ public interface RMIServer_I extends Remote {
 
     public void consulta_eleitores() throws RemoteException;
 
-    public void consulta_resultados() throws RemoteException;
+    public HashMap<String, Eleicao> consulta_resultados() throws RemoteException;
 
-    public String getBulletin() throws RemoteException;
+    public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException;
+
+    public void WriteObjectToFile(Object obj) throws RemoteException;
+
+    public Object ReadObjectFromFile(String outputFilePath) throws RemoteException;
 
     public Pessoa getVoter(String cc) throws RemoteException;
 
-    // mudar return type
-    public boolean confereLogin(String cc, String password) throws RemoteException;
+    // public void sayHello() throws RemoteException;
+
+    // public void ping() throws RemoteException;*/
 }
