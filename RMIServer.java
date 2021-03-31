@@ -166,37 +166,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("RMI SERVER - consulta_eleitores");
     }
 
-    public void consulta_resultados() throws RemoteException {
+    public HashMap<String,Eleicao> consulta_resultados() throws RemoteException {
         System.out.println("RMI SERVER - consulta_resultados");
 
-        // Percorrer eleições
-        for (Map.Entry mapElement : mape.entrySet()) {
-
-            Eleicao e = (Eleicao) mapElement.getValue();
-
-            System.out.println("-------------------------------------------------\n" +
-                               "***RESULTADOS DA ELEIÇÃO " + e.getTitulo() + "***\n" +
-                               "-------------------------------------------------\n" +
-                               "Número de votos em Branco: " +
-                               e.getNum_votos_branco() +
-                               "(" + ((double) e.getNum_votos_branco() * 100 / (double) e.getNum_total_votos()) + "%)");
-
-            // if (tempo atual > tempo término eleição)
-
-            // Percorrer lista de listas de candidatos
-            for (HashMap<String,ListaCandidato> llc : e.lista_lista_candidato) {
-
-                // Percorrer lista de candidatos
-                for(Entry<String,ListaCandidato> entry : llc.entrySet()) {
-                    System.out.print("Número de votos da lista de candidatos '" +
-                                      entry.getValue().getNome_lista() + '\'' + ": " +
-                                      entry.getValue().getNum_votos() +
-                                     "(" + ((double) entry.getValue().getNum_votos() * 100 / (double) e.getNum_total_votos()) + "%)");
-
-                }
-            }
-
-        }
+        return mape;
 
     }
 
@@ -219,11 +192,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
 
-            if(e.descricao.equals(p.funcao) && (e.restricao.equals(p.dep) || e.restricao.equals("0"))) {
-                resultado = resultado.concat("\n" + i + " - " + e.titulo);
-                hme.put(i,e);
-                i++;
+            if(!p.getVerifica_eleicoes().contains(e.titulo)) {
+                if(e.getDescricao().equals(p.funcao) && (e.getRestricao().equals(p.dep) || e.getRestricao().equals("0"))) {
+                    resultado = resultado.concat("\n" + i + " - " + e.titulo);
+                    hme.put(i,e);
+                    i++;
+                }
             }
+
         }
 
         if(!resultado.equals("")) {
