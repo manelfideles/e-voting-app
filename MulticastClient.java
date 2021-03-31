@@ -77,10 +77,8 @@ public class MulticastClient extends Thread {
                         blocked = false;
                     }
                     if (type.equals("reqreply")) {
-
-                        // getContentFromPacket ainda
-                        // nao esta 100%
-                        // eleicao = deserializeEleicao(msg.getContentFromPacket(packet));
+                        eleicao = deserializeEleicao(msg.getContentFromPacket(packet, "; "));
+                        System.out.println(eleicao.toString());
                         // Login data
                         System.out.print("CC: ");
                         String read_user = keyboardScanner.nextLine();

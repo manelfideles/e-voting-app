@@ -16,7 +16,9 @@ import java.io.ObjectOutputStream;
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
 
-    final static String outputFilePath = "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
+    // final static String outputFilePath =
+    // "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
+    final static String outputFilePath = "fs.txt";
     static private int PORT_r = 6969;
 
     // Admin Consoles
@@ -204,27 +206,23 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public void WriteObjectToFile(Object obj) throws RemoteException {
-
         try {
             FileOutputStream fileOut = new FileOutputStream(outputFilePath);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(obj);
             objectOut.close();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public Object ReadObjectFromFile(String outputFilePath) throws RemoteException {
-
         try {
             FileInputStream fileIn = new FileInputStream(outputFilePath);
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             Object obj = objectIn.readObject();
             objectIn.close();
             return obj;
-
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -245,8 +243,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
 
-            Objeto ob = (Objeto) rmis.ReadObjectFromFile(outputFilePath);
-            System.out.println(ob.toString());
+            // Objeto ob = (Objeto) rmis.ReadObjectFromFile(outputFilePath);
+            // System.out.println(ob.toString());
 
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);

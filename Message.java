@@ -36,8 +36,8 @@ public class Message {
         return login_data[2].split(" | ")[2];
     }
 
-    public String getContentFromPacket(DatagramPacket packet) {
-        String[] login_data = packetToString(packet).split(": ");
+    public String getContentFromPacket(DatagramPacket packet, String regex) {
+        String[] login_data = packetToString(packet).split(regex);
         System.out.println(login_data[2].split(" | ")[2]);
         return login_data[2].split(" | ")[2];
     }
