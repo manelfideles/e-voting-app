@@ -371,7 +371,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 case "9": // "9.Sair"
                     break;
                 case "10":
-                    rmis.boletim_voto();
+                    rmis.getBulletin();
                     break;
                 }
             } while (!option.equals("9"));

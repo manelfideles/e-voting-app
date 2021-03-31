@@ -39,7 +39,7 @@ public class MulticastClient extends Thread {
 
             while (true) {
                 if (blocked) {
-                    System.out.println("Terminal Bloqueado. Dirija-se a mesa de voto para votar.");
+                    System.out.println("\nTerminal Bloqueado. Dirija-se a mesa de voto para desbloquear um terminal.");
                 }
                 if (!busy) {
                     packet = op.receivePacket(terminal_socket);
@@ -69,21 +69,28 @@ public class MulticastClient extends Thread {
                         voting_socket.joinGroup(voting_group);
                     }
                     if (type.equals("status")) {
-                        System.out.println("\n" + msg.packetToString(packet));
-
-                        // Boletim - vai buscar ao rmi server
-                        System.out.println("Boletim:");
+                        System.out.println("\n"
+                                + msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(":") + 2));
+                        op.sendPacket(msg.make(id, "bulletin", null), voting_socket, voting_group, PORT);
+                    }
+                    if (type.equals("bulletin")) {
                         // apresenta boletim
+                        System.out.println("Boletim:");
+                        System.out
+                                .println(msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(";")));
+
                         // recebe input
-                        System.out.print("Insert your vote: ");
-                        String vote = keyboardScanner.nextLine();
+                        System.out.print("\nInsert your vote: ");
+                        String vote = keyboardScanner.nextLine(); // uma opcao do hashmap
                         op.sendPacket(msg.make(id, "vote", "Voted for: " + vote), voting_socket, voting_group, PORT);
                         System.out.println("Vote sent!");
                         busy = false;
+                        blocked = true;
                         voting_socket.leaveGroup(voting_group);
                     }
                     if (type.equals("error")) {
                         System.out.println("Wrong credentials!");
+                        blocked = true;
                     }
                 }
             }

@@ -28,7 +28,7 @@ public interface RMIServer_I extends Remote {
 
     public void consulta_resultados() throws RemoteException;
 
-    public void boletim_voto() throws RemoteException;
+    public String getBulletin() throws RemoteException;
 
     public Pessoa getVoter(String cc) throws RemoteException;
 

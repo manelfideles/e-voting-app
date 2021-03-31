@@ -1,4 +1,4 @@
-{HashMapPessoas={123123123={nome='manuelfideles', funcao='1', password='0', dep='DEI', contacto='123123123', morada='0', num_cc='123123123', val_cc='12/12/2022'}, 000000000={nome='zen', funcao='1', password='0', dep='DEI', contacto='0', morada='0', num_cc='000000000', val_cc='12/12/2022'}}}
+{HashMapPessoas={123123123={nome='manuelfideles', funcao='1', password='ruben', dep='dei', contacto='0', morada='0', num_cc='123123123', val_cc='12/12/2021'}}}
 
-{eleicao={},
+{eleicao={eleicoes nei={data_i='12/12/2021', hora_i='12/12/2021', minuto_i='00', data_f='13/12/2021', hora_f='19', minuto_f='00', titulo='eleicoes nei', descricao='eleicoes nei', restricao='0', lista_lista_candidato='[{lista F={nome_lista='lista F', tipo_lista='1', num_pessoas_lista='4', lista=[Amilcar, Fabio, Josue, Ruben]}}, {lista R={nome_lista='lista R', tipo_lista='1', num_pessoas_lista='2', lista=[pedro, ruben]}}]'}},
  mesa={}}

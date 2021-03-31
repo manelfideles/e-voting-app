@@ -41,5 +41,4 @@ public class Message {
         System.out.println(login_data[2].split(" | ")[2]);
         return login_data[2].split(" | ")[2];
     }
-
 }

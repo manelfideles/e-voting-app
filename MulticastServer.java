@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Scanner;
 import java.rmi.registry.*;
+import java.util.HashMap;
 
 public class MulticastServer extends Thread {
     private String TERMINALS = "224.3.2.1";
@@ -142,7 +143,7 @@ class VotingThread extends Thread {
                                 if (p.getPassword().equals(password)) {
                                     op.sendPacket(
                                             msg.make("#", "status",
-                                                    "logged | on: Bem-vindo ao eVoting, " + p.getNome()),
+                                                    "logged | on: Bem-vindo ao eVoting, " + p.getNome() + " !"),
                                             s, group, PORT);
                                 } else {
                                     op.sendPacket(msg.make("#", "error", "Wrong credentials"), s, group, PORT);
@@ -155,10 +156,11 @@ class VotingThread extends Thread {
                         }
                     }
                     if (type.equals("bulletin")) {
-                        // pede boletim ao rmi;
+                        op.sendPacket(msg.make("#", "bulletin", "\n" + rmis.getBulletin()), s, group, PORT);
                     }
                     if (type.equals("vote")) {
-                        //
+                        // pede ao rmi para atualizar o n_votos (brancos/nulos/validos) - acesso
+                        // sincronizado
                     }
                 }
             }

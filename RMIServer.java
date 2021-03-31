@@ -7,8 +7,8 @@ import java.rmi.registry.Registry;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
-import java.util.Map.Entry;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
@@ -250,71 +250,23 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("RMI SERVER - consulta_resultados");
     }
 
-    public void boletim_voto() throws RemoteException {
+    public String getBulletin() throws RemoteException {
+        int i = 1, j = 1;
+        String bulletin = "";
 
-        Scanner scanner = new Scanner(System.in);
-        Pessoa p = new Pessoa("Pedro", "Estudante", "pedrocas", "DEI", "934725545", "funchal", "122312123",
-                "12/02/2025");
-        int i = 1, j = 1, opcao_eleicao, opcao_lista;
-        String resultado = "";
-        HashMap<Integer, Eleicao> hme = new HashMap<>();
-        HashMap<Integer, ListaCandidato> hmlc = new HashMap<>();
-
-        // Percorrer eleições
-
+        // Popular
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
-            if (e.descricao.equals(p.funcao) && (e.restricao.equals(p.dep) || e.restricao.equals("0"))) {
-                resultado = resultado.concat("\n" + i + " - " + e.titulo);
-                hme.put(i, e);
-                i++;
-            }
-        }
-
-        if (!resultado.equals("")) {
-            System.out.print("Selecione a eleição na qual pretende exercer o seu voto:");
-            System.out.println(resultado);
-            System.out.print("Escolha: ");
-            opcao_eleicao = Integer.parseInt(scanner.nextLine());
-            Eleicao eleicao = hme.get(opcao_eleicao);
-            resultado = "";
-
-            // Percorrer a ArrayList das listas
-            for (HashMap<String, ListaCandidato> llc : eleicao.lista_lista_candidato) {
+            bulletin += "\n" + i + " - " + e.titulo;
+            for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
                 for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                    resultado = resultado.concat("\n" + j + " - " + entry.getKey());
-                    hmlc.put(j, entry.getValue());
+                    bulletin += "\n   " + i + "." + j + " - " + entry.getKey();
                     j++;
                 }
             }
-
-            if (!resultado.equals("")) {
-                System.out.print("Selecione a lista na qual pretende exercer o seu voto:");
-                System.out.println(resultado);
-                HashMap<Integer, String> hmbn = new HashMap<>();
-
-                System.out.println(j + " - " + "Branco");
-                hmbn.put(j, "Branco");
-                j++;
-                System.out.println(j + " - " + "Nulo");
-                hmbn.put(j, "Nulo");
-
-                System.out.print("Escolha: ");
-
-                opcao_lista = Integer.parseInt(scanner.nextLine());
-
-                if (hmlc.containsKey(opcao_lista)) {
-                    ListaCandidato lista = hmlc.get(opcao_lista);
-                    System.out.println("Vou votar em " + lista.nome_lista);
-                } else {
-                    System.out.println("Vou votar em " + hmbn.get(opcao_lista));
-                }
-            } else {
-                System.out.println("Não existe nenhuma lista na qual possa exercer o seu voto!");
-            }
-        } else {
-            System.out.println("Não existe nenhuma eleição na qual possa exercer o seu voto!");
+            i++;
         }
+        return bulletin;
     }
 
     public Pessoa getVoter(String cc) throws RemoteException {
@@ -324,8 +276,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public boolean confereLogin(String cc, String password) throws RemoteException {
         Pessoa p = getVoter(cc);
-        if (p.getPassword().equals(password))
-            return true;
+        if (p != null) {
+            if (p.getPassword().equals(password))
+                return true;
+            return false;
+        }
         return false;
     }
 
