@@ -288,10 +288,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         // System.getProperties().put("java.security.policy", "policy.all");
         // System.setSecurityManager(new RMISecurityManager());
-
-        // InputStreamReader input = new InputStreamReader(System.in);
-        // BufferedReader reader = new BufferedReader(input);
-
         try {
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(6969);

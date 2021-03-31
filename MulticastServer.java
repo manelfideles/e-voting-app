@@ -84,6 +84,11 @@ class TerminalThread extends Thread {
                     System.out.print("Insira o CC do eleitor para o identificar: ");
                     String cc = keyboardScanner.nextLine();
                     if (rmis.getVoter(cc) != null) {
+                        // print eleicoes
+                        //
+                        // escolhe
+                        //
+                        // envia dados da eleicao para o terminal
                         s.leaveGroup(group);
                         op.sendPacket(msg.make("#", "request", null), s, group, PORT);
 
@@ -126,6 +131,7 @@ class VotingThread extends Thread {
         try {
             s.joinGroup(group);
             Message msg = new Message();
+            Pessoa p;
             while (true) {
                 DatagramPacket packet = op.receivePacket(s);
                 String type = msg.getTypeFromPacket(packet);
@@ -138,7 +144,7 @@ class VotingThread extends Thread {
                             String password = msg.getPasswordFromPacket(packet);
 
                             // Login verification
-                            Pessoa p = rmis.getVoter(cc);
+                            p = rmis.getVoter(cc);
                             if (p != null) {
                                 if (p.getPassword().equals(password)) {
                                     op.sendPacket(
