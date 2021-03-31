@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -12,7 +13,7 @@ public class Pessoa implements Serializable {
     public String morada;
     public String num_cc;
     public String val_cc;
-    public ArrayList<String> verifica_eleicoes;
+    public HashMap<String,String> local_momento_voto; // {"nome da eleição" = "DEI 27/05/2022 18:56"}
 
     public Pessoa(String nome, String funcao, String password, String dep, String contacto, String morada,
             String num_cc, String val_cc) {
@@ -24,7 +25,6 @@ public class Pessoa implements Serializable {
         this.morada = morada;
         this.num_cc = num_cc;
         this.val_cc = val_cc;
-        //// this.verifica_eleicoes = verifica_eleicoes;
     }
 
     public String toString() {
@@ -45,7 +45,7 @@ public class Pessoa implements Serializable {
         return password;
     }
 
-    public String getDep_Fac() {
+    public String getDep() {
         return dep;
     }
 
@@ -77,7 +77,7 @@ public class Pessoa implements Serializable {
         this.password = password;
     }
 
-    public void setDep_Fac() {
+    public void setDep() {
         this.dep = dep;
     }
 
@@ -97,12 +97,12 @@ public class Pessoa implements Serializable {
         this.val_cc = val_cc;
     }
 
-    public ArrayList<String> getVerifica_eleicoes() {
-        return verifica_eleicoes;
+    public HashMap<String,String> getLocal_momento_voto() {
+        return local_momento_voto;
     }
 
-    public void setVerifica_eleicoes() {
-        this.verifica_eleicoes = verifica_eleicoes;
+    public void setLocal_momento_voto() {
+        this.local_momento_voto = local_momento_voto;
     }
 
 }

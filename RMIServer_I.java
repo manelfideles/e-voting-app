@@ -22,9 +22,9 @@ public interface RMIServer_I extends Remote {
 
     public void consulta_estado_mesas() throws RemoteException;
 
-    public void consulta_info_voto() throws RemoteException;
+    public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException;
 
-    public void consulta_eleitores() throws RemoteException;
+    public HashMap<String, Mesa> consulta_eleitores() throws RemoteException;
 
     public HashMap<String, Eleicao> consulta_resultados() throws RemoteException;
 
