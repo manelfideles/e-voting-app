@@ -7,6 +7,7 @@ public class ListaCandidato implements Serializable {
     public int num_pessoas_lista;
     public ArrayList<String> lista;
     public String nome_eleicao;
+    public int num_votos;
 
     public ListaCandidato(String nome_lista,String tipo_lista, int num_pessoas_lista, ArrayList<String> lista, String nome_eleicao) {
         this.nome_lista = nome_lista;
@@ -14,6 +15,7 @@ public class ListaCandidato implements Serializable {
         this.num_pessoas_lista = num_pessoas_lista;
         this.lista = lista;
         this.nome_eleicao = nome_eleicao;
+        //this.num_votos = num_votos;
     }
 
     public String toString() {
@@ -62,6 +64,14 @@ public class ListaCandidato implements Serializable {
 
     public void setNome_eleicao() {
         this.nome_eleicao = nome_eleicao;
+    }
+
+    public Integer getNum_votos() {
+        return this.num_votos;
+    }
+
+    public void setNum_votos() {
+        this.num_votos = num_votos;
     }
 
 }

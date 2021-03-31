@@ -16,6 +16,7 @@ public class Eleicao implements Serializable {
     public ArrayList<HashMap<String,ListaCandidato>> lista_lista_candidato;
     public int num_votos_branco;
     public int num_votos_nulo;
+    public int num_total_votos;
 
     public Eleicao(String data_i, String hora_i, String minuto_i, String data_f, String hora_f, String minuto_f, String titulo, String descricao, String restricao, String old_titulo, ArrayList<HashMap<String,ListaCandidato>> lista_lista_candidato/*, int num_votos_branco, int num_votos_nulo*/) {
         this.data_i = data_i;
@@ -31,6 +32,7 @@ public class Eleicao implements Serializable {
         this.lista_lista_candidato = lista_lista_candidato;
         //this.num_votos_branco = num_votos_branco;
         //this.num_votos_nulo = num_votos_nulo;
+        //this.num_total_votos = num_total_votos;
     }
 
     public String toString() {
@@ -134,6 +136,14 @@ public class Eleicao implements Serializable {
 
     public void setNum_votos_nulo() {
         this.num_votos_nulo = num_votos_nulo;
+    }
+
+    public Integer getNum_total_votos() {
+        return num_total_votos;
+    }
+
+    public void setNum_total_votos() {
+        this.num_total_votos = num_total_votos;
     }
 
 }
