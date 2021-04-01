@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
-    public HashMap<String, Integer> num_eleitores; // {Nome do departamento : Num de pessoas que ja votaram nesse dep }
+    public HashMap<String, Integer> num_eleitores = new HashMap<>(); // {Nome do departamento : Num de pessoas que ja votaram nesse dep }
 
     public Mesa(String dep) {
         this.dep = dep;

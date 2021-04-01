@@ -393,7 +393,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             System.out.println("-------------------------------------------------\n"
                                     + "***RESULTADOS DA ELEIÇÃO " + e.getTitulo() + "***\n"
                                     + "-------------------------------------------------\n" + "Número de votos em Branco: "
-                                    + e.getNum_votos_branco() + "("
+                                    + e.getNum_votos_branco() + " ("
                                     + ((double) e.getNum_votos_branco() * 100 / (double) e.getNum_total_votos()) + "%)");
 
                             // if (tempo atual > tempo término eleição)
@@ -403,9 +403,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                                 // Percorrer lista de candidatos
                                 for (Map.Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                                    System.out.print(
+                                    System.out.println(
                                             "Número de votos da lista de candidatos '" + entry.getValue().getNome_lista()
-                                                    + '\'' + ": " + entry.getValue().getNum_votos() + "("
+                                                    + '\'' + ": " + entry.getValue().getNum_votos() + " ("
                                                     + ((double) entry.getValue().getNum_votos() * 100
                                                     / (double) e.getNum_total_votos())
                                                     + "%)");

@@ -13,7 +13,7 @@ public class Pessoa implements Serializable {
     public String morada;
     public String num_cc;
     public String val_cc;
-    public HashMap<String, String> local_momento_voto; // {"nome da eleição" = "DEI 27/05/2022 18:56"}
+    public HashMap<String, String> local_momento_voto = new HashMap<>(); // {"nome da eleição" = "DEI 27/05/2022 18:56"}
 
     public Pessoa(String nome, String funcao, String password, String dep, String contacto, String morada,
             String num_cc, String val_cc) {
@@ -30,8 +30,8 @@ public class Pessoa implements Serializable {
     public String toString() {
         return "{" + "nome='" + nome + '\'' + ", funcao='" + funcao + '\'' + ", password='" + password + '\''
                 + ", dep='" + dep + '\'' + ", contacto='" + contacto + '\'' + ", morada='" + morada + '\''
-                + ", num_cc='" + num_cc + '\'' + ", val_cc='" + val_cc + '\'' + ", local_momento_voto='"
-                + local_momento_voto + '\'' + '}';
+                + ", num_cc='" + num_cc + '\'' + ", val_cc='" + val_cc + '\''
+                + ", local_momento_voto='" + local_momento_voto + '\'' + '}';
     }
 
     public String getNome() {

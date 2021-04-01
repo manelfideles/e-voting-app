@@ -159,13 +159,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             HashMap<String, String> hmss = p.getLocal_momento_voto();
 
             if (hmss == null) {
-                if (e.getDescricao().equals(p.getFuncao())
-                        && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                     hme.put(i, e);
                     i++;
                 }
             } else {
-                if (hmss.containsKey(e.getTitulo())) {
+                if (!hmss.containsKey(e.getTitulo())) {
                     if (e.getDescricao().equals(p.getFuncao())
                             && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
@@ -221,7 +220,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println(nome_lista);
         System.out.println(nome_eleicao);
 
-        // aceder à pessoa e atualizar local_momento_voto
+        mapp.get(num_cc).local_momento_voto.put(nome_eleicao,"-"); // falta adicionar local e momento
 
         mape.get(nome_eleicao).num_total_votos++;
         System.out.println("num_total_votos: " + mape.get(nome_eleicao).num_total_votos);

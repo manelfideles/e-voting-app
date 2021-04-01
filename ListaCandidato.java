@@ -21,9 +21,9 @@ public class ListaCandidato implements Serializable {
         return "{nome_lista='" + this.nome_lista +
                 "', tipo_lista='" + this.tipo_lista +
                 "', num_pessoas_lista='" + this.num_pessoas_lista +
-                "', lista=" + this.lista +
-                "', num_votos=" + this.num_votos +
-                "}";
+                "', lista='" + this.lista +
+                "', num_votos='" + this.num_votos +
+                "'}";
     }
 
     public String getNome_lista() {
