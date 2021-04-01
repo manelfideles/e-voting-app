@@ -1,7 +1,4 @@
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -200,8 +197,10 @@ class VotingThread extends Thread {
                         op.sendPacket(msg.make("#", "bulletin", "\n" + rmis.getBulletin(p)), s, group, PORT);
                     }
                     if (type.equals("vote")) {
-                        // pede ao rmi para atualizar o n_votos (brancos/nulos/validos) - acesso
+                        // rmi - atualizar o n_votos (brancos/nulos/validos) - acesso
                         // sincronizado
+                        // atualizar todas as estruturas de dados
+                        // associar pessoa ao local de voto
                     }
                 }
             }
