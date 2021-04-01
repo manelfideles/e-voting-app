@@ -195,27 +195,15 @@ class VotingThread extends Thread {
                         // envia informaçao para a admin console
 
                         // NECESSÁRIO ENVIAR PARA O RMI_SERVER:
-                        // nome da eleicao X
-                        // nome da lista ou branco ou nulo X
                         // nome do dep da mesa
                         // momento do voto
-                        // num_cc da pessoa X
 
+                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do eleitor
+                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do eleitor
                         HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p); // hashmap eleicoes
-
-                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; "));
-                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; "));
-
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
-
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
-
                         String nome_lista = hm.get(escolha+1);
-
-                        System.out.println("p.getNum_CC(): " + p.getNum_CC());
-                        System.out.println("nome_lista: " + nome_lista);
-                        System.out.println("eleicao.getTitulo(): " + eleicao.getTitulo());
-
                         rmis.atualiza(p.getNum_CC(), nome_lista , eleicao.getTitulo()); // num_cc, nome_lista, nome_eleicao
                     }
                 }

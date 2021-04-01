@@ -16,8 +16,6 @@ import java.io.ObjectOutputStream;
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
 
-    // final static String outputFilePath =
-    // "C:\\Users\\Zen\\IdeaProjects\\e-voting\\fs.txt";
     final static String outputFilePath = "fs.txt";
     static private int PORT_r = 6969;
 
@@ -112,21 +110,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 }
             }
         }
-
         WriteObjectToFile(objeto);
     }
 
     public void cria_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - cria_mesa");
         mapm.put(mesa.dep, new Mesa(mesa.dep));
-
         WriteObjectToFile(objeto);
     }
 
     public void remove_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - remove_mesa");
         mapm.remove(mesa.dep);
-
         WriteObjectToFile(objeto);
     }
 
@@ -174,30 +169,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
         }
         return hme;
-
-        // if (!resultado.equals("")) {
-        // System.out.print("Selecione a eleição na qual pretende exercer o seu voto:");
-        // System.out.println(resultado);
-        // System.out.print("Escolha: ");
-
-        // opcao_eleicao = Integer.parseInt(scanner.nextLine());
-
-        // Eleicao eleicao = hme.get(opcao_eleicao);
-
-        // resultado = "";
-
-        // // Percorrer a ArrayList das listas
-
-        // for (HashMap<String, ListaCandidato> llc : eleicao.lista_lista_candidato) {
-
-        // for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
-        // resultado = resultado.concat("\n" + j + " - " + entry.getKey());
-        // hmlc.put(j, entry.getValue());
-        // j++;
-        // }
-        // }
-        // i++;
-        // }
     }
 
     public Pessoa getVoter(String cc) throws RemoteException {
@@ -216,23 +187,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao) throws RemoteException {
-        System.out.println(num_cc);
-        System.out.println(nome_lista);
-        System.out.println(nome_eleicao);
-
         mapp.get(num_cc).local_momento_voto.put(nome_eleicao,"-"); // falta adicionar local e momento
-
         mape.get(nome_eleicao).num_total_votos++;
-        System.out.println("num_total_votos: " + mape.get(nome_eleicao).num_total_votos);
 
         switch (nome_lista) {
             case "voto_branco":
                 mape.get(nome_eleicao).num_votos_branco++;
-                System.out.println("num_votos_branco: " + mape.get(nome_eleicao).num_votos_branco);
                 break;
             case "voto_nulo":
                 mape.get(nome_eleicao).num_votos_nulo++;
-                System.out.println("num_votos_nulo: " + mape.get(nome_eleicao).num_votos_nulo);
                 break;
             default:
                 ArrayList<HashMap<String, ListaCandidato>> llc = mape.get(nome_eleicao).lista_lista_candidato;
@@ -240,13 +203,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
                         if(entry.getKey().equals(nome_lista)) {
                             entry.getValue().num_votos++;
-                            System.out.println("num_votos: " + entry.getValue().num_votos);
                         }
                     }
                 }
                 break;
         }
-
         WriteObjectToFile(objeto);
     }
 
@@ -290,22 +251,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public static void main(String[] args) throws RemoteException {
-
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
-
         // InputStreamReader input = new InputStreamReader(System.in);
         // BufferedReader reader = new BufferedReader(input);
-
         try {
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
-
-            // Objeto ob = (Objeto) rmis.ReadObjectFromFile(outputFilePath);
-            // System.out.println(ob.toString());
-
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
         }

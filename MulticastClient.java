@@ -76,7 +76,7 @@ public class MulticastClient extends Thread {
                         voting_socket.joinGroup(voting_group);
 
                         System.out.println("Boletim:");
-                        msg.getContentFromPacket(packet, "reqreply; ");
+                        msg.getContentFromPacket(packet, "reqreply; "); // item_count | 3; item_0_name | l; item_1_name | voto_branco; item_2_name | voto_nulo
                         opcao_eleicao = msg.getOpcaoEleicao(packet, "reqreply; ");
                     }
                     if (type.equals("bulletin")) {

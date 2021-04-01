@@ -22,6 +22,23 @@ public class Message {
         return lista;
     }
 
+    public String splitMakeList(String str) {
+        int i;
+        String[] data = str.split("item_count | ");
+        char first = data[0].charAt(0); // num de listas
+        int n = (int)(first);
+        data[0].substring(0, 0); // eliminar o n da data[0]
+
+        for (i=0; i<n; i++) {
+            String regex = "; item_" + i + "_name | ";
+            data = str.split(regex);
+        }
+
+        String s = String.join("\n", data);
+
+        return s;
+    }
+
     public String packetToString(DatagramPacket p) {
         return new String(p.getData(), 0, p.getLength());
     }
@@ -53,7 +70,7 @@ public class Message {
         /*for (String s : data) {
             System.out.println(s);
         }*/
-        System.out.println("getContentFromPacket: " + data[1]);
+        //System.out.println("getContentFromPacket: " + data[1]);
         return data[1];
     }
 
@@ -62,7 +79,7 @@ public class Message {
         /*for (String s : data) {
             System.out.println(s);
         }*/
-        System.out.println("getOpcaoEleicao: " + data[2]);
+        //System.out.println("getOpcaoEleicao: " + data[2]);
         return data[2];
     }
 }
