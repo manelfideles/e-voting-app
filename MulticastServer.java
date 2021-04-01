@@ -80,11 +80,12 @@ class TerminalThread extends Thread {
 
     public void printBulletin(HashMap<Integer, Eleicao> hme) {
         for (Map.Entry mapElement : hme.entrySet()) {
-            System.out.println(mapElement.getKey() + " - " + (Eleicao) mapElement.getValue());
+            Eleicao e = (Eleicao) mapElement.getValue();
+            System.out.println(mapElement.getKey() + " - " + e.getTitulo());
         }
     }
 
-    public byte[] serializeEleicao(Eleicao e) {
+    public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) {
         int j = 1;
         HashMap<Integer, String> out = new HashMap<Integer, String>();
         for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
@@ -93,22 +94,7 @@ class TerminalThread extends Thread {
                 j++;
             }
         }
-
-        // serializar eleicao
-        byte[] buf = null;
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(out);
-            oos.flush();
-            buf = baos.toByteArray();
-            baos.close();
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return buf;
+        return out;
     }
 
     public void run() {
@@ -127,8 +113,8 @@ class TerminalThread extends Thread {
                     p = rmis.getVoter(cc);
                     if (p != null) {
                         HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p);
-                        System.out.print("Selecione a eleição na qual pretende exercer o seu voto:");
                         if (!user_bulletin.isEmpty()) {
+                            System.out.println("Selecione a eleicao na qual pretende exercer o seu voto:");
                             printBulletin(user_bulletin);
                             System.out.print("Escolha: ");
                             int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine());
@@ -141,8 +127,9 @@ class TerminalThread extends Thread {
                             DatagramPacket id_packet = op.receivePacket(s);
                             String id_string = msg.packetToString(id_packet);
                             if (id_string.charAt(0) != '#') {
-                                op.sendPacket(msg.make("#", "reqreply", new String(serializeEleicao(eleicao))), s,
-                                        group, PORT);
+                                op.sendPacket(
+                                        msg.make("#", "reqreply", msg.makeList(getListasFromEleicaoEscolhida(eleicao))),
+                                        s, group, PORT);
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");

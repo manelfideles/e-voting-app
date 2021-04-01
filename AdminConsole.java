@@ -60,7 +60,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
             do {
                 System.out.println("------------MENU PRINCIPAL------------\n"
-                        + "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n" + "______________________________________\n"
+                        + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n" + "______________________________________\n"
                         + "1.Registar Pessoa\n" + "2.Criar Eleição\n" + "3.Alterar Propriedades de uma Eleição\n"
                         + "4.Gerir Candidatos\n" + "5.Gerir Mesas de Voto\n" + "6.Consultar Informação de Voto\n"
                         + "7.Consultar Número de Eleitores\n" + "8.Consultar Resultados\n" + "9.Sair\n"
@@ -226,7 +226,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 case "4": // "4.Gerir Candidatos"
                     try {
                         System.out.println("-----MENU GERE LISTAS CANDIDATOS------\n"
-                                + "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n"
+                                + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
                                 + "______________________________________\n" + "1.Adicionar Lista\n"
                                 + "2.Remover Lista\n" + "3.Sair\n" + "______________________________________\n");
                         System.out.print("Escolha: ");
@@ -235,7 +235,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         switch (opcao) {
                         case "1":
                             System.out.println("> --------MENU ADICIONA LISTA---------\n"
-                                    + "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n"
+                                    + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
                                     + "______________________________________\n" + "1.Estudantes\n" + "2.Docentes\n"
                                     + "3.Funcionári@s\n" + "4.Sair\n" + "______________________________________\n");
                             System.out.print("Escolha: ");
@@ -313,7 +313,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 case "5": // "5.Gerir Mesas de Voto"
                     try {
                         System.out.println(
-                                "-----------MENU GERE MESAS------------\n" + "* ESCOLHA UMA DAS OPÇÕES DISPONÍVEIS *\n"
+                                "-----------MENU GERE MESAS------------\n" + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
                                         + "______________________________________\n" + "1.Criar Mesa\n"
                                         + "2.Remover Mesa\n" + "3.Consultar Estado das Mesas\n" + "4.Sair\n"
                                         + "______________________________________\n");
@@ -360,11 +360,25 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     break;
                 case "6": // "6.Consultar Informação de Voto"
                     System.out.println("AdminConsole - consulta_info_voto");
-                    rmis.consulta_info_voto();
+                    HashMap<String, HashMap<String, Pessoa>> hmp = rmis.consulta_info_voto();
+                    for (Map.Entry mapElement : hmp.entrySet()) {
+                        HashMap<String, Pessoa> hm = (HashMap<String, Pessoa>) mapElement.getValue();
+                        for (Map.Entry mapElement2 : hm.entrySet()) {
+                            Pessoa p = (Pessoa) mapElement2.getValue();
+                            System.out.println(p.getNome() + ": " + p.getLocal_momento_voto());
+                        }
+                    }
                     break;
                 case "7": // "7.Consultar Número de Eleitores"
                     System.out.println("AdminConsole - consulta_eleitores");
-                    rmis.consulta_eleitores();
+                    HashMap<String, Mesa> mapm = rmis.consulta_eleitores();
+                    for (Map.Entry mapElement : mapm.entrySet()) {
+                        Mesa m = (Mesa) mapElement.getValue();
+                        for (Map.Entry mapElement2 : m.getNum_eleitores().entrySet()) {
+                            System.out.println(m.dep + ":");
+                            System.out.println(mapElement2.getKey() + ": " + mapElement2.getValue());
+                        }
+                    }
                     break;
                 case "8": // "8.Consultar Resultados"
                     System.out.println("AdminConsole - consulta_resultados");
@@ -404,6 +418,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 case "9": // "9.Sair"
                     break;
                 }
+
             } while (!option.equals("9"));
         } catch (Exception re) {
             System.out.println("Exception in AdminConsole.main: " + re);

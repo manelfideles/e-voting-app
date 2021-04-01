@@ -23,22 +23,6 @@ public class MulticastClient extends Thread {
         client.start();
     }
 
-    public HashMap<Integer, String> deserializeEleicao(String in) {
-        // string to byte array
-        HashMap<Integer, String> eleicao = null;
-        try {
-            byte[] serializedEleicao = in.getBytes();
-            ByteArrayInputStream byteIn = new ByteArrayInputStream(serializedEleicao);
-            ObjectInputStream ois = new ObjectInputStream(byteIn);
-            eleicao = (HashMap<Integer, String>) ois.readObject();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        }
-        return eleicao;
-    }
-
     public void run() {
         MulticastSocket terminal_socket = null;
         MulticastSocket voting_socket = null;
@@ -55,7 +39,6 @@ public class MulticastClient extends Thread {
             Message msg = new Message();
             ThreadOps op = new ThreadOps();
             DatagramPacket packet;
-            HashMap<Integer, String> eleicao = null;
             // Thread counterThread = new Thread();
             // counterThread.start();
 
@@ -77,8 +60,6 @@ public class MulticastClient extends Thread {
                         blocked = false;
                     }
                     if (type.equals("reqreply")) {
-                        eleicao = deserializeEleicao(msg.getContentFromPacket(packet, "; "));
-                        System.out.println(eleicao.toString());
                         // Login data
                         System.out.print("CC: ");
                         String read_user = keyboardScanner.nextLine();
@@ -91,21 +72,19 @@ public class MulticastClient extends Thread {
                                 msg.make(id, "login", "username | " + read_user + "; password | " + read_password),
                                 voting_socket, voting_group, PORT);
                         voting_socket.joinGroup(voting_group);
-                    }
-                    if (type.equals("status")) {
-                        System.out.println("\n"
-                                + msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(":") + 2));
+
+                        System.out.println("Boletim:");
+                        msg.getContentFromPacket(packet, "item_list; ");
                     }
                     if (type.equals("bulletin")) {
                         // apresenta boletim
-                        System.out.println("Boletim:");
-                        System.out
-                                .println(msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(";")));
+                        System.out.println(
+                                msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(": ")));
 
                         // recebe input
                         System.out.print("\nInsert your vote: ");
                         String vote = keyboardScanner.nextLine(); // uma opcao do hashmap
-                        op.sendPacket(msg.make(id, "vote", "Voted for: " + vote), voting_socket, voting_group, PORT);
+                        op.sendPacket(msg.make(id, "vote", vote), voting_socket, voting_group, PORT);
                         System.out.println("Vote sent!");
                         busy = false;
                         blocked = true;

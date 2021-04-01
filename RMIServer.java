@@ -134,12 +134,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("RMI SERVER - consulta_estado_mesas");
     }
 
-    public void consulta_info_voto() throws RemoteException {
+    public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
         System.out.println("RMI SERVER - consulta_info_voto");
+        return hmp;
     }
 
-    public void consulta_eleitores() throws RemoteException {
+    public HashMap<String, Mesa> consulta_eleitores() throws RemoteException {
         System.out.println("RMI SERVER - consulta_eleitores");
+        return mapm;
     }
 
     public HashMap<String, Eleicao> consulta_resultados() throws RemoteException {
@@ -150,16 +152,25 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException {
         int i = 1;
         HashMap<Integer, Eleicao> hme = new HashMap<>();
-        // HashMap<Integer, ListaCandidato> hmlc = new HashMap<>(); // so no terminal
 
         // Popular
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
-            if (!p.getVerifica_eleicoes().contains(e.titulo)) {
-                if (e.getDescricao().equals(p.funcao)
-                        && (e.getRestricao().equals(p.dep) || e.getRestricao().equals("0"))) {
+            HashMap<String, String> hmss = p.getLocal_momento_voto();
+
+            if (hmss == null) {
+                if (e.getDescricao().equals(p.getFuncao())
+                        && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                     hme.put(i, e);
                     i++;
+                }
+            } else {
+                if (hmss.containsKey(e.getTitulo())) {
+                    if (e.getDescricao().equals(p.getFuncao())
+                            && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                        hme.put(i, e);
+                        i++;
+                    }
                 }
             }
         }
