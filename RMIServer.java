@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -12,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.*;
 
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
@@ -62,18 +62,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
         mape.put(eleicao.titulo,
-                new Eleicao(eleicao.data_i, eleicao.hora_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f,
+                new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i, eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f,
                         eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, "",
-                        eleicao.lista_lista_candidato));
+                        eleicao.lista_lista_candidato, eleicao.date_i, eleicao.date_f));
         WriteObjectToFile(objeto);
     }
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
         mape.replace(eleicao.old_titulo,
-                new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f,
+                new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i, eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f,
                         eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, eleicao.old_titulo,
-                        eleicao.lista_lista_candidato));
+                        eleicao.lista_lista_candidato, eleicao.date_i, eleicao.date_f));
         mape.put(eleicao.titulo, mape.remove(eleicao.old_titulo));
         WriteObjectToFile(objeto);
     }
@@ -253,9 +253,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public static void main(String[] args) throws RemoteException {
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
-        // InputStreamReader input = new InputStreamReader(System.in);
-        // BufferedReader reader = new BufferedReader(input);
         try {
+            Date date = new Date();
+            System.out.println(date);
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);

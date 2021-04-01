@@ -30,7 +30,10 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         Pessoa pessoa;
 
         // Variáveis OPTION 2/3
-        String data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao, restricao, old_titulo;
+        int ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f;
+        Date date_i = new Date();
+        Date date_f = new Date();
+        String titulo, descricao, restricao, old_titulo;
         ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato = new ArrayList<>();
         Eleicao eleicao;
 
@@ -50,6 +53,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
+
+        Scanner scanner = new Scanner(System.in);
 
         try {
             RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
@@ -121,18 +126,26 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                         break;
                     case "2": // "2.Criar Eleição"
-                        System.out.print("> Data Inicio: ");
-                        data_i = reader.readLine();
+                        System.out.print("> Ano Inicio: ");
+                        ano_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Mes Inicio: ");
+                        mes_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Dia Inicio: ");
+                        dia_i = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Hora Inicio: ");
-                        hora_i = reader.readLine();
+                        hora_i = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Minuto Inicio: ");
-                        minuto_i = reader.readLine();
-                        System.out.print("> Data Fim: ");
-                        data_f = reader.readLine();
+                        minuto_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Ano Fim: ");
+                        ano_f = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Mes Fim: ");
+                        mes_f = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Dia Fim: ");
+                        dia_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Hora Fim: ");
-                        hora_f = reader.readLine();
+                        hora_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Minuto Fim: ");
-                        minuto_f = reader.readLine();
+                        minuto_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Titulo: ");
                         titulo = reader.readLine();
                         System.out.println("> Descricao: ");
@@ -158,10 +171,14 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             + restricao);
                         }
 
-                        System.out.println("> Data Inicio: " + data_i);
+                        System.out.println("> Ano Inicio: " + ano_i);
+                        System.out.println("> Mes Inicio: " + mes_i);
+                        System.out.println("> Dia Inicio: " + dia_i);
                         System.out.println("> Hora Inicio: " + hora_i);
                         System.out.println("> Minuto Inicio: " + minuto_i);
-                        System.out.println("> Data Fim: " + data_f);
+                        System.out.println("> Ano Fim: " + ano_f);
+                        System.out.println("> Mes Fim: " + mes_f);
+                        System.out.println("> Dia Fim: " + dia_f);
                         System.out.println("> Hora Fim: " + hora_f);
                         System.out.println("> Minuto Fim: " + minuto_f);
                         System.out.println("> Titulo: " + titulo);
@@ -169,8 +186,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println(
                                 "____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao,
-                                restricao, "", lista_lista_candidato);
+                        date_i = new Date(ano_i-1900, mes_i-1, dia_i, hora_i, minuto_i);
+                        date_f = new Date(ano_f-1900, mes_f-1, dia_f, hora_f, minuto_f);
+
+                        eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f, titulo, descricao,
+                                restricao, "", lista_lista_candidato, date_i, date_f);
 
                         rmis.cria_eleicao(eleicao);
 
@@ -180,21 +200,34 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.print("> Título da Eleicao: ");
                         old_titulo = reader.readLine();
 
-                        System.out.print("> Nova Data Inicio: ");
-                        data_i = reader.readLine();
+                        System.out.print("> Novo Ano Inicio: ");
+                        ano_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Novo Mes Inicio: ");
+                        mes_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Novo Dia Inicio: ");
+                        dia_i = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Nova Hora Inicio: ");
-                        hora_i = reader.readLine();
+                        hora_i = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Novo Minuto Inicio: ");
-                        minuto_i = reader.readLine();
-                        System.out.print("> Nova Data Fim: ");
-                        data_f = reader.readLine();
+                        minuto_i = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Novo Ano Fim: ");
+                        ano_f = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Novo Mes Fim: ");
+                        mes_f = Integer.parseInt(scanner.nextLine());
+                        System.out.print("> Novo Dia Fim: ");
+                        dia_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Nova Hora Fim: ");
-                        hora_f = reader.readLine();
+                        hora_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Novo Minuto Fim: ");
-                        minuto_f = reader.readLine();
+                        minuto_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Novo Titulo: ");
                         titulo = reader.readLine();
-                        System.out.print("> Nova Descricao: ");
+                        System.out.println("> Nova Descricao: ");
+                        System.out.println("> Escolha uma das opcoes abaixo disponiveis de acordo com a Descricao da eleicao:\n"
+                                + "_____________________________________________________________________________\n"
+                                + "1.Estudante\n" + "2.Docente\n" + "3.Funcionario\n"
+                                + "_____________________________________________________________________________\n");
+                        System.out.print("Escolha: ");
                         descricao = reader.readLine();
                         System.out.print(
                                 "> Nova Restricao:\n" + "_____________________________________________________________\n"
@@ -211,10 +244,14 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             + restricao);
                         }
 
-                        System.out.println("> Data Inicio: " + data_i);
+                        System.out.println("> Ano Inicio: " + ano_i);
+                        System.out.println("> Mes Inicio: " + mes_i);
+                        System.out.println("> Dia Inicio: " + dia_i);
                         System.out.println("> Hora Inicio: " + hora_i);
                         System.out.println("> Minuto Inicio: " + minuto_i);
-                        System.out.println("> Data Fim: " + data_f);
+                        System.out.println("> Ano Fim: " + ano_f);
+                        System.out.println("> Mes Fim: " + mes_f);
+                        System.out.println("> Dia Fim: " + dia_f);
                         System.out.println("> Hora Fim: " + hora_f);
                         System.out.println("> Minuto Fim: " + minuto_f);
                         System.out.println("> Titulo: " + titulo);
@@ -222,8 +259,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println(
                                 "____________________________________________________________________________________________________________________________________\n");
 
-                        eleicao = new Eleicao(data_i, hora_i, minuto_i, data_f, hora_f, minuto_f, titulo, descricao,
-                                restricao, old_titulo, lista_lista_candidato);
+                        date_i = new Date(ano_i-1900, mes_i-1, dia_i, hora_i, minuto_i);
+                        date_f = new Date(ano_f-1900, mes_f-1, dia_f, hora_f, minuto_f);
+
+                        eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f, titulo, descricao,
+                                restricao, old_titulo, lista_lista_candidato, date_i, date_f);
 
                         rmis.altera_eleicao(eleicao);
 
@@ -254,7 +294,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
                                     System.out.print("> Numero de Pessoas Pertencentes a Lista: ");
-                                    Scanner scanner = new Scanner(System.in);
                                     num_pessoas_lista = Integer.parseInt(scanner.nextLine());
 
                                     lista.clear();
