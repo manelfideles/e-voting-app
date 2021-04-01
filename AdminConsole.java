@@ -41,9 +41,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         ListaCandidato lista_candidato;
         String nome_eleicao;
 
-        // Variáveis OPTION 5
+        /*// Variáveis OPTION 5
         String dep;
-        Mesa mesa;
+        Mesa mesa;*/
 
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
@@ -61,8 +61,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 System.out.println("------------MENU PRINCIPAL------------\n"
                         + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n" + "______________________________________\n"
                         + "1.Registar Pessoa\n" + "2.Criar Eleicao\n" + "3.Alterar Propriedades de uma Eleicao\n"
-                        + "4.Gerir Candidatos\n" + "5.Gerir Mesas de Voto\n" + "6.Consultar Informacao de Voto\n"
-                        + "7.Consultar Numero de Eleitores\n" + "8.Consultar Resultados\n" + "9.Sair\n"
+                        + "4.Gerir Candidatos\n" + "5.Consultar Informacao de Voto\n"
+                        + "6.Consultar Numero de Eleitores\n" + "7.Consultar Resultados\n" + "8.Print Objeto\n" + "9.Sair\n"
                         + "______________________________________\n");
                 System.out.print("Escolha: ");
                 option = reader.readLine();
@@ -315,55 +315,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             System.out.println("Exception in AdminConsole.gere_lista_candidatos: " + re);
                         }
                         break;
-                    case "5": // "5.Gerir Mesas de Voto"
-                        try {
-                            System.out.println(
-                                    "-----------MENU GERE MESAS------------\n" + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
-                                            + "______________________________________\n" + "1.Criar Mesa\n"
-                                            + "2.Remover Mesa\n" + "3.Consultar Estado das Mesas\n" + "4.Sair\n"
-                                            + "______________________________________\n");
-                            System.out.print("Escolha: ");
-                            opcao = reader.readLine();
-
-                            switch (opcao) {
-                                case "1":
-                                    System.out.print("> Departamento onde quer adicionar uma mesa: ");
-                                    dep = reader.readLine();
-                                    System.out.println("Vou guardar os dados de uma mesa de voto");
-                                    System.out.println("> Departamento onde esta localizada: " + dep);
-                                    System.out.println("-----------------------------------------------------\n");
-
-                                    mesa = new Mesa(dep);
-
-                                    rmis.cria_mesa(mesa);
-
-                                    break;
-                                case "2":
-                                    System.out.print("> Departamento onde esta localizada: ");
-                                    dep = reader.readLine();
-                                    System.out.println("Vou apagar os dados de uma mesa de voto");
-                                    System.out.println("> Departamento onde estava localizada: " + dep);
-                                    System.out.println("-----------------------------------------------------\n");
-
-                                    mesa = new Mesa(dep);
-
-                                    rmis.remove_mesa(mesa);
-
-                                    break;
-                                case "3":
-                                    System.out.println("> Consultar Estado das Mesas");
-
-                                    rmis.consulta_estado_mesas();
-
-                                    break;
-                                case "4":
-                                    break;
-                            }
-                        } catch (Exception re) {
-                            System.out.println("Exception in AdminConsole.gere_mesas: " + re);
-                        }
-                        break;
-                    case "6": // "6.Consultar Informação de Voto"
+                    case "5": // "6.Consultar Informação de Voto"
                         System.out.println("AdminConsole - consulta_info_voto");
                         HashMap<String, HashMap<String, Pessoa>> hmp = rmis.consulta_info_voto();
                         for (Map.Entry mapElement : hmp.entrySet()) {
@@ -374,7 +326,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             }
                         }
                         break;
-                    case "7": // "7.Consultar Número de Eleitores"
+                    case "6": // "7.Consultar Número de Eleitores"
                         System.out.println("AdminConsole - consulta_eleitores");
                         HashMap<String, Mesa> mapm = rmis.consulta_eleitores();
                         for (Map.Entry mapElement : mapm.entrySet()) {
@@ -385,7 +337,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             }
                         }
                         break;
-                    case "8": // "8.Consultar Resultados"
+                    case "7": // "8.Consultar Resultados"
                         System.out.println("AdminConsole - consulta_resultados");
 
                         HashMap<String, Eleicao> mape = rmis.consulta_resultados();
@@ -418,12 +370,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             }
                         }
                         break;
-                    case "9": // "9.Sair"
-                        break;
-
-                    case "10":
+                    case "8":
                         Objeto ob = (Objeto) rmis.ReadObjectFromFile("fs.txt");
                         System.out.println(ob.toString());
+                        break;
+                    case "9": // "9.Sair"
                         break;
                 }
             } while (!option.equals("9"));
