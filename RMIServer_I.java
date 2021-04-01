@@ -36,6 +36,10 @@ public interface RMIServer_I extends Remote {
 
     public Pessoa getVoter(String cc) throws RemoteException;
 
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao) throws RemoteException;
+
+    public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException;
+
     // public void sayHello() throws RemoteException;
 
     // public void ping() throws RemoteException;*/

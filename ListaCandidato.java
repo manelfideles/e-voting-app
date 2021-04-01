@@ -15,7 +15,6 @@ public class ListaCandidato implements Serializable {
         this.num_pessoas_lista = num_pessoas_lista;
         this.lista = lista;
         this.nome_eleicao = nome_eleicao;
-        //this.num_votos = num_votos;
     }
 
     public String toString() {

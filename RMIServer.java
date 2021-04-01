@@ -216,6 +216,49 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return false;
     }
 
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao) throws RemoteException {
+        System.out.println(num_cc);
+        System.out.println(nome_lista);
+        System.out.println(nome_eleicao);
+
+        // aceder à pessoa e atualizar local_momento_voto
+
+        mape.get(nome_eleicao).num_total_votos++;
+
+        switch (nome_lista) {
+            case "branco":
+                mape.get(nome_eleicao).num_votos_branco++;
+            case "nulo":
+                mape.get(nome_eleicao).num_votos_nulo++;
+            default:
+                ArrayList<HashMap<String, ListaCandidato>> llc = mape.get(nome_eleicao).lista_lista_candidato;
+                for (HashMap<String, ListaCandidato> elem : llc) {
+                    for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
+                        if(entry.getKey().equals(nome_lista)) {
+                            entry.getValue().num_votos++;
+                        }
+                    }
+                }
+        }
+    }
+
+    public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
+        int j = 1;
+        HashMap<Integer, String> out = new HashMap<>();
+        for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
+            for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
+                out.put(j, entry.getValue().nome_lista);
+                j++;
+            }
+        }
+        out.put(j, "voto_branco");
+        j++;
+        out.put(j, "voto_nulo");
+        return out;
+    }
+
+
+
     public void WriteObjectToFile(Object obj) throws RemoteException {
         try {
             FileOutputStream fileOut = new FileOutputStream(outputFilePath);

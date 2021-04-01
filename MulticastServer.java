@@ -82,18 +82,6 @@ class TerminalThread extends Thread {
         }
     }
 
-    public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) {
-        int j = 1;
-        HashMap<Integer, String> out = new HashMap<Integer, String>();
-        for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
-            for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                out.put(j, entry.getValue().nome_lista);
-                j++;
-            }
-        }
-        return out;
-    }
-
     public void run() {
         try {
             s.joinGroup(group);
@@ -114,8 +102,8 @@ class TerminalThread extends Thread {
                             System.out.println("Selecione a eleicao na qual pretende exercer o seu voto:");
                             printBulletin(user_bulletin);
                             System.out.print("Escolha: ");
-                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine());
-                            eleicao = user_bulletin.get(opcao_eleicao);
+                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine()); // ENVIAR PARA TERMINAL
+                            eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
 
                             // Handshake
                             s.leaveGroup(group);
@@ -125,8 +113,9 @@ class TerminalThread extends Thread {
                             String id_string = msg.packetToString(id_packet);
                             if (id_string.charAt(0) != '#') {
                                 op.sendPacket(
-                                        msg.make("#", "reqreply", msg.makeList(getListasFromEleicaoEscolhida(eleicao))),
-                                        s, group, PORT);
+                                        msg.make("#", "reqreply", msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "item_list; " + opcao_eleicao),
+                                        s, group, PORT); // envio das listas de candidatos para o terminal de voto
+
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");
@@ -164,6 +153,7 @@ class VotingThread extends Thread {
             s.joinGroup(group);
             Message msg = new Message();
             Pessoa p = null;
+            Eleicao eleicao = null;
             while (true) {
                 DatagramPacket packet = op.receivePacket(s);
                 String type = msg.getTypeFromPacket(packet);
@@ -202,6 +192,26 @@ class VotingThread extends Thread {
                         // atualizar todas as estruturas de dados
                         // associar pessoa ao local de voto
                         // envia informaçao para a admin console
+
+                        // NECESSÁRIO ENVIAR PARA O RMI_SERVER:
+                        // nome da eleicao X
+                        // nome da lista ou branco ou nulo X
+                        // nome do dep da mesa
+                        // momento do voto
+                        // num_cc da pessoa X
+
+                        HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p); // hashmap eleicoes
+
+                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; "));
+                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; "));
+
+                        eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
+
+                        HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
+
+                        String nome_lista = hm.get(escolha+1);
+
+                        rmis.atualiza(p.getNum_CC(), nome_lista , eleicao.getTitulo()); // num_cc, nome_lista, nome_eleicao
                     }
                 }
             }
