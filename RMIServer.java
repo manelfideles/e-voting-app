@@ -68,6 +68,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(objeto);
     }
 
+    public boolean check_eleicao(String old_titulo) throws RemoteException {
+        Eleicao e = mape.get(old_titulo);
+        Date d = new Date();  // Current date
+        return e.getDate_i().after(d);
+    }
+
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
         mape.replace(eleicao.old_titulo,

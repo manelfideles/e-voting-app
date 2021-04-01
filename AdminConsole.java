@@ -200,6 +200,13 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.print("> Título da Eleicao: ");
                         old_titulo = reader.readLine();
 
+                        boolean check = rmis.check_eleicao(old_titulo);
+
+                        if(check) {
+                            System.out.println("Nao pode alterar as propriedades da eleicao pois ja comecou!");
+                            break;
+                        }
+
                         System.out.print("> Novo Ano Inicio: ");
                         ano_i = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Novo Mes Inicio: ");

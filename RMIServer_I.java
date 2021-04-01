@@ -10,17 +10,19 @@ public interface RMIServer_I extends Remote {
 
     public void cria_eleicao(Eleicao eleicao) throws RemoteException;
 
+    public boolean check_eleicao(String old_titulo) throws RemoteException;
+
     public void altera_eleicao(Eleicao eleicao) throws RemoteException;
 
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException;
 
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException;
 
-    public void cria_mesa(Mesa mesa) throws RemoteException;
+    //public void cria_mesa(Mesa mesa) throws RemoteException;
 
-    public void remove_mesa(Mesa mesa) throws RemoteException;
+    //public void remove_mesa(Mesa mesa) throws RemoteException;
 
-    public void consulta_estado_mesas() throws RemoteException;
+    //public void consulta_estado_mesas() throws RemoteException;
 
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException;
 

@@ -104,6 +104,14 @@ public class Eleicao implements Serializable {
         return minuto_f;
     }
 
+    public Date getDate_i() {
+        return date_i;
+    }
+
+    public Date getDate_f() {
+        return date_f;
+    }
+
     public String getTitulo() {
         return titulo;
     }
@@ -154,6 +162,14 @@ public class Eleicao implements Serializable {
 
     public void setMinuto_f() {
         this.minuto_f = minuto_f;
+    }
+
+    public void setDate_i() {
+        this.date_i = date_i;
+    }
+
+    public void setDate_f() {
+        this.date_f = date_f;
     }
 
     public void setTitulo() {
