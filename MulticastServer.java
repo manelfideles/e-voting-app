@@ -201,6 +201,7 @@ class VotingThread extends Thread {
                         // sincronizado
                         // atualizar todas as estruturas de dados
                         // associar pessoa ao local de voto
+                        // envia informaçao para a admin console
                     }
                 }
             }
