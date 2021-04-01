@@ -39,7 +39,10 @@ public class Eleicao implements Serializable {
         return "{" + "data_i='" + data_i + '\'' + ", hora_i='" + hora_i + '\'' + ", minuto_i='" + minuto_i + '\''
                 + ", data_f='" + data_f + '\'' + ", hora_f='" + hora_f + '\'' + ", minuto_f='" + minuto_f + '\''
                 + ", titulo='" + titulo + '\'' + ", descricao='" + descricao + '\'' + ", restricao='" + restricao + '\''
-                + ", lista_lista_candidato='" + lista_lista_candidato + '\'' + '}';
+                + ", lista_lista_candidato='" + lista_lista_candidato + '\''
+                + ", num_votos_branco='" + num_votos_branco + '\''
+                + ", num_votos_nulo='" + num_votos_nulo + '\''
+                + ", num_total_votos='" + num_total_votos + '\''+ '}';
     }
 
     public ArrayList<HashMap<String, ListaCandidato>> getListaListaCandidato() {

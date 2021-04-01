@@ -22,6 +22,7 @@ public class ListaCandidato implements Serializable {
                 "', tipo_lista='" + this.tipo_lista +
                 "', num_pessoas_lista='" + this.num_pessoas_lista +
                 "', lista=" + this.lista +
+                "', num_votos=" + this.num_votos +
                 "}";
     }
 

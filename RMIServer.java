@@ -64,7 +64,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
         mape.put(eleicao.titulo,
-                new Eleicao(eleicao.data_i, eleicao.data_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f,
+                new Eleicao(eleicao.data_i, eleicao.hora_i, eleicao.minuto_i, eleicao.data_f, eleicao.hora_f,
                         eleicao.minuto_f, eleicao.titulo, eleicao.descricao, eleicao.restricao, "",
                         eleicao.lista_lista_candidato));
         WriteObjectToFile(objeto);
@@ -224,22 +224,31 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // aceder à pessoa e atualizar local_momento_voto
 
         mape.get(nome_eleicao).num_total_votos++;
+        System.out.println("num_total_votos: " + mape.get(nome_eleicao).num_total_votos);
 
         switch (nome_lista) {
-            case "branco":
+            case "voto_branco":
                 mape.get(nome_eleicao).num_votos_branco++;
-            case "nulo":
+                System.out.println("num_votos_branco: " + mape.get(nome_eleicao).num_votos_branco);
+                break;
+            case "voto_nulo":
                 mape.get(nome_eleicao).num_votos_nulo++;
+                System.out.println("num_votos_nulo: " + mape.get(nome_eleicao).num_votos_nulo);
+                break;
             default:
                 ArrayList<HashMap<String, ListaCandidato>> llc = mape.get(nome_eleicao).lista_lista_candidato;
                 for (HashMap<String, ListaCandidato> elem : llc) {
                     for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
                         if(entry.getKey().equals(nome_lista)) {
                             entry.getValue().num_votos++;
+                            System.out.println("num_votos: " + entry.getValue().num_votos);
                         }
                     }
                 }
+                break;
         }
+
+        WriteObjectToFile(objeto);
     }
 
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
@@ -256,8 +265,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         out.put(j, "voto_nulo");
         return out;
     }
-
-
 
     public void WriteObjectToFile(Object obj) throws RemoteException {
         try {

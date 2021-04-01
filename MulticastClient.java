@@ -42,6 +42,8 @@ public class MulticastClient extends Thread {
             // Thread counterThread = new Thread();
             // counterThread.start();
 
+            String opcao_eleicao = null;
+
             while (true) {
                 if (blocked) {
                     System.out.println("\nTerminal Bloqueado. Dirija-se a mesa de voto para desbloquear um terminal.");
@@ -53,7 +55,6 @@ public class MulticastClient extends Thread {
                 }
                 String type = msg.getTypeFromPacket(packet);
                 String sender = msg.getSenderFromPacket(packet);
-                String opcao_eleicao = null;
 
                 if (sender.equals("#")) {
                     if (type.equals("request") && busy == false) {
@@ -75,8 +76,8 @@ public class MulticastClient extends Thread {
                         voting_socket.joinGroup(voting_group);
 
                         System.out.println("Boletim:");
-                        msg.getContentFromPacket(packet, "item_list; ");
-                        opcao_eleicao = msg.getOpcaoEleicao(packet, "item_list; ");
+                        msg.getContentFromPacket(packet, "reqreply; ");
+                        opcao_eleicao = msg.getOpcaoEleicao(packet, "reqreply; ");
                     }
                     if (type.equals("bulletin")) {
                         // apresenta boletim
@@ -86,7 +87,8 @@ public class MulticastClient extends Thread {
                         // recebe input
                         System.out.print("\nInsert your vote: ");
                         String vote = keyboardScanner.nextLine(); // uma opcao do hashmap
-                        op.sendPacket(msg.make(id, "vote", vote + "; " + opcao_eleicao), voting_socket, voting_group, PORT);
+                        op.sendPacket(msg.make(id, "vote", (vote + "; " + opcao_eleicao)), voting_socket, voting_group, PORT);
+                        // [id] type | vote; 2; 1
                         System.out.println("Vote sent!");
                         busy = false;
                         blocked = true;

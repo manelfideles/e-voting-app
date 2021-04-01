@@ -102,7 +102,7 @@ class TerminalThread extends Thread {
                             System.out.println("Selecione a eleicao na qual pretende exercer o seu voto:");
                             printBulletin(user_bulletin);
                             System.out.print("Escolha: ");
-                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine()); // ENVIAR PARA TERMINAL
+                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine()); // VARIAVEL A ENVIAR PARA TERMINAL
                             eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
 
                             // Handshake
@@ -113,8 +113,9 @@ class TerminalThread extends Thread {
                             String id_string = msg.packetToString(id_packet);
                             if (id_string.charAt(0) != '#') {
                                 op.sendPacket(
-                                        msg.make("#", "reqreply", msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "item_list; " + opcao_eleicao),
+                                        msg.make("#", "reqreply", msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; " + opcao_eleicao),
                                         s, group, PORT); // envio das listas de candidatos para o terminal de voto
+                                // [#] type | reqreply; item_count | 4; item_0_name | lista a; item_1_name | lista b; item_2_name | voto_branco; item_3_name | voto_nuloitem_list; 1
 
                             }
                         } else {
@@ -210,6 +211,10 @@ class VotingThread extends Thread {
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
 
                         String nome_lista = hm.get(escolha+1);
+
+                        System.out.println("p.getNum_CC(): " + p.getNum_CC());
+                        System.out.println("nome_lista: " + nome_lista);
+                        System.out.println("eleicao.getTitulo(): " + eleicao.getTitulo());
 
                         rmis.atualiza(p.getNum_CC(), nome_lista , eleicao.getTitulo()); // num_cc, nome_lista, nome_eleicao
                     }

@@ -50,19 +50,19 @@ public class Message {
 
     public String getContentFromPacket(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        for (String s : data) {
+        /*for (String s : data) {
             System.out.println(s);
-        }
-        System.out.println(data[1]);
+        }*/
+        System.out.println("getContentFromPacket: " + data[1]);
         return data[1];
     }
 
     public String getOpcaoEleicao(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        for (String s : data) {
+        /*for (String s : data) {
             System.out.println(s);
-        }
-        System.out.println(data[2]);
+        }*/
+        System.out.println("getOpcaoEleicao: " + data[2]);
         return data[2];
     }
 }
