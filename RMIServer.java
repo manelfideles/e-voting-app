@@ -284,8 +284,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return false;
     }
 
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao) throws RemoteException {
-        mapp.get(num_cc).local_momento_voto.put(nome_eleicao, "-");
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
+        mapp.get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         mape.get(nome_eleicao).num_total_votos++;
 
         switch (nome_lista) {

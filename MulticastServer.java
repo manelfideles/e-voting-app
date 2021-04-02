@@ -69,7 +69,7 @@ public class MulticastServer extends Thread {
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP);
 
             while (true) {
                 //
@@ -143,6 +143,9 @@ class TerminalThread extends Thread {
                                         msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; "
                                                 + opcao_eleicao),
                                         s, group, PORT); // envio das listas de candidatos para o terminal de voto
+                                // [#] type | reqreply; item_count | 4; item_0_name | lista a; item_1_name |
+                                // lista b; item_2_name | voto_branco; item_3_name | voto_nuloitem_list; 1
+
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");
@@ -165,13 +168,14 @@ class VotingThread extends Thread {
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
+    String DEP;
 
-
-    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
+        this.DEP = DEP;
         t = new Thread(this);
         t.start();
     }
@@ -229,8 +233,10 @@ class VotingThread extends Thread {
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                         String nome_lista = hm.get(escolha + 1);
+                        Date d = new Date();
+                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d); // num_cc, nome_lista,
+                        // nome_eleicao
 
-                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo());
                     }
                 }
             }
