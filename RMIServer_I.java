@@ -54,7 +54,7 @@ public interface RMIServer_I extends Remote {
 
     public void ping(Mesa m, AdminConsole_I ac) throws RemoteException;
 
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao) throws RemoteException;
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP) throws RemoteException;
 
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException;
 

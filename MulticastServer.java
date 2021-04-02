@@ -72,7 +72,7 @@ public class MulticastServer extends Thread {
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP);
 
             while (true) {
                 //
@@ -171,12 +171,14 @@ class VotingThread extends Thread {
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
+    String DEP;
 
-    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
+        this.DEP = DEP;
         t = new Thread(this);
         t.start();
     }
@@ -238,8 +240,8 @@ class VotingThread extends Thread {
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                         String nome_lista = hm.get(escolha + 1);
-                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo()); // num_cc, nome_lista,
-                                                                                       // nome_eleicao
+                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP); // num_cc, nome_lista,
+                        // nome_eleicao
                     }
                 }
             }
