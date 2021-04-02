@@ -22,21 +22,15 @@ public class Message {
         return lista;
     }
 
-    public String splitMakeList(String str) {
-        int i;
-        String[] data = str.split("item_count | ");
-        char first = data[0].charAt(0); // num de listas
-        int n = (int)(first);
-        data[0].substring(0, 0); // eliminar o n da data[0]
-
+    public void splitMakeList(String str) {
+        int i,j = 5;
+        String[] data = str.split("; | ");
+        String first = data[2]; // num de listas
+        int n = Integer.parseInt(first);
         for (i=0; i<n; i++) {
-            String regex = "; item_" + i + "_name | ";
-            data = str.split(regex);
+            System.out.println(i + " - " + data[j]);
+            j+=3;
         }
-
-        String s = String.join("\n", data);
-
-        return s;
     }
 
     public String packetToString(DatagramPacket p) {
@@ -67,19 +61,11 @@ public class Message {
 
     public String getContentFromPacket(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        /*for (String s : data) {
-            System.out.println(s);
-        }*/
-        //System.out.println("getContentFromPacket: " + data[1]);
         return data[1];
     }
 
     public String getOpcaoEleicao(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        /*for (String s : data) {
-            System.out.println(s);
-        }*/
-        //System.out.println("getOpcaoEleicao: " + data[2]);
         return data[2];
     }
 }

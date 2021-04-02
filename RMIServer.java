@@ -283,7 +283,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
         try {
-            Date date = new Date();
+            Date date = new Date(); // Current date
             System.out.println(date);
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(PORT_r);
