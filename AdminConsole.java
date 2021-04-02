@@ -39,6 +39,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         ListaCandidato lista_candidato;
         String nome_eleicao;
 
+        // Variáveis OPTION 5
+        String dep;
+
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
 
@@ -391,94 +394,37 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("---------MENU GERE MESAS----------\n"
                                 + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
                                 + "______________________________________\n" + "1.Adicionar Mesa\n"
-                                + "2.Remover Mesa\n" + "3.Sair\n" + "______________________________________\n");
+                                + "2.Remover Mesa\n" + "3.Pingar\n" + "4.Sair\n" + "______________________________________\n");
                         System.out.print("Escolha: ");
                         opcao = reader.readLine();
 
                         switch (opcao) {
                             case "1":
-                                System.out.println("> --------MENU ADICIONA LISTA---------\n"
-                                        + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
-                                        + "______________________________________\n" + "1.Estudantes\n" + "2.Docentes\n"
-                                        + "3.Funcionarios\n" + "4.Sair\n" + "______________________________________\n");
-                                System.out.print("Escolha: ");
-                                tipo_lista = reader.readLine();
+                                System.out.print("> Departamento onde quer adicionar a Mesa: ");
+                                dep = reader.readLine();
 
-                                if (tipo_lista.equals("4")) {
-                                    break;
-                                }
-                                System.out.print("> Nome da Eleicao: ");
-                                nome_eleicao = reader.readLine();
-
-                                boolean verify = rmis.check_eleicao_before(nome_eleicao);
-                                if (verify) {
-                                    System.out.println("Nao e possivel criar uma lista pois a eleicao ja comecou!");
-                                    break;
-                                }
-
-                                System.out.print("> Nome da Lista: ");
-                                nome_lista = reader.readLine();
-                                System.out.print("> Numero de Pessoas Pertencentes a Lista: ");
-                                num_pessoas_lista = Integer.parseInt(scanner.nextLine());
-
-                                lista.clear();
-
-                                for (int i = 0; i < num_pessoas_lista; i++) {
-                                    System.out.print("> Nome: ");
-                                    nome_pessoa = reader.readLine();
-                                    lista.add(nome_pessoa);
-                                }
-
-                                Collections.sort(lista);
-
-                                switch (tipo_lista) {
-                                    case "1":
-                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Estudantes");
-                                        break;
-                                    case "2":
-                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Docentes");
-                                        break;
-                                    case "3":
-                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Funcionarios");
-                                        break;
-                                }
-                                System.out.println("> Nome da Lista: " + nome_lista);
-                                System.out.println("> Numero de Pessoas Pertencentes a Lista: " + num_pessoas_lista);
-                                System.out.println("Vou printar o nome das pessoas pertencentes a lista");
-                                for (String l : lista) {
-                                    System.out.println("> " + l);
-                                }
+                                System.out.println("Vou guardar os dados de uma Mesa");
+                                System.out.print("> Departamento onde esta a Mesa: " + dep);
                                 System.out.println("----------------------------------------------------------------\n");
 
-                                lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista,
-                                        nome_eleicao);
-
-                                rmis.cria_lista_candidatos(lista_candidato);
+                                // POR COMPLETAR
 
                                 break;
                             case "2":
-                                System.out.print("> Nome da Eleicao: ");
-                                nome_eleicao = reader.readLine();
+                                System.out.print("> Departamento onde esta a Mesa: ");
+                                dep = reader.readLine();
 
-                                boolean c = rmis.check_eleicao_before(nome_eleicao);
-                                if (c) {
-                                    System.out.println("Nao e possivel remover uma lista pois a eleicao ja comecou!");
-                                    break;
-                                }
-
-                                System.out.print("> Nome da Lista: ");
-                                nome_lista = reader.readLine();
-
-                                System.out.println("Vou remover os dados de uma lista candidata");
-                                System.out.println("> Nome da Lista: " + nome_lista);
+                                System.out.println("Vou remover os dados de uma Mesa");
+                                System.out.print("> Departamento onde estava a Mesa: " + dep);
                                 System.out.println("----------------------------------------------------------------\n");
 
-                                lista_candidato = new ListaCandidato(nome_lista, "0", 0, lista, nome_eleicao);
-
-                                rmis.remove_lista_candidatos(lista_candidato);
+                                // POR COMPLETAR
 
                                 break;
                             case "3":
+                                rmis.checkActiveMesas(ac);
+                                break;
+                            case "4":
                                 break;
                         }
 
