@@ -1,14 +1,9 @@
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.HashMap;
 
 public class MulticastClient extends Thread {
     private String TERMINALS = "224.3.2.1";

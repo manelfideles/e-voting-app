@@ -114,15 +114,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                         String lc = (String) mapElement2.getKey();
                         if (lista_candidato.nome_lista.equals(lc)) {
                             e.lista_lista_candidato.remove(i);
+                            WriteObjectToFile(objeto);
                             break;
                         }
                         i++;
                     }
-                    break;
                 }
             }
         }
-        WriteObjectToFile(objeto);
     }
 
     public void cria_mesa(Mesa mesa) throws RemoteException {
@@ -283,5 +282,4 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             System.out.println("Exception in RMIServer.main: " + re);
         }
     }
-
 }

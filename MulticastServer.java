@@ -6,7 +6,6 @@ import java.util.Scanner;
 import java.rmi.registry.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class MulticastServer extends Thread {
     private String TERMINALS = "224.3.2.1";
