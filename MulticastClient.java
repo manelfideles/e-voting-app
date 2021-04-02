@@ -1,19 +1,17 @@
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.HashMap;
+import java.util.List;
+import java.nio.file.*;
 
 public class MulticastClient extends Thread {
-    private String TERMINALS = "224.3.2.1";
-    private String VOTE = "224.3.2.2";
-    private int PORT = 4321;
+    private String TERMINALS;
+    private String VOTE;
+    private int PORT;
+    private String DEP;
     private boolean busy = false;
     private boolean blocked = true;
     private String id = UUID.randomUUID().toString();
@@ -23,18 +21,38 @@ public class MulticastClient extends Thread {
         client.start();
     }
 
+    public void readConfigFile(String file) {
+        try {
+            List<String> strings = Files.readAllLines(Paths.get(file));
+            this.TERMINALS = strings.get(0);
+            this.VOTE = strings.get(1);
+            this.PORT = Integer.parseInt(strings.get(2));
+            this.DEP = strings.get(3);
+        } catch (Exception ioe) {
+            System.out.println("IO Exception @ readConfigFile");
+            ioe.printStackTrace();
+        }
+    }
+
     public void run() {
         MulticastSocket terminal_socket = null;
         MulticastSocket voting_socket = null;
 
+        readConfigFile("MulticastConfig.txt");
+
         System.out.println("Client " + id + " running.");
         try {
+            // le config
+            readConfigFile("MulticastConfig.txt");
+
+            // configura
             terminal_socket = new MulticastSocket(PORT);
             voting_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
             InetAddress voting_group = InetAddress.getByName(VOTE);
             terminal_socket.joinGroup(terminals_group);
 
+            // helpers
             Scanner keyboardScanner = new Scanner(System.in);
             Message msg = new Message();
             ThreadOps op = new ThreadOps();
@@ -74,7 +92,7 @@ public class MulticastClient extends Thread {
                         voting_socket.joinGroup(voting_group);
 
                         System.out.println("Boletim:");
-                        msg.getContentFromPacket(packet, "item_list; ");
+                        msg.getContentFromPacket(packet, "reqreply; ");
                     }
                     if (type.equals("bulletin")) {
                         // apresenta boletim

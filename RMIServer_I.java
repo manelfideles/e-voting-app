@@ -36,7 +36,16 @@ public interface RMIServer_I extends Remote {
 
     public Pessoa getVoter(String cc) throws RemoteException;
 
+    public Mesa getMesaByDep(String dep) throws RemoteException;
+
+    public void printMesasExistentes() throws RemoteException;
+
+    public void subscribeMesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) throws RemoteException;
+
+    public void checkActiveMesas(AdminConsole_I ac) throws RemoteException;
+
+    public void ping(Mesa m, AdminConsole_I ac) throws RemoteException;
+
     // public void sayHello() throws RemoteException;
 
-    // public void ping() throws RemoteException;*/
 }

@@ -3,15 +3,20 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Scanner;
+import java.rmi.RemoteException;
 import java.rmi.registry.*;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.List;
+import java.nio.file.*;
 
 public class MulticastServer extends Thread {
-    private String TERMINALS = "224.3.2.1";
-    private String VOTE = "224.3.2.2";
-    private int PORT = 4321;
+    private String TERMINALS;
+    private String VOTE;
+    private int PORT;
+    private String DEP;
 
     public static void main(String[] args) {
         MulticastServer server = new MulticastServer();
@@ -20,6 +25,19 @@ public class MulticastServer extends Thread {
 
     public MulticastServer() {
         super("Server " + (long) (Math.random() * 1000));
+    }
+
+    public void readConfigFile(String file) {
+        try {
+            List<String> strings = Files.readAllLines(Paths.get(file));
+            this.TERMINALS = strings.get(0);
+            this.VOTE = strings.get(1);
+            this.PORT = Integer.parseInt(strings.get(2));
+            this.DEP = strings.get(3);
+        } catch (Exception ioe) {
+            System.out.println("IO Exception @ readConfigFile");
+            ioe.printStackTrace();
+        }
     }
 
     public void run() {
@@ -39,6 +57,15 @@ public class MulticastServer extends Thread {
             RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
             ThreadOps op = new ThreadOps();
 
+            // le config
+            readConfigFile("MulticastConfig.txt");
+
+            // configura
+            // ligacao rmi
+            RemoteMulticastServerObj_Impl remoteServerObj = new RemoteMulticastServerObj(rmis);
+            rmis.subscribeMesa(this.DEP, (RemoteMulticastServerObj_Impl) remoteServerObj);
+
+            // multicast
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
             TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis);
@@ -46,6 +73,7 @@ public class MulticastServer extends Thread {
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
             VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis);
+
             while (true) {
                 //
             }
@@ -208,5 +236,21 @@ class VotingThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+}
+
+class RemoteMulticastServerObj extends UnicastRemoteObject implements RemoteMulticastServerObj_Impl {
+
+    private static final long serialVersionUID = 1L;
+    RMIServer_I rmis;
+
+    RemoteMulticastServerObj(RMIServer_I rmis) throws RemoteException {
+        super();
+        this.rmis = rmis;
+    }
+
+    public void ping(AdminConsole_I ac) throws RemoteException {
+        // resposta
+        ac.print_on_admin_console("Successful.");
     }
 }

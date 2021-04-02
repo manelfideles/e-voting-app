@@ -48,12 +48,9 @@ public class Message {
         return data[2].split(" | ")[2];
     }
 
-    public void getContentFromPacket(DatagramPacket packet, String regex) {
+    public String getContentFromPacket(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        for (String s : data) {
-            System.out.println(s);
-        }
         // System.out.println(data[1]);
-        // return data[1];
+        return data[1];
     }
 }

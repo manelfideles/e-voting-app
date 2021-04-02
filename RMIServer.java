@@ -5,7 +5,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.FileInputStream;
@@ -32,7 +31,28 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     HashMap<String, Eleicao> mape = new HashMap<>();
 
     // Mesas
-    HashMap<String, Mesa> mapm = new HashMap<>();
+    static HashMap<String, Mesa> mapm = new HashMap<String, Mesa>();
+    static {
+        mapm.put("DARQ", new Mesa("DARQ", null));
+        mapm.put("DCT", new Mesa("DCT", null));
+        mapm.put("DEC", new Mesa("DEC", null));
+        mapm.put("DEEC", new Mesa("DEEC", null));
+        mapm.put("DEI", new Mesa("DEI", null));
+        mapm.put("DEM", new Mesa("DEM", null));
+        mapm.put("DEQ", new Mesa("DEQ", null));
+        mapm.put("DF", new Mesa("DF", null));
+        mapm.put("DM", new Mesa("DM", null));
+        mapm.put("DQ", new Mesa("DQ", null));
+        mapm.put("FLUC", new Mesa("FLUC", null));
+        mapm.put("FDUC", new Mesa("FDUC", null));
+        mapm.put("FMUC", new Mesa("FMUC", null));
+        mapm.put("FMUC", new Mesa("FMUC", null));
+        mapm.put("FFUC", new Mesa("FFUC", null));
+        mapm.put("FEUC", new Mesa("FEUC", null));
+        mapm.put("FPCEUC", new Mesa("FPCEUC", null));
+        mapm.put("FCDEFUC", new Mesa("FCDEFUC", null));
+        mapm.put("CdA", new Mesa("CdA", null));
+    }
 
     // Objeto
     HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
@@ -118,8 +138,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void cria_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - cria_mesa");
-        mapm.put(mesa.dep, new Mesa(mesa.dep));
-
+        mapm.put(mesa.dep, mesa);
         WriteObjectToFile(objeto);
     }
 
@@ -132,6 +151,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void consulta_estado_mesas() throws RemoteException {
         System.out.println("RMI SERVER - consulta_estado_mesas");
+
     }
 
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
@@ -206,6 +226,50 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return mapp.get(cc); // 2019292498 : {nome, ...}
     }
 
+    public Mesa getMesaByDep(String dep) throws RemoteException {
+        return mapm.get(dep);
+    }
+
+    public void printMesasExistentes() throws RemoteException {
+        for (Map.Entry m : mapm.entrySet()) {
+            System.out.println(m.toString());
+        }
+    }
+
+    public void checkActiveMesas(AdminConsole_I ac) throws RemoteException {
+        // ping a todas as mesas de mapm
+        for (Map.Entry<String, Mesa> m : mapm.entrySet()) {
+            if (m.getValue().remoteServerObj != null)
+                this.ping(m.getValue(), ac);
+        }
+    }
+
+    // ping às mesas de voto por rmi
+    public void ping(Mesa m, AdminConsole_I ac) throws RemoteException {
+        int i = 0;
+        ac.print_on_admin_console("\nPinging Mesa " + m.getDep() + "\n");
+        while (i < 5) {
+            ac.print_on_admin_console("Ping " + i + " > ");
+            // pergunta
+            m.remoteServerObj.ping(ac);
+
+            ac.print_on_admin_console("\n");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+            i++;
+        }
+    }
+
+    public void subscribeMesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) throws RemoteException {
+        Mesa m = mapm.get(dep);
+        m.remoteServerObj = remoteServerObj;
+        m.setState(true);
+        System.out.println("Mesa " + dep + " ligou-se ao RMIServer");
+    }
+
     public boolean confereLogin(String cc, String password) throws RemoteException {
         Pessoa p = getVoter(cc);
         if (p != null) {
@@ -245,18 +309,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
 
-        // InputStreamReader input = new InputStreamReader(System.in);
-        // BufferedReader reader = new BufferedReader(input);
-
         try {
             RMIServer rmis = new RMIServer();
             Registry r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
-
-            // Objeto ob = (Objeto) rmis.ReadObjectFromFile(outputFilePath);
-            // System.out.println(ob.toString());
-
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
         }
