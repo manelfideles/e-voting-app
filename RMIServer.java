@@ -45,7 +45,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         mapm.put("FLUC", new Mesa("FLUC", null));
         mapm.put("FDUC", new Mesa("FDUC", null));
         mapm.put("FMUC", new Mesa("FMUC", null));
-        mapm.put("FMUC", new Mesa("FMUC", null));
         mapm.put("FFUC", new Mesa("FFUC", null));
         mapm.put("FEUC", new Mesa("FEUC", null));
         mapm.put("FPCEUC", new Mesa("FPCEUC", null));

@@ -130,10 +130,10 @@ public class MulticastClient extends Thread {
 
 /*
  * class CounterThread extends Thread { private boolean isRunning = false;
- * 
+ *
  * public CounterThread() { this.start(); }
- * 
+ *
  * public void run() {
- * 
+ *
  * } }
  */

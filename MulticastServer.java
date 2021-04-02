@@ -6,8 +6,11 @@ import java.util.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Map.Entry;
 import java.nio.file.*;
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
 public class MulticastServer extends Thread {
     private String TERMINALS;
@@ -128,7 +131,7 @@ class TerminalThread extends Thread {
                             printBulletin(user_bulletin);
                             System.out.print("Escolha: ");
                             int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine()); // VARIAVEL A ENVIAR PARA
-                                                                                              // TERMINAL
+                            // TERMINAL
                             eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
 
                             // Handshake
@@ -225,10 +228,14 @@ class VotingThread extends Thread {
                         // associar pessoa ao local de voto
                         // envia informaçao para a admin console
 
+                        // NECESSARIO ENVIAR PARA O RMI_SERVER:
+                        // nome do dep da mesa
+                        // momento do voto
+
                         int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do
-                                                                                                // eleitor
+                        // eleitor
                         int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do
-                                                                                                 // eleitor
+                        // eleitor
                         HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p); // hashmap eleicoes
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
@@ -236,7 +243,6 @@ class VotingThread extends Thread {
                         Date d = new Date();
                         rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d); // num_cc, nome_lista,
                         // nome_eleicao
-
                     }
                 }
             }
