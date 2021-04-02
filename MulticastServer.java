@@ -142,10 +142,13 @@ class TerminalThread extends Thread {
                             String id_string = msg.getSenderFromPacket(id_packet);
                             System.out.println(id_string);
                             if (id_string.charAt(0) != '#') {
-                                op.sendPacket(msg.make("#", "reqreply",
+                                op.sendPacket(msg.make(id_string, "reqreply",
                                         msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; "
                                                 + opcao_eleicao),
                                         s, group, PORT); // envio das listas de candidatos para o terminal de voto
+                                // [#] type | reqreply; item_count | 4; item_0_name | lista a; item_1_name |
+                                // lista b; item_2_name | voto_branco; item_3_name | voto_nuloitem_list; 1
+
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");
@@ -223,7 +226,7 @@ class VotingThread extends Thread {
                         // associar pessoa ao local de voto
                         // envia informaçao para a admin console
 
-                        // NECESSÁRIO ENVIAR PARA O RMI_SERVER:
+                        // NECESSARIO ENVIAR PARA O RMI_SERVER:
                         // nome do dep da mesa
                         // momento do voto
 
