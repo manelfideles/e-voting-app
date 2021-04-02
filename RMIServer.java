@@ -30,7 +30,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     HashMap<String, Eleicao> mape = new HashMap<>();
 
     // Mesas
-    static HashMap<String, Mesa> mapm = new HashMap<String, Mesa>();
+    static HashMap<String, Mesa> mapm = new HashMap<>();
     static {
         mapm.put("DARQ", new Mesa("DARQ", null));
         mapm.put("DCT", new Mesa("DCT", null));
@@ -286,6 +286,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
         mapp.get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         mape.get(nome_eleicao).num_total_votos++;
+        mapm.get(DEP).num_eleitores++;
 
         switch (nome_lista) {
         case "voto_branco":

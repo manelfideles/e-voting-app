@@ -63,7 +63,7 @@ public class MulticastServer extends Thread {
             // configura
             // ligacao rmi
             RemoteMulticastServerObj_Impl remoteServerObj = new RemoteMulticastServerObj(rmis);
-            rmis.subscribeMesa(this.DEP, (RemoteMulticastServerObj_Impl) remoteServerObj);
+            rmis.subscribeMesa(this.DEP, remoteServerObj);
 
             // multicast
             terminal_socket = new MulticastSocket(PORT);
@@ -188,7 +188,7 @@ class VotingThread extends Thread {
             s.joinGroup(group);
             Message msg = new Message();
             Pessoa p = null;
-            Eleicao eleicao = null;
+            Eleicao eleicao;
             while (true) {
                 DatagramPacket packet = op.receivePacket(s);
                 String type = msg.getTypeFromPacket(packet);
@@ -228,21 +228,14 @@ class VotingThread extends Thread {
                         // associar pessoa ao local de voto
                         // envia informaçao para a admin console
 
-                        // NECESSARIO ENVIAR PARA O RMI_SERVER:
-                        // nome do dep da mesa
-                        // momento do voto
-
-                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do
-                        // eleitor
-                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do
-                        // eleitor
+                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do eleitor
+                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do eleitor
                         HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p); // hashmap eleicoes
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                         String nome_lista = hm.get(escolha + 1);
                         Date d = new Date();
-                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d); // num_cc, nome_lista,
-                        // nome_eleicao
+                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d);
                     }
                 }
             }

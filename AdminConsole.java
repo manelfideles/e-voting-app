@@ -1,9 +1,3 @@
-
-//import java.rmi.Naming;
-//import java.rmi.*;
-//import java.rmi.server.*;
-//import java.net.*;
-//import java.rmi.registry.Registry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
@@ -32,8 +26,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
         // Variáveis OPTION 2/3
         int ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f;
-        Date date_i = new Date();
-        Date date_f = new Date();
+        Date date_i;
+        Date date_f;
         String titulo, descricao, restricao, old_titulo;
         ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato = new ArrayList<>();
         Eleicao eleicao;
@@ -63,9 +57,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 System.out.println("------------MENU PRINCIPAL------------\n"
                         + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n" + "______________________________________\n"
                         + "1.Registar Pessoa\n" + "2.Criar Eleicao\n" + "3.Alterar Propriedades de uma Eleicao\n"
-                        + "4.Gerir Candidatos\n" + "5.Consultar Informacao de Voto\n"
-                        + "6.Consultar Numero de Eleitores\n" + "7.Consultar Resultados\n" + "8.Print Objeto\n"
-                        + "9.Sair\n" + "______________________________________\n");
+                        + "4.Gerir Candidatos\n" + "5.Gerir Mesas\n" + "6.Consultar Informacao de Voto\n"
+                        + "7.Consultar Numero de Eleitores\n" + "8.Consultar Resultados\n" + "9.Print Objeto\n"
+                        + "10.Sair\n" + "______________________________________\n");
                 System.out.print("Escolha: ");
                 option = reader.readLine();
 
@@ -144,8 +138,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     System.out.print("> Minuto Fim: ");
                     minuto_f = Integer.parseInt(scanner.nextLine());
 
-                    Date de_i = new Date(ano_i, mes_i, dia_i, hora_i, minuto_i); // Date inicial que queremos criar
-                    Date de_f = new Date(ano_f, mes_f, dia_f, hora_f, minuto_f); // Date final que queremos criar
+                    Date de_i = new Date(ano_i-1900, mes_i-1, dia_i, hora_i, minuto_i); // Date inicial que queremos criar
+                    Date de_f = new Date(ano_f-1900, mes_f-1, dia_f, hora_f, minuto_f); // Date final que queremos criar
                     Date d = new Date(); // Current date
 
                     boolean check_i = de_i.before(d);
@@ -392,7 +386,107 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.println("Exception in AdminConsole.gere_lista_candidatos: " + re);
                     }
                     break;
-                case "5": // "6.Consultar Informação de Voto"
+                case "5":
+                    try {
+                        System.out.println("---------MENU GERE MESAS----------\n"
+                                + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
+                                + "______________________________________\n" + "1.Adicionar Mesa\n"
+                                + "2.Remover Mesa\n" + "3.Sair\n" + "______________________________________\n");
+                        System.out.print("Escolha: ");
+                        opcao = reader.readLine();
+
+                        switch (opcao) {
+                            case "1":
+                                System.out.println("> --------MENU ADICIONA LISTA---------\n"
+                                        + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
+                                        + "______________________________________\n" + "1.Estudantes\n" + "2.Docentes\n"
+                                        + "3.Funcionarios\n" + "4.Sair\n" + "______________________________________\n");
+                                System.out.print("Escolha: ");
+                                tipo_lista = reader.readLine();
+
+                                if (tipo_lista.equals("4")) {
+                                    break;
+                                }
+                                System.out.print("> Nome da Eleicao: ");
+                                nome_eleicao = reader.readLine();
+
+                                boolean verify = rmis.check_eleicao_before(nome_eleicao);
+                                if (verify) {
+                                    System.out.println("Nao e possivel criar uma lista pois a eleicao ja comecou!");
+                                    break;
+                                }
+
+                                System.out.print("> Nome da Lista: ");
+                                nome_lista = reader.readLine();
+                                System.out.print("> Numero de Pessoas Pertencentes a Lista: ");
+                                num_pessoas_lista = Integer.parseInt(scanner.nextLine());
+
+                                lista.clear();
+
+                                for (int i = 0; i < num_pessoas_lista; i++) {
+                                    System.out.print("> Nome: ");
+                                    nome_pessoa = reader.readLine();
+                                    lista.add(nome_pessoa);
+                                }
+
+                                Collections.sort(lista);
+
+                                switch (tipo_lista) {
+                                    case "1":
+                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Estudantes");
+                                        break;
+                                    case "2":
+                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Docentes");
+                                        break;
+                                    case "3":
+                                        System.out.println("Vou guardar os dados de uma lista candidata do tipo Funcionarios");
+                                        break;
+                                }
+                                System.out.println("> Nome da Lista: " + nome_lista);
+                                System.out.println("> Numero de Pessoas Pertencentes a Lista: " + num_pessoas_lista);
+                                System.out.println("Vou printar o nome das pessoas pertencentes a lista");
+                                for (String l : lista) {
+                                    System.out.println("> " + l);
+                                }
+                                System.out.println("----------------------------------------------------------------\n");
+
+                                lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista,
+                                        nome_eleicao);
+
+                                rmis.cria_lista_candidatos(lista_candidato);
+
+                                break;
+                            case "2":
+                                System.out.print("> Nome da Eleicao: ");
+                                nome_eleicao = reader.readLine();
+
+                                boolean c = rmis.check_eleicao_before(nome_eleicao);
+                                if (c) {
+                                    System.out.println("Nao e possivel remover uma lista pois a eleicao ja comecou!");
+                                    break;
+                                }
+
+                                System.out.print("> Nome da Lista: ");
+                                nome_lista = reader.readLine();
+
+                                System.out.println("Vou remover os dados de uma lista candidata");
+                                System.out.println("> Nome da Lista: " + nome_lista);
+                                System.out.println("----------------------------------------------------------------\n");
+
+                                lista_candidato = new ListaCandidato(nome_lista, "0", 0, lista, nome_eleicao);
+
+                                rmis.remove_lista_candidatos(lista_candidato);
+
+                                break;
+                            case "3":
+                                break;
+                        }
+
+                    } catch (Exception re) {
+                        System.out.println("Exception in AdminConsole.gere_lista_candidatos: " + re);
+                    }
+                    break;
+                case "6": // "6.Consultar Informação de Voto"
                     System.out.println("AdminConsole - consulta_info_voto");
                     HashMap<String, HashMap<String, Pessoa>> hmp = rmis.consulta_info_voto();
                     for (Map.Entry mapElement : hmp.entrySet()) {
@@ -403,18 +497,19 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                     }
                     break;
-                case "6": // "7.Consultar Número de Eleitores"
+                case "7": // "7.Consultar Número de Eleitores"
                     System.out.println("AdminConsole - consulta_eleitores");
                     HashMap<String, Mesa> mapm = rmis.consulta_eleitores();
                     for (Map.Entry mapElement : mapm.entrySet()) {
                         Mesa m = (Mesa) mapElement.getValue();
-                        for (Map.Entry mapElement2 : m.getNum_eleitores().entrySet()) {
+                        System.out.println(m.dep + ": " + m.num_eleitores);
+                        /*for (Map.Entry mapElement2 : m.getNum_eleitores().entrySet()) {
                             System.out.println(m.dep + ":");
                             System.out.println(mapElement2.getKey() + ": " + mapElement2.getValue());
-                        }
+                        }*/
                     }
                     break;
-                case "7": // "8.Consultar Resultados"
+                case "8": // "8.Consultar Resultados"
                     System.out.println("AdminConsole - consulta_resultados");
 
                     HashMap<String, Eleicao> mape = rmis.consulta_resultados();
@@ -447,14 +542,14 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                     }
                     break;
-                case "8":
+                case "9": // "9.Print Objeto"
                     Objeto ob = (Objeto) rmis.ReadObjectFromFile("fs.txt");
                     System.out.println(ob.toString());
                     break;
-                case "9": // "9.Sair"
+                case "10": // "10.Sair"
                     break;
                 }
-            } while (!option.equals("9"));
+            } while (!option.equals("10"));
         } catch (Exception re) {
             System.out.println("Exception in AdminConsole.main: " + re);
         }
