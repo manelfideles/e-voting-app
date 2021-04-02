@@ -146,6 +146,24 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         hora_f = Integer.parseInt(scanner.nextLine());
                         System.out.print("> Minuto Fim: ");
                         minuto_f = Integer.parseInt(scanner.nextLine());
+
+                        Date de_i = new Date(ano_i, mes_i, dia_i, hora_i, minuto_i); // Date inicial que queremos criar
+                        Date de_f = new Date(ano_f, mes_f, dia_f, hora_f, minuto_f); // Date final que queremos criar
+                        Date d = new Date();  // Current date
+
+                        boolean check_i = de_i.before(d);
+                        boolean check_f = de_f.before(de_i);
+
+                        if (check_i) {
+                            System.out.println("Nao pode criar uma eleicao com uma Date inicial que ja passou!");
+                            break;
+                        }
+
+                        if (check_f) {
+                            System.out.println("Nao pode criar um eleicao cuja Date final seja anterior a Date inicial!");
+                            break;
+                        }
+
                         System.out.print("> Titulo: ");
                         titulo = reader.readLine();
                         System.out.println("> Descricao: ");
@@ -407,7 +425,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                             Eleicao e = (Eleicao) mapElement.getValue();
 
-                            boolean verifica = rmis.check_eleicao_after(e.getTitulo());
+                            boolean verifica = rmis.check_consulta_resultados(e.getTitulo());
                             if(verifica) {
                                 System.out.println("-------------------------------------------------\n"
                                         + "***RESULTADOS DA ELEICAO " + e.getTitulo() + "***\n"

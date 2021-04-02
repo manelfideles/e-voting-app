@@ -80,6 +80,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return e.getDate_i().after(d);
     }
 
+    public boolean check_eleicao_voto(String old_titulo) throws RemoteException {
+        Eleicao e = mape.get(old_titulo);
+        Date d = new Date();  // Current date
+        return (e.getDate_i().before(d) && e.getDate_f().after(d));
+    }
+
+    public boolean check_consulta_resultados(String old_titulo) throws RemoteException {
+        Eleicao e = mape.get(old_titulo);
+        Date d = new Date();  // Current date
+        return e.getDate_f().before(d);
+    }
+
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
         mape.replace(eleicao.old_titulo,
@@ -165,9 +177,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             HashMap<String, String> hmss = p.getLocal_momento_voto();
 
             // só pode votar em eleicoes que ja tenham comecado e ainda n tenham acabado
-            boolean check_after = check_eleicao_after(e.getTitulo());
-            boolean check_before = check_eleicao_before(e.getTitulo());
-            if (check_after && check_before) {
+            boolean check_voto = check_eleicao_voto(e.getTitulo());
+            if (!check_voto) {
                 break;
             }
 
