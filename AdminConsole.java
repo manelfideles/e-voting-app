@@ -200,9 +200,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         System.out.print("> Título da Eleicao: ");
                         old_titulo = reader.readLine();
 
-                        boolean check = rmis.check_eleicao(old_titulo);
+                        boolean check = rmis.check_eleicao_before(old_titulo);
 
-                        if(check) {
+                        if (check) {
                             System.out.println("Nao pode alterar as propriedades da eleicao pois ja comecou!");
                             break;
                         }
@@ -298,6 +298,13 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                     }
                                     System.out.print("> Nome da Eleicao: ");
                                     nome_eleicao = reader.readLine();
+
+                                    boolean verify = rmis.check_eleicao_before(nome_eleicao);
+                                    if (verify) {
+                                        System.out.println("Nao e possivel criar uma lista pois a eleicao ja comecou!");
+                                        break;
+                                    }
+
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
                                     System.out.print("> Numero de Pessoas Pertencentes a Lista: ");
@@ -341,6 +348,13 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 case "2":
                                     System.out.print("> Nome da Eleicao: ");
                                     nome_eleicao = reader.readLine();
+
+                                    boolean c = rmis.check_eleicao_before(nome_eleicao);
+                                    if (c) {
+                                        System.out.println("Nao e possivel remover uma lista pois a eleicao ja comecou!");
+                                        break;
+                                    }
+
                                     System.out.print("> Nome da Lista: ");
                                     nome_lista = reader.readLine();
 
@@ -393,25 +407,26 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                             Eleicao e = (Eleicao) mapElement.getValue();
 
-                            System.out.println("-------------------------------------------------\n"
-                                    + "***RESULTADOS DA ELEICAO " + e.getTitulo() + "***\n"
-                                    + "-------------------------------------------------\n" + "Numero de votos em Branco: "
-                                    + e.getNum_votos_branco() + " ("
-                                    + ((double) e.getNum_votos_branco() * 100 / (double) e.getNum_total_votos()) + "%)");
+                            boolean verifica = rmis.check_eleicao_after(e.getTitulo());
+                            if(verifica) {
+                                System.out.println("-------------------------------------------------\n"
+                                        + "***RESULTADOS DA ELEICAO " + e.getTitulo() + "***\n"
+                                        + "-------------------------------------------------\n" + "Numero de votos em Branco: "
+                                        + e.getNum_votos_branco() + " ("
+                                        + ((double) e.getNum_votos_branco() * 100 / (double) e.getNum_total_votos()) + "%)");
 
-                            // if (tempo atual > tempo término eleição)
+                                // Percorrer lista de listas de candidatos
+                                for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
 
-                            // Percorrer lista de listas de candidatos
-                            for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
-
-                                // Percorrer lista de candidatos
-                                for (Map.Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                                    System.out.println(
-                                            "Numero de votos da lista de candidatos '" + entry.getValue().getNome_lista()
-                                                    + '\'' + ": " + entry.getValue().getNum_votos() + " ("
-                                                    + ((double) entry.getValue().getNum_votos() * 100
-                                                    / (double) e.getNum_total_votos())
-                                                    + "%)");
+                                    // Percorrer lista de candidatos
+                                    for (Map.Entry<String, ListaCandidato> entry : llc.entrySet()) {
+                                        System.out.println(
+                                                "Numero de votos da lista de candidatos '" + entry.getValue().getNome_lista()
+                                                        + '\'' + ": " + entry.getValue().getNum_votos() + " ("
+                                                        + ((double) entry.getValue().getNum_votos() * 100
+                                                        / (double) e.getNum_total_votos())
+                                                        + "%)");
+                                    }
                                 }
                             }
                         }

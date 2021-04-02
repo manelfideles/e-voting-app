@@ -10,7 +10,9 @@ public interface RMIServer_I extends Remote {
 
     public void cria_eleicao(Eleicao eleicao) throws RemoteException;
 
-    public boolean check_eleicao(String old_titulo) throws RemoteException;
+    public boolean check_eleicao_before(String old_titulo) throws RemoteException;
+
+    public boolean check_eleicao_after(String old_titulo) throws RemoteException;
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException;
 
