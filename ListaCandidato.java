@@ -15,15 +15,15 @@ public class ListaCandidato implements Serializable {
         this.num_pessoas_lista = num_pessoas_lista;
         this.lista = lista;
         this.nome_eleicao = nome_eleicao;
-        //this.num_votos = num_votos;
     }
 
     public String toString() {
         return "{nome_lista='" + this.nome_lista +
                 "', tipo_lista='" + this.tipo_lista +
                 "', num_pessoas_lista='" + this.num_pessoas_lista +
-                "', lista=" + this.lista +
-                "}";
+                "', lista='" + this.lista +
+                "', num_votos='" + this.num_votos +
+                "'}";
     }
 
     public String getNome_lista() {

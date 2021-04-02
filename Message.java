@@ -22,6 +22,17 @@ public class Message {
         return lista;
     }
 
+    public void splitMakeList(String str) {
+        int i, j = 5;
+        String[] data = str.split("; | ");
+        String first = data[2]; // num de listas
+        int n = Integer.parseInt(first);
+        for (i = 0; i < n; i++) {
+            System.out.println(i + " - " + data[j]);
+            j += 3;
+        }
+    }
+
     public String packetToString(DatagramPacket p) {
         return new String(p.getData(), 0, p.getLength());
     }
@@ -50,7 +61,11 @@ public class Message {
 
     public String getContentFromPacket(DatagramPacket packet, String regex) {
         String[] data = packetToString(packet).split(regex);
-        // System.out.println(data[1]);
         return data[1];
+    }
+
+    public String getOpcaoEleicao(DatagramPacket packet, String regex) {
+        String[] data = packetToString(packet).split(regex);
+        return data[2];
     }
 }
