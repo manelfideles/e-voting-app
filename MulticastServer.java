@@ -2,14 +2,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.Scanner;
+import java.util.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.List;
 import java.nio.file.*;
 
 public class MulticastServer extends Thread {
@@ -142,7 +139,7 @@ class TerminalThread extends Thread {
                             String id_string = msg.getSenderFromPacket(id_packet);
                             System.out.println(id_string);
                             if (id_string.charAt(0) != '#') {
-                                op.sendPacket(msg.make("#", "reqreply",
+                                op.sendPacket(msg.make(id_string, "reqreply",
                                         msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; "
                                                 + opcao_eleicao),
                                         s, group, PORT); // envio das listas de candidatos para o terminal de voto
@@ -168,6 +165,7 @@ class VotingThread extends Thread {
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
+
 
     public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
         this.group = group;
@@ -223,10 +221,6 @@ class VotingThread extends Thread {
                         // associar pessoa ao local de voto
                         // envia informaçao para a admin console
 
-                        // NECESSÁRIO ENVIAR PARA O RMI_SERVER:
-                        // nome do dep da mesa
-                        // momento do voto
-
                         int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do
                                                                                                 // eleitor
                         int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do
@@ -235,8 +229,8 @@ class VotingThread extends Thread {
                         eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                         String nome_lista = hm.get(escolha + 1);
-                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo()); // num_cc, nome_lista,
-                                                                                       // nome_eleicao
+
+                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo());
                     }
                 }
             }
