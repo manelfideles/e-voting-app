@@ -150,11 +150,11 @@ class TerminalThread extends Thread {
                             op.sendPacket(msg.make("#", "request", null), s, group, PORT);
                             s.joinGroup(group);
                             DatagramPacket id_packet = op.receivePacket(s);
-                            String id_string = msg.packetToString(id_packet);
+                            String id_string = msg.getSenderFromPacket(id_packet);
+                            System.out.println(id_string);
                             if (id_string.charAt(0) != '#') {
-                                op.sendPacket(
-                                        msg.make("#", "reqreply", msg.makeList(getListasFromEleicaoEscolhida(eleicao))),
-                                        s, group, PORT);
+                                op.sendPacket(msg.make(id_string, "reqreply",
+                                        msg.makeList(getListasFromEleicaoEscolhida(eleicao))), s, group, PORT);
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");

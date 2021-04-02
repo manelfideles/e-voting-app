@@ -72,7 +72,7 @@ public class MulticastClient extends Thread {
                 String type = msg.getTypeFromPacket(packet);
                 String sender = msg.getSenderFromPacket(packet);
 
-                if (sender.equals("#")) {
+                if (sender.equals("#") || sender.equals(id)) {
                     if (type.equals("request") && busy == false) {
                         op.sendPacket(msg.make(id, "acknowledge", null), terminal_socket, terminals_group, PORT);
                         blocked = false;
