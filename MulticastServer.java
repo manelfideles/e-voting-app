@@ -8,7 +8,6 @@ import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.List;
 import java.nio.file.*;
 
@@ -68,7 +67,7 @@ public class MulticastServer extends Thread {
             // multicast
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis);
+            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis, DEP);
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
@@ -93,12 +92,14 @@ class TerminalThread extends Thread {
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
+    String DEP;
 
-    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis) {
+    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
+        this.DEP = DEP;
         t = new Thread(this);
         t.start();
     }
@@ -119,8 +120,11 @@ class TerminalThread extends Thread {
             Eleicao eleicao = null;
 
             while (true) {
-                System.out.print("Pressione '1' para identificar um novo utilizador: ");
-                if ("1".equals(keyboardScanner.nextLine())) {
+                System.out.println("1 - Identificar um novo utilizador");
+                System.out.println("2 - Desligar mesa ");
+                System.out.print("Insira a sua escolha > ");
+                String input = keyboardScanner.nextLine();
+                if ("1".equals(input)) {
                     System.out.print("Insira o CC do eleitor para o identificar: ");
                     String cc = keyboardScanner.nextLine();
                     p = rmis.getVoter(cc);
@@ -130,24 +134,21 @@ class TerminalThread extends Thread {
                             System.out.println("Selecione a eleicao na qual pretende exercer o seu voto:");
                             printBulletin(user_bulletin);
                             System.out.print("Escolha: ");
-                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine()); // VARIAVEL A ENVIAR PARA
-                                                                                              // TERMINAL
+                            int opcao_eleicao = Integer.parseInt(keyboardScanner.nextLine());
                             eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
 
                             // Handshake
                             s.leaveGroup(group);
-                            op.sendPacket(msg.make("#", "request", null), s, group, PORT);
+                            op.sendPacket(msg.make("#", "request", cc), s, group, PORT);
                             s.joinGroup(group);
                             DatagramPacket id_packet = op.receivePacket(s);
                             String id_string = msg.getSenderFromPacket(id_packet);
                             System.out.println(id_string);
                             if (id_string.charAt(0) != '#') {
-                                op.sendPacket(msg.make(id_string, "reqreply",
+                                op.sendPacket(msg.make("#" + id_string, "reqreply",
                                         msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; "
                                                 + opcao_eleicao),
-                                        s, group, PORT); // envio das listas de candidatos para o terminal de voto
-                                // [#] type | reqreply; item_count | 4; item_0_name | lista a; item_1_name |
-                                // lista b; item_2_name | voto_branco; item_3_name | voto_nuloitem_list; 1
+                                        s, group, PORT);
 
                             }
                         } else {
@@ -155,6 +156,16 @@ class TerminalThread extends Thread {
                         }
                     } else {
                         System.out.println("Nao existe nenhum eleitor com o CC inserido.");
+                    }
+                } else if ("2".equals(input)) {
+                    // clean exit
+                    rmis.unsubscribeMesa(this.DEP);
+                    System.out.println("Mesa " + this.DEP + " desligada.");
+                    try {
+                        join();
+                        break;
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -241,7 +252,8 @@ class VotingThread extends Thread {
                         HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                         String nome_lista = hm.get(escolha + 1);
                         rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP); // num_cc, nome_lista,
-                        // nome_eleicao
+                                                                                            // nome_eleicao
+                        op.sendPacket(msg.make("#", "success", "Voto submetido com sucesso!"), s, group, PORT);
                     }
                 }
             }
@@ -261,8 +273,8 @@ class RemoteMulticastServerObj extends UnicastRemoteObject implements RemoteMult
         this.rmis = rmis;
     }
 
-    public void ping(AdminConsole_I ac) throws RemoteException {
+    public void ping() throws RemoteException {
         // resposta
-        ac.print_on_admin_console("Successful.");
+        rmis.print_on_rmi_server("Successful.\n");
     }
 }

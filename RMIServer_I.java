@@ -6,6 +6,8 @@ public interface RMIServer_I extends Remote {
 
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException;
 
+    public void unsubscribe(AdminConsole_I ac) throws RemoteException;
+
     public void regista_pessoa(Pessoa pessoa) throws RemoteException;
 
     public void cria_eleicao(Eleicao eleicao) throws RemoteException;
@@ -49,6 +51,8 @@ public interface RMIServer_I extends Remote {
     public void printMesasExistentes() throws RemoteException;
 
     public void subscribeMesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) throws RemoteException;
+
+    public void unsubscribeMesa(String dep) throws RemoteException;
 
     public void checkActiveMesas(AdminConsole_I ac) throws RemoteException;
 

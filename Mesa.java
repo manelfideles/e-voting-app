@@ -5,7 +5,6 @@ public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
     public String mcastaddr;
-    private String vote_mcastaddr;
     // falta referencia para o objeto remoto RemoteMulticastServerObj
     RemoteMulticastServerObj_Impl remoteServerObj;
     private boolean isOn = false;
@@ -18,7 +17,7 @@ public class Mesa implements Serializable {
     }
 
     public String toString() {
-        return "Mesa:" + dep + "; Terminal Addr: " + mcastaddr + "; Vote Addr: " + vote_mcastaddr + "; State: " + isOn;
+        return "Mesa:" + dep + "; State: " + isOn;
     }
 
     public String getDep() {

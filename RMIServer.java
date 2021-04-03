@@ -72,6 +72,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("Just added AdminConsole to admin_consoles");
     }
 
+    public void unsubscribe(AdminConsole_I ac) throws RemoteException {
+        System.out.println("Unsubscribing Admin Console");
+        admin_consoles.remove(admin_consoles.indexOf(ac));
+        System.out.println("Just removed AdminConsole to admin_consoles");
+    }
+
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
         mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep, pessoa.contacto,
@@ -252,14 +258,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void ping(Mesa m, AdminConsole_I ac) throws RemoteException {
         int i = 0;
         ac.print_on_admin_console("\nPinging Mesa " + m.getDep() + "\n");
-        while (i < 5) {
-            ac.print_on_admin_console("Ping " + i + " > ");
+        while (i < 3) {
             // pergunta
-            m.remoteServerObj.ping(ac);
-
-            ac.print_on_admin_console("\n");
             try {
-                Thread.sleep(1000);
+                ac.print_on_admin_console("Ping " + i + " > ");
+                m.remoteServerObj.ping();
+                ac.print_on_admin_console("\n");
+            } catch (RemoteException ex) {
+                m.setState(false);
+                unsubscribeMesa(m.getDep());
+            }
+            try {
+                Thread.sleep(10 * 1000);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -271,7 +281,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         Mesa m = mapm.get(dep);
         m.remoteServerObj = remoteServerObj;
         m.setState(true);
-        System.out.println("Mesa " + dep + " ligou-se ao RMIServer");
+        for (AdminConsole_I ac : admin_consoles) {
+            ac.print_on_admin_console("Mesa " + dep + " ligou-se de RMIServer\n");
+        }
+    }
+
+    public void unsubscribeMesa(String dep) throws RemoteException {
+        Mesa m = mapm.get(dep);
+        m.remoteServerObj = null;
+        m.setState(false);
+        for (AdminConsole_I ac : admin_consoles) {
+            ac.print_on_admin_console("Mesa " + dep + " desligou-se de RMIServer\n");
+        }
     }
 
     public boolean confereLogin(String cc, String password) throws RemoteException {
@@ -358,6 +379,17 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             Registry r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
+
+            // pings continuos a todas as mesas associadas
+            // while (true) {
+            // for (AdminConsole_I ac : RMIServer.admin_consoles) {
+            // System.out.println("ruben");
+            // for (Map.Entry mesa : mapm.entrySet()) {
+            // Mesa m = mapm.get(mesa.getKey());
+            // rmis.ping(m, ac);
+            // }
+            // }
+            // }
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
         }

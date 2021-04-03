@@ -8,13 +8,13 @@ import java.util.List;
 import java.nio.file.*;
 
 public class MulticastClient extends Thread {
-    private String TERMINALS;
-    private String VOTE;
-    private int PORT;
-    private String DEP;
+    String TERMINALS;
+    String VOTE;
+    int PORT;
+    String DEP;
     private boolean busy = false;
     private boolean blocked = true;
-    private String id = UUID.randomUUID().toString();
+    String id = UUID.randomUUID().toString();
 
     public static void main(String[] args) {
         MulticastClient client = new MulticastClient();
@@ -37,13 +37,12 @@ public class MulticastClient extends Thread {
     public void run() {
         MulticastSocket terminal_socket = null;
         MulticastSocket voting_socket = null;
-
-        readConfigFile("MulticastConfig.txt");
-
         System.out.println("Client " + id + " running.");
+
         try {
-            // le config
             readConfigFile("MulticastConfig.txt");
+            String cc = null;
+            Session session = null;
 
             // configura
             terminal_socket = new MulticastSocket(PORT);
@@ -57,6 +56,7 @@ public class MulticastClient extends Thread {
             Message msg = new Message();
             ThreadOps op = new ThreadOps();
             DatagramPacket packet;
+            Thread packetSpammer;
             // Thread counterThread = new Thread();
             // counterThread.start();
 
@@ -74,12 +74,19 @@ public class MulticastClient extends Thread {
                 String type = msg.getTypeFromPacket(packet);
                 String sender = msg.getSenderFromPacket(packet);
 
-                if (sender.equals("#") || sender.equals(id)) {
+                if (sender.equals("#") || sender.equals("#" + id)) {
                     if (type.equals("request") && busy == false) {
                         op.sendPacket(msg.make(id, "acknowledge", null), terminal_socket, terminals_group, PORT);
+                        cc = msg.getContentFromPacket(packet, "; ");
+                        session = new Session(cc);
                         blocked = false;
                     }
                     if (type.equals("reqreply")) {
+                        // tenta recuperar sessao se houver session file
+                        // if(!session.restoreSession()) {
+                        // session.saveSession([cc, password]);
+                        // }
+
                         // Login data
                         System.out.print("CC: ");
                         String read_user = keyboardScanner.nextLine();
@@ -112,6 +119,9 @@ public class MulticastClient extends Thread {
                         busy = false;
                         blocked = true;
                         voting_socket.leaveGroup(voting_group);
+                    }
+                    if (type.equals("sucess")) {
+
                     }
                     if (type.equals("error")) {
                         System.out.println("Wrong credentials!");
