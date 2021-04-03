@@ -115,6 +115,8 @@ public class MulticastClient extends Thread {
                     }
                     if (type.equals("error")) {
                         System.out.println("Wrong credentials!");
+                        voting_socket.leaveGroup(voting_group);
+                        busy = false;
                         blocked = true;
                     }
                 }
