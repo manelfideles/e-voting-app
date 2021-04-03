@@ -62,16 +62,20 @@ public class MulticastServer extends Thread {
             // configura
             // ligacao rmi
             RemoteMulticastServerObj_Impl remoteServerObj = new RemoteMulticastServerObj(rmis);
-            rmis.subscribeMesa(this.DEP, (RemoteMulticastServerObj_Impl) remoteServerObj);
+            try {
+                rmis.subscribeMesa(this.DEP, (RemoteMulticastServerObj_Impl) remoteServerObj);
+            } catch (RemoteException e) {
+                rmis.print_on_rmi_server("Mesa " + this.DEP + " ligou-se ao RMIServer.");
+            }
 
             // multicast
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis, DEP);
+            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis, DEP, PORT);
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP, PORT);
 
             while (true) {
                 //
@@ -86,20 +90,21 @@ public class MulticastServer extends Thread {
 }
 
 class TerminalThread extends Thread {
-    private int PORT = 4321;
     InetAddress group;
     MulticastSocket s;
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
     String DEP;
+    int PORT;
 
-    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP) {
+    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
         this.DEP = DEP;
+        this.PORT = PORT;
         t = new Thread(this);
         t.start();
     }
@@ -141,15 +146,22 @@ class TerminalThread extends Thread {
                             s.leaveGroup(group);
                             op.sendPacket(msg.make("#", "request", cc), s, group, PORT);
                             s.joinGroup(group);
+
                             DatagramPacket id_packet = op.receivePacket(s);
-                            String id_string = msg.getSenderFromPacket(id_packet);
-                            System.out.println(id_string);
-                            if (id_string.charAt(0) != '#') {
-                                op.sendPacket(msg.make("#" + id_string, "reqreply",
+
+                            String id = msg.getSenderFromPacket(id_packet);
+                            String type = msg.getTypeFromPacket(id_packet);
+                            String sender = msg.getSenderFromPacket(id_packet);
+
+                            // System.out.println("SENDER: " + sender + " TYPE: " + type);
+
+                            if (!sender.startsWith("#") && type.equals("acknowledge")) {
+                                s.leaveGroup(group);
+                                op.sendPacket(msg.make("#" + id, "reqreply",
                                         msg.makeList(rmis.getListasFromEleicaoEscolhida(eleicao)) + "reqreply; "
                                                 + opcao_eleicao),
                                         s, group, PORT);
-
+                                s.joinGroup(group);
                             }
                         } else {
                             System.out.println("Nao pode votar em nenhuma eleicao.");
@@ -176,20 +188,22 @@ class TerminalThread extends Thread {
 }
 
 class VotingThread extends Thread {
-    private int PORT = 4321;
     InetAddress group;
     MulticastSocket s;
     Thread t;
     ThreadOps op;
     RMIServer_I rmis;
     String DEP;
+    int PORT;
+    boolean rmiIsDown;
 
-    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
         this.DEP = DEP;
+        this.PORT = PORT;
         t = new Thread(this);
         t.start();
     }
@@ -205,56 +219,72 @@ class VotingThread extends Thread {
                 String type = msg.getTypeFromPacket(packet);
                 String sender = msg.getSenderFromPacket(packet);
 
-                if (!sender.equals("#")) {
-                    if (type.equals("login")) {
-                        try {
-                            String cc = msg.getUserFromPacket(packet);
-                            String password = msg.getPasswordFromPacket(packet);
+                System.out.println("SENDER: " + sender + " TYPE: " + type);
 
-                            // Login verification
-                            p = rmis.getVoter(cc);
-                            if (p != null) {
-                                if (p.getPassword().equals(password)) {
-                                    op.sendPacket(
-                                            msg.make("#", "bulletin",
-                                                    "logged | on: Bem-vindo ao eVoting, " + p.getNome() + " !"),
-                                            s, group, PORT);
+                try {
+                    if (!sender.startsWith("#")) {
+                        if (type.equals("login")) {
+                            try {
+                                String cc = msg.getUserFromPacket(packet);
+                                String password = msg.getPasswordFromPacket(packet);
+
+                                // Login verification
+                                p = rmis.getVoter(cc);
+                                if (p != null) {
+                                    if (p.getPassword().equals(password)) {
+                                        s.leaveGroup(group);
+                                        op.sendPacket(
+                                                msg.make("#" + sender, "bulletin",
+                                                        "logged | on: Bem-vindo ao eVoting, " + p.getNome() + " !"),
+                                                s, group, PORT);
+                                        s.joinGroup(group);
+                                    } else {
+                                        op.sendPacket(msg.make("#" + sender, "error", "Wrong credentials"), s, group,
+                                                PORT);
+                                    }
                                 } else {
-                                    op.sendPacket(msg.make("#", "error", "Wrong credentials"), s, group, PORT);
+                                    System.out.println("User nao existe.");
                                 }
-                            } else {
-                                System.out.println("User não existe.");
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
                             }
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            e.printStackTrace();
+                        } else if (type.equals("vote")) {
+                            String nome_lista = null;
+                            try {
+                                int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; "));
+                                int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; "));
+                                HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p);
+                                eleicao = user_bulletin.get(opcao_eleicao);
+                                HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
+                                nome_lista = hm.get(escolha + 1);
+                                // rmi escreve na bd
+                                rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP);
+                                op.sendPacket(msg.make("#" + sender, "success", "Voto submetido com sucesso!"), s,
+                                        group, PORT);
+                            } catch (RemoteException re) {
+                                rmiIsDown = true;
+                                while (rmiIsDown /* || counterThread.isAlive() */) {
+                                    try {
+                                        rmis.print_on_rmi_server("Ping from " + DEP);
+                                        // rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP);
+                                        sleep(2 * 1000);
+                                    } catch (RemoteException ex) {
+                                        System.out.println("Reconectando...");
+                                        // RMIServer rmis = new RMIServer();
+                                        // Registry r = LocateRegistry.createRegistry(6969);
+                                        // r.rebind("RMI_Server", rmis);
+                                        continue;
+                                    } catch (InterruptedException ie) {
+                                        ie.printStackTrace();
+                                    }
+                                    rmiIsDown = false;
+                                    break;
+                                }
+                            }
                         }
                     }
-                    if (type.equals("bulletin")) {
-                        op.sendPacket(msg.make("#", "bulletin", "\n" + rmis.getBulletin(p)), s, group, PORT);
-                    }
-                    if (type.equals("vote")) {
-                        // rmi - atualizar o n_votos (brancos/nulos/validos) - acesso
-                        // sincronizado
-                        // atualizar todas as estruturas de dados
-                        // associar pessoa ao local de voto
-                        // envia informaçao para a admin console
-
-                        // NECESSARIO ENVIAR PARA O RMI_SERVER:
-                        // nome do dep da mesa
-                        // momento do voto
-
-                        int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; ")); // escolha lista do
-                                                                                                // eleitor
-                        int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; ")); // escolha eleicao do
-                                                                                                 // eleitor
-                        HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p); // hashmap eleicoes
-                        eleicao = user_bulletin.get(opcao_eleicao); // eleição escolhida pelo eleitor
-                        HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
-                        String nome_lista = hm.get(escolha + 1);
-                        rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP); // num_cc, nome_lista,
-                                                                                            // nome_eleicao
-                        op.sendPacket(msg.make("#", "success", "Voto submetido com sucesso!"), s, group, PORT);
-                    }
+                } catch (RemoteException re) {
+                    System.out.println("ola estou aqui");
                 }
             }
         } catch (IOException e) {

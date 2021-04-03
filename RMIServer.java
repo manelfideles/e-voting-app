@@ -63,7 +63,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public synchronized void print_on_rmi_server(String s) throws RemoteException {
-        System.out.println("PRINT ON RMI SERVER\n> " + s);
+        System.out.println("> " + s);
     }
 
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException {
@@ -282,7 +282,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         m.remoteServerObj = remoteServerObj;
         m.setState(true);
         for (AdminConsole_I ac : admin_consoles) {
-            ac.print_on_admin_console("Mesa " + dep + " ligou-se de RMIServer\n");
+            try {
+                ac.print_on_admin_console("Mesa " + dep + " ligou-se ao RMIServer\n");
+            } catch (RemoteException e) {
+                System.out.println("Mesa " + dep + " ligou-se ao RMIServer");
+            }
         }
     }
 
@@ -291,7 +295,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         m.remoteServerObj = null;
         m.setState(false);
         for (AdminConsole_I ac : admin_consoles) {
-            ac.print_on_admin_console("Mesa " + dep + " desligou-se de RMIServer\n");
+            try {
+                ac.print_on_admin_console("Mesa " + dep + " desligou-se de RMIServer\n");
+            } catch (Exception ex) {
+                System.out.println("Mesa " + dep + " desligou-se do RMIServer");
+            }
         }
     }
 
