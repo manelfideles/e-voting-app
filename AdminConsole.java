@@ -448,11 +448,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     HashMap<String, Mesa> mapm = rmis.consulta_eleitores();
                     for (Map.Entry mapElement : mapm.entrySet()) {
                         Mesa m = (Mesa) mapElement.getValue();
-                        System.out.println(m.dep + ": " + m.num_eleitores);
-                        /*for (Map.Entry mapElement2 : m.getNum_eleitores().entrySet()) {
-                            System.out.println(m.dep + ":");
-                            System.out.println(mapElement2.getKey() + ": " + mapElement2.getValue());
-                        }*/
+                        System.out.println(m.getDep() + ": " + m.getNum_eleitores());
                     }
                     break;
                 case "8": // "8.Consultar Resultados"

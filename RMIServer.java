@@ -3,6 +3,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.SQLOutput;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ArrayList;
@@ -286,7 +287,21 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
         mapp.get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         mape.get(nome_eleicao).num_total_votos++;
-        mapm.get(DEP).num_eleitores++;
+
+        boolean existe = false;
+        HashMap<String, Integer> n_e = mapm.get(DEP).getNum_eleitores();
+        for (Map.Entry mapElement : n_e.entrySet()) {
+            if (mapElement.getKey().equals(nome_eleicao)) {
+                Integer i = (Integer) mapElement.getValue();
+                i++;
+                n_e.replace(nome_eleicao, i);
+                existe = true;
+                break;
+            }
+        }
+        if (!existe) {
+            n_e.put(nome_eleicao,1);
+        }
 
         switch (nome_lista) {
         case "voto_branco":
