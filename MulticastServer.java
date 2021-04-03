@@ -2,14 +2,15 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.Scanner;
+import java.util.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
+import java.nio.file.*;
+import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.nio.file.*;
 
 public class MulticastServer extends Thread {
     private String TERMINALS;
@@ -213,7 +214,7 @@ class VotingThread extends Thread {
             s.joinGroup(group);
             Message msg = new Message();
             Pessoa p = null;
-            Eleicao eleicao = null;
+            Eleicao eleicao;
             while (true) {
                 DatagramPacket packet = op.receivePacket(s);
                 String type = msg.getTypeFromPacket(packet);
@@ -258,7 +259,8 @@ class VotingThread extends Thread {
                                 HashMap<Integer, String> hm = rmis.getListasFromEleicaoEscolhida(eleicao);
                                 nome_lista = hm.get(escolha + 1);
                                 // rmi escreve na bd
-                                rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP);
+                                Date d = new Date();
+                                rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d);
                                 op.sendPacket(msg.make("#" + sender, "success", "Voto submetido com sucesso!"), s,
                                         group, PORT);
                             } catch (RemoteException re) {

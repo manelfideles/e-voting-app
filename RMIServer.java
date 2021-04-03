@@ -30,7 +30,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     HashMap<String, Eleicao> mape = new HashMap<>();
 
     // Mesas
-    static HashMap<String, Mesa> mapm = new HashMap<String, Mesa>();
+    static HashMap<String, Mesa> mapm = new HashMap<>();
     static {
         mapm.put("DARQ", new Mesa("DARQ", null));
         mapm.put("DCT", new Mesa("DCT", null));
@@ -44,7 +44,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         mapm.put("DQ", new Mesa("DQ", null));
         mapm.put("FLUC", new Mesa("FLUC", null));
         mapm.put("FDUC", new Mesa("FDUC", null));
-        mapm.put("FMUC", new Mesa("FMUC", null));
         mapm.put("FMUC", new Mesa("FMUC", null));
         mapm.put("FFUC", new Mesa("FFUC", null));
         mapm.put("FEUC", new Mesa("FEUC", null));
@@ -96,26 +95,26 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(objeto);
     }
 
-    public boolean check_eleicao_before(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_before(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().before(d);
     }
 
-    public boolean check_eleicao_after(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_after(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().after(d);
     }
 
-    public boolean check_eleicao_voto(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_voto(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return (e.getDate_i().before(d) && e.getDate_f().after(d));
     }
 
-    public boolean check_consulta_resultados(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_consulta_resultados(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_f().before(d);
     }
@@ -179,7 +178,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void consulta_estado_mesas() throws RemoteException {
         System.out.println("RMI SERVER - consulta_estado_mesas");
-
     }
 
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
@@ -200,30 +198,24 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException {
         int i = 1;
         HashMap<Integer, Eleicao> hme = new HashMap<>();
-
         // Popular
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             HashMap<String, String> hmss = p.getLocal_momento_voto();
-
             // só pode votar em eleicoes que ja tenham comecado e ainda n tenham acabado
             boolean check_voto = check_eleicao_voto(e.getTitulo());
-            if (!check_voto) {
-                break;
-            }
-
-            if (hmss == null) {
-                if (e.getDescricao().equals(p.getFuncao())
-                        && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
-                    hme.put(i, e);
-                    i++;
-                }
-            } else {
-                if (!hmss.containsKey(e.getTitulo())) {
-                    if (e.getDescricao().equals(p.getFuncao())
-                            && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+            if (check_voto) {
+                if (hmss.isEmpty()) {
+                    if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
                         i++;
+                    }
+                } else {
+                    if (!hmss.containsKey(e.getTitulo())) {
+                        if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                            hme.put(i, e);
+                            i++;
+                        }
                     }
                 }
             }
@@ -313,9 +305,24 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return false;
     }
 
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP) throws RemoteException {
-        mapp.get(num_cc).local_momento_voto.put(nome_eleicao, DEP); // falta adicionar local e momento
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
+        mapp.get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         mape.get(nome_eleicao).num_total_votos++;
+
+        boolean existe = false;
+        HashMap<String, Integer> n_e = mapm.get(DEP).getNum_eleitores();
+        for (Map.Entry mapElement : n_e.entrySet()) {
+            if (mapElement.getKey().equals(nome_eleicao)) {
+                Integer i = (Integer) mapElement.getValue();
+                i++;
+                n_e.replace(nome_eleicao, i);
+                existe = true;
+                break;
+            }
+        }
+        if (!existe) {
+            n_e.put(nome_eleicao,1);
+        }
 
         switch (nome_lista) {
         case "voto_branco":
@@ -341,10 +348,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
         int j = 1;
         HashMap<Integer, String> out = new HashMap<>();
-        for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
-            for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                out.put(j, entry.getValue().nome_lista);
-                j++;
+        if (!e.lista_lista_candidato.isEmpty()) {
+            for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
+                for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
+                    out.put(j, entry.getValue().nome_lista);
+                    j++;
+                }
             }
         }
         out.put(j, "voto_branco");

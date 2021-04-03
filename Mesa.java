@@ -4,15 +4,17 @@ import java.util.HashMap;
 public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
+    //public int num_eleitores;
     public String mcastaddr;
     // falta referencia para o objeto remoto RemoteMulticastServerObj
     RemoteMulticastServerObj_Impl remoteServerObj;
     private boolean isOn = false;
 
-    public HashMap<String, Integer> num_eleitores; // {Nome do departamento : Num de pessoas que ja votaram nesse dep }
+    public HashMap<String, Integer> num_eleitores = new HashMap<>(); // {Nome da eleicao : Num de pessoas que ja votaram nessa eleicao }
 
     public Mesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) {
         this.dep = dep;
+        this.num_eleitores = num_eleitores;
         this.remoteServerObj = remoteServerObj;
     }
 
