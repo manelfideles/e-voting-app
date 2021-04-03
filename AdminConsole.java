@@ -196,12 +196,17 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                     date_i = new Date(ano_i - 1900, mes_i - 1, dia_i, hora_i, minuto_i);
                     date_f = new Date(ano_f - 1900, mes_f - 1, dia_f, hora_f, minuto_f);
+                    Date d2 = new Date(); // Current date
+                    boolean check_i2 = de_i.before(d2);
+                    if (check_i2) {
+                        System.out.println("Nao pode criar uma eleicao com uma Date inicial que ja passou!");
+                        break;
+                    }
 
                     eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f,
                             titulo, descricao, restricao, "", lista_lista_candidato, date_i, date_f);
                     rmis.cria_eleicao(eleicao);
                     break;
-
                 case "3": // "3.Alterar Propriedades de uma Eleição"
                     System.out.print("> Título da Eleicao: ");
                     old_titulo = reader.readLine();
@@ -274,6 +279,12 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                     date_i = new Date(ano_i - 1900, mes_i - 1, dia_i, hora_i, minuto_i);
                     date_f = new Date(ano_f - 1900, mes_f - 1, dia_f, hora_f, minuto_f);
+                    Date cd = new Date(); // Current date
+                    boolean check_2 = date_i.before(cd);
+                    if (check_2) {
+                        System.out.println("Nao pode criar uma eleicao com uma Date inicial que ja passou!");
+                        break;
+                    }
 
                     eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f,
                             titulo, descricao, restricao, old_titulo, lista_lista_candidato, date_i, date_f);
