@@ -115,9 +115,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     System.out.println("----------------------------------------------------\n");
 
                     pessoa = new Pessoa(nome, funcao, password, dep_fac, contacto, morada, num_cc, val_cc);
-
                     rmis.regista_pessoa(pessoa);
-
                     break;
                 case "2": // "2.Criar Eleição"
                     System.out.print("> Ano Inicio: ");
@@ -144,15 +142,12 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     Date de_i = new Date(ano_i-1900, mes_i-1, dia_i, hora_i, minuto_i); // Date inicial que queremos criar
                     Date de_f = new Date(ano_f-1900, mes_f-1, dia_f, hora_f, minuto_f); // Date final que queremos criar
                     Date d = new Date(); // Current date
-
                     boolean check_i = de_i.before(d);
                     boolean check_f = de_f.before(de_i);
-
                     if (check_i) {
                         System.out.println("Nao pode criar uma eleicao com uma Date inicial que ja passou!");
                         break;
                     }
-
                     if (check_f) {
                         System.out.println("Nao pode criar um eleicao cuja Date final seja anterior a Date inicial!");
                         break;
@@ -204,9 +199,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                     eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f,
                             titulo, descricao, restricao, "", lista_lista_candidato, date_i, date_f);
-
                     rmis.cria_eleicao(eleicao);
-
                     break;
 
                 case "3": // "3.Alterar Propriedades de uma Eleição"
@@ -214,7 +207,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     old_titulo = reader.readLine();
 
                     boolean check = rmis.check_eleicao_before(old_titulo);
-
                     if (check) {
                         System.out.println("Nao pode alterar as propriedades da eleicao pois ja comecou!");
                         break;
@@ -285,9 +277,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                     eleicao = new Eleicao(ano_i, mes_i, dia_i, hora_i, minuto_i, ano_f, mes_f, dia_f, hora_f, minuto_f,
                             titulo, descricao, restricao, old_titulo, lista_lista_candidato, date_i, date_f);
-
                     rmis.altera_eleicao(eleicao);
-
                     break;
                 case "4": // "4.Gerir Candidatos"
                     try {
@@ -355,9 +345,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                             lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista,
                                     nome_eleicao);
-
                             rmis.cria_lista_candidatos(lista_candidato);
-
                             break;
                         case "2":
                             System.out.print("> Nome da Eleicao: ");
@@ -377,9 +365,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             System.out.println("----------------------------------------------------------------\n");
 
                             lista_candidato = new ListaCandidato(nome_lista, "0", 0, lista, nome_eleicao);
-
                             rmis.remove_lista_candidatos(lista_candidato);
-
                             break;
                         case "3":
                             break;

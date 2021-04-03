@@ -11,13 +11,13 @@ public interface RMIServer_I extends Remote {
 
     public void cria_eleicao(Eleicao eleicao) throws RemoteException;
 
-    public boolean check_eleicao_before(String old_titulo) throws RemoteException;
+    public boolean check_eleicao_before(String titulo) throws RemoteException;
 
-    public boolean check_eleicao_after(String old_titulo) throws RemoteException;
+    public boolean check_eleicao_after(String titulo) throws RemoteException;
 
-    public boolean check_eleicao_voto(String old_titulo) throws RemoteException;
+    public boolean check_eleicao_voto(String titulo) throws RemoteException;
 
-    public boolean check_consulta_resultados(String old_titulo) throws RemoteException;
+    public boolean check_consulta_resultados(String titulo) throws RemoteException;
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException;
 

@@ -126,6 +126,7 @@ class TerminalThread extends Thread {
                     p = rmis.getVoter(cc);
                     if (p != null) {
                         HashMap<Integer, Eleicao> user_bulletin = rmis.getBulletin(p);
+                        System.out.println(user_bulletin);
                         if (!user_bulletin.isEmpty()) {
                             System.out.println("Selecione a eleicao na qual pretende exercer o seu voto:");
                             printBulletin(user_bulletin);

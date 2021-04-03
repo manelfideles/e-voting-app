@@ -3,7 +3,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.SQLOutput;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ArrayList;
@@ -90,26 +89,26 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(objeto);
     }
 
-    public boolean check_eleicao_before(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_before(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().before(d);
     }
 
-    public boolean check_eleicao_after(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_after(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().after(d);
     }
 
-    public boolean check_eleicao_voto(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_eleicao_voto(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return (e.getDate_i().before(d) && e.getDate_f().after(d));
     }
 
-    public boolean check_consulta_resultados(String old_titulo) throws RemoteException {
-        Eleicao e = mape.get(old_titulo);
+    public boolean check_consulta_resultados(String titulo) throws RemoteException {
+        Eleicao e = mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_f().before(d);
     }
@@ -173,7 +172,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void consulta_estado_mesas() throws RemoteException {
         System.out.println("RMI SERVER - consulta_estado_mesas");
-
     }
 
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
@@ -194,30 +192,24 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException {
         int i = 1;
         HashMap<Integer, Eleicao> hme = new HashMap<>();
-
         // Popular
         for (Map.Entry mapElement : mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             HashMap<String, String> hmss = p.getLocal_momento_voto();
-
             // só pode votar em eleicoes que ja tenham comecado e ainda n tenham acabado
             boolean check_voto = check_eleicao_voto(e.getTitulo());
-            if (!check_voto) {
-                break;
-            }
-
-            if (hmss == null) {
-                if (e.getDescricao().equals(p.getFuncao())
-                        && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
-                    hme.put(i, e);
-                    i++;
-                }
-            } else {
-                if (!hmss.containsKey(e.getTitulo())) {
-                    if (e.getDescricao().equals(p.getFuncao())
-                            && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+            if (check_voto) {
+                if (hmss.isEmpty()) {
+                    if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
                         i++;
+                    }
+                } else {
+                    if (!hmss.containsKey(e.getTitulo())) {
+                        if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                            hme.put(i, e);
+                            i++;
+                        }
                     }
                 }
             }
@@ -327,10 +319,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
         int j = 1;
         HashMap<Integer, String> out = new HashMap<>();
-        for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
-            for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
-                out.put(j, entry.getValue().nome_lista);
-                j++;
+        if (!e.lista_lista_candidato.isEmpty()) {
+            for (HashMap<String, ListaCandidato> llc : e.lista_lista_candidato) {
+                for (Entry<String, ListaCandidato> entry : llc.entrySet()) {
+                    out.put(j, entry.getValue().nome_lista);
+                    j++;
+                }
             }
         }
         out.put(j, "voto_branco");
