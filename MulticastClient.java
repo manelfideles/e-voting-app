@@ -9,6 +9,7 @@ import java.util.List;
 import java.nio.file.*;
 
 public class MulticastClient extends Thread {
+    private static final long serialVersionUID = 1L;
     String TERMINALS;
     String VOTE;
     int PORT;

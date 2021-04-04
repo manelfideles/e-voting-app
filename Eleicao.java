@@ -27,8 +27,8 @@ public class Eleicao implements Serializable {
     public int num_total_votos;
 
     public Eleicao(int ano_i, int mes_i, int dia_i, int hora_i, int minuto_i, int ano_f, int mes_f, int dia_f, int hora_f, int minuto_f,
-            String titulo, String descricao, String restricao, String old_titulo,
-            ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato, Date date_i, Date date_f) {
+                   String titulo, String descricao, String restricao, String old_titulo,
+                   ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato, Date date_i, Date date_f) {
         this.ano_i = ano_i;
         this.mes_i = mes_i;
         this.dia_i = dia_i;

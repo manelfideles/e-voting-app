@@ -23,7 +23,11 @@ public interface RMIServer_I extends Remote {
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException;
 
+    public boolean check_eleicao_exists(String titulo) throws RemoteException;
+
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException;
+
+    public String returnTipo_lista(String titulo) throws RemoteException;
 
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException;
 

@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
+    private static final long serialVersionUID = 1L;
 
     public Message() {
         ;
@@ -25,6 +26,7 @@ public class Message {
     public void splitMakeList(String str) {
         int i, j = 5;
         String[] data = str.split("; | ");
+
         String first = data[2]; // num de listas
         int n = Integer.parseInt(first);
         for (i = 0; i < n; i++) {

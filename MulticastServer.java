@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.List;
 
 public class MulticastServer extends Thread {
+    private static final long serialVersionUID = 1L;
     private String TERMINALS;
     private String VOTE;
     private int PORT;
@@ -117,6 +118,7 @@ public class MulticastServer extends Thread {
 }
 
 class TerminalThread extends Thread {
+    private static final long serialVersionUID = 1L;
     InetAddress group;
     MulticastSocket s;
     Thread t;
@@ -311,6 +313,7 @@ class TerminalThread extends Thread {
 }
 
 class VotingThread extends Thread {
+    private static final long serialVersionUID = 1L;
     InetAddress group;
     MulticastSocket s;
     Thread t;

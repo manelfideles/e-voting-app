@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.*;
 
-
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
 
@@ -20,7 +19,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
 
     public Objeto objeto;
-
 
     public RMIServer() throws RemoteException {
         super();
@@ -44,6 +42,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
+
         HashMap<String, Pessoa> mapp = this.objeto.hmp.hmp.get("HashMapPessoas");
         mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep, pessoa.contacto,
                 pessoa.morada, pessoa.num_cc, pessoa.val_cc));
@@ -87,13 +86,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
+        Eleicao e = this.objeto.hme.mape.get(eleicao.old_titulo);
         this.objeto.hme.mape.replace(eleicao.old_titulo,
                 new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
-                        eleicao.descricao, eleicao.restricao, eleicao.old_titulo, eleicao.lista_lista_candidato,
+                        e.descricao, e.restricao, eleicao.old_titulo, e.lista_lista_candidato,
                         eleicao.date_i, eleicao.date_f));
         this.objeto.hme.mape.put(eleicao.titulo, this.objeto.hme.mape.remove(eleicao.old_titulo));
         WriteObjectToFile(this.objeto);
+    }
+
+    public boolean check_eleicao_exists(String titulo) throws RemoteException {
+        return this.objeto.hme.mape.containsKey(titulo);
     }
 
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
@@ -109,9 +113,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(this.objeto);
     }
 
+    public String returnTipo_lista(String titulo) throws RemoteException {
+        Eleicao e = this.objeto.hme.mape.get(titulo);
+        return e.getDescricao();
+    }
+
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - remove_lista_candidatos");
         int i = 0;
+        boolean v = false;
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
@@ -120,10 +130,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                         String lc = (String) mapElement2.getKey();
                         if (lista_candidato.nome_lista.equals(lc)) {
                             e.lista_lista_candidato.remove(i);
+                            v=true;
                             WriteObjectToFile(this.objeto);
                             break;
                         }
                         i++;
+                    }
+                    if (v) {
+                        break;
                     }
                 }
             }
@@ -364,7 +378,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         int PORT_r = 6969;
         try {
-            rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
+
+            File file = new File(outputFilePath);
+            if(file.length() != 0) { // se o fs.txt tiver dados escritos
+                rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
+            }
+            else {
+                rmis.objeto = new Objeto();
+            }
+
             r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
@@ -391,10 +413,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 programFails = false;
                 try {
                     Thread.sleep(1000);
-                    rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
+
+                    File file = new File(outputFilePath);
+                    if(file.length() != 0) {
+                        rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
+                    }
+                    else {
+                        rmis.objeto = new Objeto();
+                    }
+
                     r = LocateRegistry.createRegistry(PORT_r);
                     r.rebind("RMI_Server", rmis);
-                    System.out.println("Connected! Server Backup assumed");
+                    System.out.println("RMIServer ready.");
 
                 } catch (FileNotFoundException e) {
                     rmis.objeto = new Objeto();

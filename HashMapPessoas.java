@@ -1,7 +1,9 @@
 import java.io.Serializable;
 import java.util.HashMap;
 
+
 public class HashMapPessoas implements Serializable {
+    private static final long serialVersionUID = 1L;
     HashMap<String,HashMap<String,Pessoa>> hmp;
 
     public HashMapPessoas(HashMap<String,HashMap<String,Pessoa>> hmp) {
