@@ -43,7 +43,9 @@ public interface RMIServer_I extends Remote {
 
     public void WriteObjectToFile(Object obj) throws RemoteException;
 
-    public Object ReadObjectFromFile(String outputFilePath) throws RemoteException;
+    public Object ReadObjectFromFile(String outputFilePath) throws Exception;
+
+    public Objeto returnObjeto() throws RemoteException;
 
     public Pessoa getVoter(String cc) throws RemoteException;
 
@@ -62,5 +64,7 @@ public interface RMIServer_I extends Remote {
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException;
 
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException;
+
+    public void sayHello() throws RemoteException;
 
 }
