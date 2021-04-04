@@ -397,96 +397,97 @@ class VotingThread extends Thread {
                             }
                         } else if (type.equals("vote")) {
                             String nome_lista = null;
-                            try {
-                                int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; "));
-                                int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; "));
-                                HashMap<Integer, Eleicao> user_bulletin;
 
-                                while (true) {
+                            int escolha = Integer.parseInt(msg.getContentFromPacket(packet, "; "));
+                            int opcao_eleicao = Integer.parseInt(msg.getOpcaoEleicao(packet, "; "));
+                            HashMap<Integer, Eleicao> user_bulletin;
 
-                                    try {
-                                        user_bulletin = rmis.getBulletin(p);
-                                        break;
+                            while (true) {
 
-                                    } catch (RemoteException e) {
-                                        int contador=0;
-                                        while(contador<30) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                                                rmis.sayHello();
-                                                break;
+                                try {
+                                    user_bulletin = rmis.getBulletin(p);
+                                    break;
 
-                                            }catch(NotBoundException | InterruptedException | RemoteException m){
-                                                contador++;
-                                                if(contador==30)
-                                                    System.exit(-1);
-                                            }
+                                } catch (RemoteException e) {
+                                    int contador = 0;
+                                    while (contador < 30) {
+                                        try {
+                                            Thread.sleep(1000);
+                                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                            rmis.sayHello();
+                                            break;
+
+                                        } catch (NotBoundException | InterruptedException | RemoteException m) {
+                                            contador++;
+                                            if (contador == 30)
+                                                System.exit(-1);
                                         }
                                     }
                                 }
+                            }
 
-                                eleicao = user_bulletin.get(opcao_eleicao);
-                                HashMap<Integer, String> hm;
+                            eleicao = user_bulletin.get(opcao_eleicao);
+                            HashMap<Integer, String> hm;
 
-                                while (true) {
+                            while (true) {
 
-                                    try {
-                                        hm = rmis.getListasFromEleicaoEscolhida(eleicao);
-                                        break;
+                                try {
+                                    hm = rmis.getListasFromEleicaoEscolhida(eleicao);
+                                    break;
 
-                                    } catch (RemoteException e) {
-                                        int contador=0;
-                                        while(contador<30) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                                                rmis.sayHello();
-                                                break;
+                                } catch (RemoteException e) {
+                                    int contador = 0;
+                                    while (contador < 30) {
+                                        try {
+                                            Thread.sleep(1000);
+                                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                            rmis.sayHello();
+                                            break;
 
-                                            }catch(NotBoundException | InterruptedException | RemoteException m){
-                                                contador++;
-                                                if(contador==30)
-                                                    System.exit(-1);
-                                            }
+                                        } catch (NotBoundException | InterruptedException | RemoteException m) {
+                                            contador++;
+                                            if (contador == 30)
+                                                System.exit(-1);
                                         }
                                     }
                                 }
+                            }
 
-                                nome_lista = hm.get(escolha + 1);
-                                // rmi escreve na bd
-                                Date d = new Date();
+                            nome_lista = hm.get(escolha + 1);
+                            // rmi escreve na bd
+                            Date d = new Date();
 
-                                while (true) {
 
-                                    try {
-                                        hm = rmis.getListasFromEleicaoEscolhida(eleicao);
-                                        break;
+                            while (true) {
 
-                                    } catch (RemoteException e) {
-                                        int contador=0;
-                                        while(contador<30) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                                                rmis.sayHello();
-                                                break;
+                                try {
+                                    rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d);
+                                    break;
 
-                                            }catch(NotBoundException | InterruptedException | RemoteException m){
-                                                contador++;
-                                                if(contador==30)
-                                                    System.exit(-1);
-                                            }
+                                } catch (RemoteException e) {
+                                    int contador = 0;
+                                    while (contador < 30) {
+                                        try {
+                                            Thread.sleep(1000);
+                                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                            rmis.sayHello();
+                                            break;
+
+                                        } catch (NotBoundException | InterruptedException | RemoteException m) {
+                                            contador++;
+                                            if (contador == 30)
+                                                System.exit(-1);
                                         }
                                     }
                                 }
+                            }
 
-                                rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP, d);
-                                op.sendPacket(msg.make("#" + sender, "success", "Voto submetido com sucesso!"), s,
-                                        group, PORT);
-                            } catch (RemoteException re) {
+                            op.sendPacket(msg.make("#" + sender, "success", "Voto submetido com sucesso!"), s,
+                                    group, PORT);
+
+                             /*catch (RemoteException re) {
                                 rmiIsDown = true;
-                                while (rmiIsDown /* || counterThread.isAlive() */) {
+                                while (rmiIsDown  || counterThread.isAlive() ) {
                                     try {
                                         rmis.print_on_rmi_server("Ping from " + DEP);
                                         // rmis.atualiza(p.getNum_CC(), nome_lista, eleicao.getTitulo(), DEP);
@@ -503,7 +504,7 @@ class VotingThread extends Thread {
                                     rmiIsDown = false;
                                     break;
                                 }
-                            }
+                            }*/
                         }
                     }
                 } catch (RemoteException re) {

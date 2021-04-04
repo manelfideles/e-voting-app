@@ -364,10 +364,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
         int PORT_r = 6969;
         try {
+            rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
             r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
-            rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
 
             // pings continuos a todas as mesas associadas
             // while (true) {
@@ -379,6 +379,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             // }
             // }
             // }
+
         } catch (FileNotFoundException e) {
             System.out.println("entrei!");
             rmis.objeto = new Objeto();
@@ -390,10 +391,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 programFails = false;
                 try {
                     Thread.sleep(1000);
+                    rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
                     r = LocateRegistry.createRegistry(PORT_r);
                     r.rebind("RMI_Server", rmis);
                     System.out.println("Connected! Server Backup assumed");
-                    rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
 
                 } catch (FileNotFoundException e) {
                     rmis.objeto = new Objeto();

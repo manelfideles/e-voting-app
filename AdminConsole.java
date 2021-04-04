@@ -829,7 +829,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             while (true) {
 
                                 try {
-                                    //Objeto ob = (Objeto) rmis.ReadObjectFromFile("fs.txt");
                                     System.out.println(rmis.returnObjeto().toString());
                                     break;
 
