@@ -12,14 +12,11 @@ public class ThreadOps {
         ;
     }
 
-    public DatagramPacket receivePacket(MulticastSocket s) {
+    public DatagramPacket receivePacket(MulticastSocket s, int socketTimeout) throws IOException {
         byte[] received = new byte[256];
+        s.setSoTimeout(socketTimeout * 1000);
         DatagramPacket receivedPacket = new DatagramPacket(received, received.length);
-        try {
-            s.receive(receivedPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        s.receive(receivedPacket);
         return receivedPacket;
     }
 
