@@ -13,6 +13,7 @@ import java.util.*;
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
 
+    // Persistant Storage - File System
     final static String outputFilePath = "fs.txt";
 
     // ArrayList das Admin Consoles que se ligam ao RMI Server
@@ -30,108 +31,142 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("> " + s);
     }
 
-    // Função que adiciona as Admin Consoles à ArrayList
+    // Método que adiciona as Admin Consoles à ArrayList
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException {
         System.out.println("Subscribing " + name);
         admin_consoles.add(ac);
         System.out.println("Just added AdminConsole to admin_consoles");
     }
 
-    // Função que remove as Admin Consoles da ArrayList
+    // Método que remove as Admin Consoles da ArrayList
     public void unsubscribe(AdminConsole_I ac) throws RemoteException {
         System.out.println("Unsubscribing Admin Console");
         admin_consoles.remove(admin_consoles.indexOf(ac));
         System.out.println("Just removed AdminConsole to admin_consoles");
     }
 
+    // Método que regista uma pessoa
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
-
+        // mapp = { num_cc = Pessoa }
         HashMap<String, Pessoa> mapp = this.objeto.hmp.hmp.get("HashMapPessoas");
-        mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep, pessoa.contacto,
-                pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        // adicionar uma nova pessoa a mapp
+        mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password,
+                 pessoa.dep, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        // adicionar mapp ao objeto
         this.objeto.hmp.hmp.put("HashMapPessoas", mapp);
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que cria uma eleição
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
-        this.objeto.hme.mape.put(eleicao.titulo,
-                new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
+        // adicionar uma nova eleição a mape ( mape = { titulo = Eleição } )
+        this.objeto.hme.mape.put(eleicao.titulo, new Eleicao(eleicao.ano_i, eleicao.mes_i,
+                eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
                         eleicao.descricao, eleicao.restricao, "", eleicao.lista_lista_candidato, eleicao.date_i,
                         eleicao.date_f));
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que verifica se a date inicial da eleição é anterior à current date
     public boolean check_eleicao_before(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().before(d);
     }
 
+    // Método que verifica se a date inicial da eleição é posterior à current date
     public boolean check_eleicao_after(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_i().after(d);
     }
 
+    // Método que verifica se a date inicial da eleição é anterior à current date
+    // e que verifica se a date final da eleição é posterior à current date
     public boolean check_eleicao_voto(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         Date d = new Date(); // Current date
         return (e.getDate_i().before(d) && e.getDate_f().after(d));
     }
 
+    // Método que verifica se a date final da eleição é anterior à current date
     public boolean check_consulta_resultados(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         Date d = new Date(); // Current date
         return e.getDate_f().before(d);
     }
 
+    // Método que altera propriedades de uma eleição (propriedades textuais e instantes de início e fim da eleição)
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
+        // e = eleição que queremos alterar
         Eleicao e = this.objeto.hme.mape.get(eleicao.old_titulo);
+        // faz alterações no value (descrição, restrição e lista_lista_candidato não são alteradas)
         this.objeto.hme.mape.replace(eleicao.old_titulo,
                 new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
                         e.descricao, e.restricao, eleicao.old_titulo, e.lista_lista_candidato,
                         eleicao.date_i, eleicao.date_f));
+        // faz alterações na key
         this.objeto.hme.mape.put(eleicao.titulo, this.objeto.hme.mape.remove(eleicao.old_titulo));
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que verifica se uma eleicao exsite (retorna true ou false)
     public boolean check_eleicao_exists(String titulo) throws RemoteException {
         return this.objeto.hme.mape.containsKey(titulo);
     }
 
+    // Método que cria lista de candidatos
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - cria_lista_candidatos");
+        // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
+            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à lista de candidatos que queremos criar
+            // Se entrar é porque vamos criar a lista de candidatos no e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
+                // Cria hm ( { nome_lista = ListaCandidato } )
                 HashMap<String, ListaCandidato> hm = new HashMap<>();
                 hm.put(lista_candidato.nome_lista, lista_candidato);
+                // Adiciona hm na lista_lista_candidato do e ( [ { nome_lista = ListaCandidato }, { nome_lista = ListaCandidato }, ... ] )
                 e.lista_lista_candidato.add(hm);
             }
         }
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que retorna a descrição de uma dada eleição (Estudante, Docente ou Funcionário)
     public String returnTipo_lista(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         return e.getDescricao();
     }
 
+    // Método que remove uma lista de candidatos de uma dada eleição
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - remove_lista_candidatos");
         int i = 0;
+        // Vai servir para saber quando já podemos sair do ciclo de pesquisa pois já removemos o que queriamos
         boolean v = false;
+        // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
+            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à lista de candidatos que queremos remover
+            // Se entrar é porque vamos remover a lista de candidatos do e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
+                // Percorre a lista_lista_candidato de e ( [ nome_lista = ListaCandidato ] )
                 for (HashMap<String, ListaCandidato> elem : e.lista_lista_candidato) {
                     for (Map.Entry mapElement2 : elem.entrySet()) {
                         String lc = (String) mapElement2.getKey();
+                        // Verifica se o nome da lista é igual à key
+                        // Se entrar é porque vamos remover a lista de candidatos da lista_lista_candidato do e
                         if (lista_candidato.nome_lista.equals(lc)) {
                             e.lista_lista_candidato.remove(i);
                             v=true;
@@ -148,54 +183,79 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
+    // Método que cria uma mesa
     public void cria_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - cria_mesa");
+        // Adiciona uma mesa ( { dep = Mesa } )
         this.objeto.hme.mapm.put(mesa.dep, mesa);
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que remove uma mesa
     public void remove_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - remove_mesa");
+        // Remove uma mesa ( { dep = Mesa } )
         this.objeto.hme.mapm.remove(mesa.dep);
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que consulta o estado das mesas
     public void consulta_estado_mesas() throws RemoteException {
         System.out.println("RMI SERVER - consulta_estado_mesas");
     }
 
+    // Método que consulta a informação de voto (local e momento em votou cada eleitor)
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
         System.out.println("RMI SERVER - consulta_info_voto");
+        // Dá return de hmp ( { "HashMapPessoas" = mapp } | mapp = { num_cc = Pessoa } )
         return this.objeto.hmp.hmp;
     }
 
+    // Método que consulta o número de eleitores que votaram até ao momento em cada mesa de voto (numa dada eleição)
     public HashMap<String, Mesa> consulta_eleitores() throws RemoteException {
         System.out.println("RMI SERVER - consulta_eleitores");
+        // ( { dep = Mesa } )
         return this.objeto.hme.mapm;
     }
 
+    // Método que consulta resultados detalhados de eleições passadas
     public HashMap<String, Eleicao> consulta_resultados() throws RemoteException {
         System.out.println("RMI SERVER - consulta_resultados");
+        // ( mape = { titulo = Eleição } )
         return this.objeto.hme.mape;
     }
 
+    // Método que vai dar return do boletim-voto eleições
     public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException {
         int i = 1;
         HashMap<Integer, Eleicao> hme = new HashMap<>();
-        // Popular
+        // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
+            // hmss vai ter as eleições que o eleitor ja votou
             HashMap<String, String> hmss = p.getLocal_momento_voto();
             // só pode votar em eleicoes que ja tenham comecado e ainda n tenham acabado
             boolean check_voto = check_eleicao_voto(e.getTitulo());
             if (check_voto) {
+                // Se o eleitor ainda n votou
                 if (hmss.isEmpty()) {
+                    // O eleitor só pode votar em eleições que correspondam à sua função
+                    // &&
+                    // O eleitor só pode votar em eleições que não tenham restrições ou cujas restrições correspondam ao departamento do eleitor
                     if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
                         i++;
                     }
-                } else {
+                }
+                // Se o eleitor já votou pelo menos uma vez
+                else {
+                    // Se o eleitor ainda não tiver votado na eleição
                     if (!hmss.containsKey(e.getTitulo())) {
+                        // O eleitor só pode votar em eleições que correspondam à sua função
+                        // &&
+                        // O eleitor só pode votar em eleições que não tenham restrições ou cujas restrições correspondam ao departamento do eleitor
                         if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                             hme.put(i, e);
                             i++;
@@ -204,19 +264,25 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 }
             }
         }
+        // retorna uma lista de eleições enumeradas nas quais o eleitor pode votar
         return hme;
     }
 
+    // Método que vai procurar na persistant storage uma pessoa com o cc que pretendemos
     public Pessoa getVoter(String cc) throws RemoteException {
-        // query à BD para ver se existe uma pessoa com 'cc'.
+        // dá return de um mapp ( { num_cc = Pessoa } )
         return this.objeto.hmp.hmp.get("HashMapPessoas").get(cc);
     }
 
+    // Método que vai buscar uma Mesa procurando pelo Dep
     public Mesa getMesaByDep(String dep) throws RemoteException {
+        // dá return de Mesa
         return this.objeto.hme.mapm.get(dep);
     }
 
+    // Método que dá print das Mesas existentes
     public void printMesasExistentes() throws RemoteException {
+        // Percorre mapm 
         for (Map.Entry m : this.objeto.hme.mapm.entrySet()) {
             System.out.println(m.toString());
         }

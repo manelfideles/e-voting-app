@@ -520,7 +520,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             }
                                         }
                                         if (!verify_nome_eleicao) {
-                                            System.out.println("Nao e possivel criar uma lista pois a eleicao nao existe!");
+                                            System.out.println("Nao e possivel remover uma lista pois a eleicao nao existe!");
                                             break;
                                         }
                                         if (check_eleicao_before) {
