@@ -19,8 +19,14 @@ public class MulticastServer extends Thread {
     private String VOTE;
     private int PORT;
     private String DEP;
+    private static String lookupString, hostnameAddr;
 
     public static void main(String[] args) {
+        // Usage:
+        // javac MulticastClient.java && java MulticastClient lookupAddress hostnameAddr
+        lookupString = "RMI_Server";
+        // hostnameAddr = args[1];
+        System.out.println(lookupString);
         MulticastServer server = new MulticastServer();
         server.start();
     }
@@ -54,8 +60,8 @@ public class MulticastServer extends Thread {
              * 'terminal_thread', que está responsável por comunicar com os terminais, e
              * 'voting_thread' que recebe os votos.
              */
-
-            RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+            // System.setProperty("java.rmi.server.hostname", hostnameAddr);
+            RMIServer_I rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
             ThreadOps op = new ThreadOps();
 
             // le config
@@ -74,7 +80,7 @@ public class MulticastServer extends Thread {
                     while (contador < 30) {
                         try {
                             Thread.sleep(1000);
-                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                             rmis.sayHello();
                             break;
                         } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -89,11 +95,12 @@ public class MulticastServer extends Thread {
             // multicast
             terminal_socket = new MulticastSocket(PORT);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
-            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis, DEP, PORT);
+            TerminalThread terminal_thread = new TerminalThread(terminals_group, terminal_socket, op, rmis, DEP, PORT,
+                    lookupString);
 
             vote_socket = new MulticastSocket(PORT);
             InetAddress vote_group = InetAddress.getByName(VOTE);
-            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP, PORT);
+            VotingThread voting_thread = new VotingThread(vote_group, vote_socket, op, rmis, DEP, PORT, lookupString);
 
             while (true) {
                 //
@@ -116,14 +123,17 @@ class TerminalThread extends Thread {
     RMIServer_I rmis;
     String DEP;
     int PORT;
+    String lookupString;
 
-    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT) {
+    public TerminalThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT,
+            String lookupString) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
         this.DEP = DEP;
         this.PORT = PORT;
+        this.lookupString = lookupString;
         t = new Thread(this);
         t.start();
     }
@@ -161,7 +171,7 @@ class TerminalThread extends Thread {
                             while (contador < 30) {
                                 try {
                                     Thread.sleep(1000);
-                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                     rmis.sayHello();
                                     break;
                                 } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -183,7 +193,7 @@ class TerminalThread extends Thread {
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -230,7 +240,7 @@ class TerminalThread extends Thread {
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -262,7 +272,7 @@ class TerminalThread extends Thread {
                             while (contador < 30) {
                                 try {
                                     Thread.sleep(1000);
-                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                     rmis.sayHello();
                                     break;
                                 } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -297,14 +307,17 @@ class VotingThread extends Thread {
     String DEP;
     int PORT;
     boolean rmiIsDown;
+    String lookupString;
 
-    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT) {
+    public VotingThread(InetAddress group, MulticastSocket s, ThreadOps op, RMIServer_I rmis, String DEP, int PORT,
+            String lookupString) {
         this.group = group;
         this.s = s;
         this.op = op;
         this.rmis = rmis;
         this.DEP = DEP;
         this.PORT = PORT;
+        this.lookupString = lookupString;
         t = new Thread(this);
         t.start();
     }
@@ -340,7 +353,7 @@ class VotingThread extends Thread {
                                     while (contador < 30) {
                                         try {
                                             Thread.sleep(1000);
-                                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                            rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                             rmis.sayHello();
                                             break;
                                         } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -384,7 +397,7 @@ class VotingThread extends Thread {
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -407,7 +420,7 @@ class VotingThread extends Thread {
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -431,7 +444,7 @@ class VotingThread extends Thread {
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {

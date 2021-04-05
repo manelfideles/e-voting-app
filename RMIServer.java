@@ -474,7 +474,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public static void main(String[] args) throws RemoteException {
+        // Usage javac RMIServer.java && java RMIServer hostname/endereço_ip
         System.getProperties().put("java.security.policy", "policy.all");
+        // System.setProperty("java.rmi.server.hostname", args[0]);
         System.setSecurityManager(new RMISecurityManager());
 
         RMIServer rmis = new RMIServer();

@@ -4,8 +4,7 @@ import java.util.HashMap;
 public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
-    public String mcastaddr;
-    // falta referencia para o objeto remoto RemoteMulticastServerObj
+    // public String mcastaddr;
     RemoteMulticastServerObj_Impl remoteServerObj;
     private boolean isOn = false;
 
@@ -14,7 +13,6 @@ public class Mesa implements Serializable {
 
     public Mesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) {
         this.dep = dep;
-        this.num_eleitores = num_eleitores;
         this.remoteServerObj = remoteServerObj;
     }
 

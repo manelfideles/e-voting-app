@@ -23,7 +23,7 @@ while (true) {
         while(contador<30) {
             try {
                 Thread.sleep(1000);
-                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                 rmis.sayHello();
                 break;
             }catch(NotBoundException | InterruptedException | RemoteException m){
@@ -40,9 +40,11 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
     private static final long serialVersionUID = 1L;
     private static RMIServer_I rmis;
     private static AdminConsole_I ac;
+    String lookupString;
 
-    public AdminConsole() throws RemoteException {
+    public AdminConsole(String lookupString) throws RemoteException {
         super();
+        this.lookupString = lookupString;
     }
 
     public void print_on_admin_console(String s) throws RemoteException {
@@ -56,7 +58,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 while (contador < 30) {
                     try {
                         Thread.sleep(1000);
-                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                         break;
                     } catch (NotBoundException | InterruptedException | RemoteException m) {
                         contador++;
@@ -69,6 +71,9 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
     }
 
     public static void main(String[] args) {
+        // Usage javac AdminConsole.java && java AdminConsole endereço_ip
+        // System.setProperty("java.rmi.server.hostname", args[0]);
+        String lookupString = "RMI_Server";
         // Variáveis Gerais
         String option, opcao;
 
@@ -87,6 +92,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
         // Variáveis OPTION 4
         String nome_lista, tipo_lista = "", nome_pessoa;
         int num_pessoas_lista;
+
         ArrayList<String> lista = new ArrayList<>();
         ListaCandidato lista_candidato;
         String nome_eleicao;
@@ -104,8 +110,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
         while (true) {
             try {
-                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                ac = new AdminConsole();
+                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
+                ac = new AdminConsole(lookupString);
                 rmis.subscribe("Admin Console", ac);
                 System.out.println("Client sent subscription to RMIServer");
 
@@ -173,7 +179,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -279,7 +285,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -307,7 +313,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -365,7 +371,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -405,7 +411,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -444,7 +450,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -484,7 +490,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -514,7 +520,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (true) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (RemoteException e) {
@@ -523,7 +529,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -554,7 +560,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
 
@@ -586,7 +592,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
 
@@ -610,7 +616,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (true) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (RemoteException e) {
@@ -619,7 +625,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -641,7 +647,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             while (contador < 30) {
                                 try {
                                     Thread.sleep(1000);
-                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                     rmis.sayHello();
                                     break;
                                 } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -672,7 +678,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 /*
                                  * while (true) { try { rmis.subscribeMesa(dep); break; } catch (RemoteException
                                  * e) { int contador=0; while(contador<30) { try { Thread.sleep(1000); rmis =
-                                 * (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                 * (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                  * rmis.sayHello(); break;
                                  * 
                                  * }catch(NotBoundException | InterruptedException | RemoteException m){
@@ -696,7 +702,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
                                             } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -712,7 +718,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (true) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (RemoteException e) {
@@ -721,7 +727,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                             try {
                                                 Thread.sleep(1000);
                                                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
+                                                        .lookup(lookupString);
                                                 rmis.sayHello();
                                                 break;
 
@@ -746,7 +752,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             while (contador < 30) {
                                 try {
                                     Thread.sleep(1000);
-                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                     rmis.sayHello();
                                     break;
                                 } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -778,7 +784,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -808,7 +814,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
 
@@ -861,7 +867,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -887,7 +893,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -910,7 +916,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                                         rmis.sayHello();
                                         break;
                                     } catch (NotBoundException | InterruptedException | RemoteException m) {
@@ -929,7 +935,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 while (contador < 30) {
                     try {
                         Thread.sleep(1000);
-                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
+                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                         rmis.sayHello();
                         break;
                     } catch (NotBoundException | InterruptedException | RemoteException m) {

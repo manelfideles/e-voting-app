@@ -104,16 +104,16 @@ public class MulticastClient extends Thread {
                         }
                     }
 
-                    if (!busy) {
-                        packet = op.receivePacket(terminal_socket, socketTimeout);
-                    } else {
+                    if (busy) {
                         packet = op.receivePacket(voting_socket, socketTimeout);
+                    } else {
+                        packet = op.receivePacket(terminal_socket, socketTimeout);
                     }
 
                     String type = msg.getTypeFromPacket(packet);
                     String sender = msg.getSenderFromPacket(packet);
 
-                    System.out.println("SENDER: " + sender + " TYPE: " + type);
+                    // System.out.println("SENDER: " + sender + " TYPE: " + type);
 
                     if (sender.equals("#") || sender.equals("#" + id)) {
                         if (type.equals("request") && busy == false) {
@@ -131,8 +131,8 @@ public class MulticastClient extends Thread {
 
                             // Envia login data com id
                             busy = true;
-                            System.out.println("SENDER: " + sender + " TYPE: " + type);
-                            System.out.println(read_user + " " + read_password);
+                            // System.out.println("SENDER: " + sender + " TYPE: " + type);
+                            // System.out.println(read_user + " " + read_password);
 
                             if (cc.equals(read_user)) {
                                 op.sendPacket(
@@ -177,14 +177,14 @@ public class MulticastClient extends Thread {
                         }
                     }
                 } catch (IOException se) {
-                    // if (!hasRecovered) {
+                    // // if (!hasRecovered) {
                     // System.out.println("Ping " + sendTries + " : Failed");
                     // sendTries++;
                     // // hasRecovered = false;
                     // blocked = false;
                     // busy = false;
                     // continue;
-                    // }
+                    // // }
                 }
             }
         } catch (IOException ioe) {
