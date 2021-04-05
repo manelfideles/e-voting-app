@@ -71,4 +71,5 @@ public interface RMIServer_I extends Remote {
 
     public void sayHello() throws RemoteException;
 
+    boolean returnIsAlive() throws RemoteException;
 }

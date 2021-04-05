@@ -288,7 +288,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
         this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         this.objeto.hme.mape.get(nome_eleicao).num_total_votos++;
-
         boolean existe = false;
         HashMap<String, Integer> n_e = this.objeto.hme.mapm.get(DEP).getNum_eleitores();
         for (Map.Entry mapElement : n_e.entrySet()) {
@@ -303,7 +302,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         if (!existe) {
             n_e.put(nome_eleicao,1);
         }
-
         switch (nome_lista) {
         case "voto_branco":
             this.objeto.hme.mape.get(nome_eleicao).num_votos_branco++;
@@ -369,14 +367,20 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("Running");
     }
 
+    public boolean returnIsAlive() throws RemoteException {
+        return true;
+    }
+
     public static void main(String[] args) throws RemoteException {
         System.getProperties().put("java.security.policy", "policy.all");
         System.setSecurityManager(new RMISecurityManager());
 
         RMIServer rmis = new RMIServer();
+        RMIServer_I rmis2;
         Registry r;
-
+        int ping = 0;
         int PORT_r = 6969;
+
         try {
 
             File file = new File(outputFilePath);
@@ -386,21 +390,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             else {
                 rmis.objeto = new Objeto();
             }
-
             r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
             System.out.println("RMIServer ready.");
-
-            // pings continuos a todas as mesas associadas
-            // while (true) {
-            // for (AdminConsole_I ac : RMIServer.admin_consoles) {
-            // System.out.println("ruben");
-            // for (Map.Entry mesa : mapm.entrySet()) {
-            // Mesa m = mapm.get(mesa.getKey());
-            // rmis.ping(m, ac);
-            // }
-            // }
-            // }
 
         } catch (FileNotFoundException e) {
             System.out.println("entrei!");
@@ -411,9 +403,24 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             boolean programFails = true;
             while (programFails) {
                 programFails = false;
-                try {
-                    Thread.sleep(1000);
 
+                while (ping<5) {
+                    try {
+                        Thread.sleep(500);
+                        r = LocateRegistry.getRegistry(PORT_r);
+                        rmis2 = (RMIServer_I) r.lookup("RMI_Server");
+                        if (rmis2.returnIsAlive()) {
+                            ping = 0;
+                            System.out.println("ping: " + ping);
+                            System.out.println("RMIServer primario esta funcional");
+                        }
+                    } catch (Exception ke) {
+                        ping++;
+                        System.out.println("ping: " + ping);
+                    }
+                }
+
+                try {
                     File file = new File(outputFilePath);
                     if(file.length() != 0) {
                         rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
@@ -421,11 +428,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     else {
                         rmis.objeto = new Objeto();
                     }
-
                     r = LocateRegistry.createRegistry(PORT_r);
                     r.rebind("RMI_Server", rmis);
                     System.out.println("RMIServer ready.");
-
                 } catch (FileNotFoundException e) {
                     rmis.objeto = new Objeto();
                 } catch (RemoteException | InterruptedException b) {

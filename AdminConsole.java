@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RMISecurityManager;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I {
     private static final long serialVersionUID = 1L;
@@ -712,7 +712,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 try {
                                     HashMap<String, HashMap<String, Pessoa>> hmp = rmis.consulta_info_voto();
                                     for (Map.Entry mapElement : hmp.entrySet()) {
-                                        ConcurrentHashMap<String, Pessoa> hm = (ConcurrentHashMap<String, Pessoa>) mapElement.getValue();
+                                        HashMap<String, Pessoa> hm = (HashMap<String, Pessoa>) mapElement.getValue();
                                         for (Map.Entry mapElement2 : hm.entrySet()) {
                                             Pessoa p = (Pessoa) mapElement2.getValue();
                                             System.out.println(p.getNome() + ": " + p.getLocal_momento_voto());
