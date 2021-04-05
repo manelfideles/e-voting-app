@@ -26,9 +26,9 @@ public class Eleicao implements Serializable {
     public int num_votos_nulo;
     public int num_total_votos;
 
-    public Eleicao(int ano_i, int mes_i, int dia_i, int hora_i, int minuto_i, int ano_f, int mes_f, int dia_f, int hora_f, int minuto_f,
-                   String titulo, String descricao, String restricao, String old_titulo,
-                   ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato, Date date_i, Date date_f) {
+    public Eleicao(int ano_i, int mes_i, int dia_i, int hora_i, int minuto_i, int ano_f, int mes_f, int dia_f,
+            int hora_f, int minuto_f, String titulo, String descricao, String restricao, String old_titulo,
+            ArrayList<HashMap<String, ListaCandidato>> lista_lista_candidato, Date date_i, Date date_f) {
         this.ano_i = ano_i;
         this.mes_i = mes_i;
         this.dia_i = dia_i;
@@ -49,15 +49,13 @@ public class Eleicao implements Serializable {
     }
 
     public String toString() {
-        return "{" + "ano_i='" + ano_i + '\'' + ", mes_i='" + mes_i + '\'' + ", dia_i='" + dia_i + '\'' + ", hora_i='" + hora_i + '\'' + ", minuto_i='" + minuto_i + '\''
-                + ", ano_f='" + ano_f + '\'' + ", mes_f='" + mes_f + '\'' + ", dia_f='" + dia_f + '\'' + ", hora_f='" + hora_f + '\'' + ", minuto_f='" + minuto_f + '\''
+        return "{" + "ano_i='" + ano_i + '\'' + ", mes_i='" + mes_i + '\'' + ", dia_i='" + dia_i + '\'' + ", hora_i='"
+                + hora_i + '\'' + ", minuto_i='" + minuto_i + '\'' + ", ano_f='" + ano_f + '\'' + ", mes_f='" + mes_f
+                + '\'' + ", dia_f='" + dia_f + '\'' + ", hora_f='" + hora_f + '\'' + ", minuto_f='" + minuto_f + '\''
                 + ", titulo='" + titulo + '\'' + ", descricao='" + descricao + '\'' + ", restricao='" + restricao + '\''
-                + ", lista_lista_candidato='" + lista_lista_candidato + '\''
-                + ", num_votos_branco='" + num_votos_branco + '\''
-                + ", num_votos_nulo='" + num_votos_nulo + '\''
-                + ", num_total_votos='" + num_total_votos + '\''
-                + ", date_i='" + date_i + '\''
-                + ", date_f='" + date_f + '\'' + '}';
+                + ", lista_lista_candidato='" + lista_lista_candidato + '\'' + ", num_votos_branco='" + num_votos_branco
+                + '\'' + ", num_votos_nulo='" + num_votos_nulo + '\'' + ", num_total_votos='" + num_total_votos + '\''
+                + ", date_i='" + date_i + '\'' + ", date_f='" + date_f + '\'' + '}';
     }
 
     public ArrayList<HashMap<String, ListaCandidato>> getListaListaCandidato() {

@@ -9,7 +9,8 @@ public class Mesa implements Serializable {
     RemoteMulticastServerObj_Impl remoteServerObj;
     private boolean isOn = false;
 
-    public HashMap<String, Integer> num_eleitores = new HashMap<>(); // {Nome da eleicao : Num de pessoas que ja votaram nessa eleicao }
+    public HashMap<String, Integer> num_eleitores = new HashMap<>(); // {Nome da eleicao : Num de pessoas que ja votaram
+                                                                     // nessa eleicao }
 
     public Mesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) {
         this.dep = dep;

@@ -10,7 +10,8 @@ public class ListaCandidato implements Serializable {
     public String nome_eleicao;
     public int num_votos;
 
-    public ListaCandidato(String nome_lista,String tipo_lista, int num_pessoas_lista, ArrayList<String> lista, String nome_eleicao) {
+    public ListaCandidato(String nome_lista, String tipo_lista, int num_pessoas_lista, ArrayList<String> lista,
+            String nome_eleicao) {
         this.nome_lista = nome_lista;
         this.tipo_lista = tipo_lista;
         this.num_pessoas_lista = num_pessoas_lista;
@@ -19,12 +20,8 @@ public class ListaCandidato implements Serializable {
     }
 
     public String toString() {
-        return "{nome_lista='" + this.nome_lista +
-                "', tipo_lista='" + this.tipo_lista +
-                "', num_pessoas_lista='" + this.num_pessoas_lista +
-                "', lista='" + this.lista +
-                "', num_votos='" + this.num_votos +
-                "'}";
+        return "{nome_lista='" + this.nome_lista + "', tipo_lista='" + this.tipo_lista + "', num_pessoas_lista='"
+                + this.num_pessoas_lista + "', lista='" + this.lista + "', num_votos='" + this.num_votos + "'}";
     }
 
     public String getNome_lista() {
