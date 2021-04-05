@@ -2,6 +2,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class HashMapEleicao implements Serializable {
+    private static final long serialVersionUID = 1L;
     HashMap<String,Eleicao> mape;
     HashMap<String,Mesa> mapm;
 

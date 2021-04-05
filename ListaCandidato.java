@@ -2,6 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ListaCandidato implements Serializable {
+    private static final long serialVersionUID = 1L;
     public String nome_lista;
     public String tipo_lista;
     public int num_pessoas_lista;

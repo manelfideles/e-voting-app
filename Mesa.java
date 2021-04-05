@@ -4,7 +4,6 @@ import java.util.HashMap;
 public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
-    //public int num_eleitores;
     public String mcastaddr;
     // falta referencia para o objeto remoto RemoteMulticastServerObj
     RemoteMulticastServerObj_Impl remoteServerObj;
