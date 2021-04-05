@@ -15,11 +15,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     final static String outputFilePath = "fs.txt";
 
-    // Admin Consoles
+    // ArrayList das Admin Consoles que se ligam ao RMI Server
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
 
+    // Objeto que é escrito para o fs.txt e que tem os dados todos
     public Objeto objeto;
 
+    // Builder
     public RMIServer() throws RemoteException {
         super();
     }
@@ -28,12 +30,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("> " + s);
     }
 
+    // Função que adiciona as Admin Consoles à ArrayList
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException {
         System.out.println("Subscribing " + name);
         admin_consoles.add(ac);
         System.out.println("Just added AdminConsole to admin_consoles");
     }
 
+    // Função que remove as Admin Consoles da ArrayList
     public void unsubscribe(AdminConsole_I ac) throws RemoteException {
         System.out.println("Unsubscribing Admin Console");
         admin_consoles.remove(admin_consoles.indexOf(ac));
@@ -400,16 +404,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
 
-            boolean programFails = true;
-            while (programFails) {
-                programFails = false;
+            boolean rmiFails = true;
+            while (rmiFails) {
+                rmiFails = false;
 
                 while (ping<5) {
                     try {
-                        Thread.sleep(500);
                         r = LocateRegistry.getRegistry(PORT_r);
                         rmis2 = (RMIServer_I) r.lookup("RMI_Server");
                         if (rmis2.returnIsAlive()) {
+                            Thread.sleep(1000);
                             ping = 0;
                             System.out.println("ping: " + ping);
                             System.out.println("RMIServer primario esta funcional");
@@ -435,7 +439,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     rmis.objeto = new Objeto();
                 } catch (RemoteException | InterruptedException b) {
                     System.out.println("Main RMI Server working... Waiting for failures");
-                    programFails = true;
+                    rmiFails = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
