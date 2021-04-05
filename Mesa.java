@@ -4,7 +4,6 @@ import java.util.HashMap;
 public class Mesa implements Serializable {
     private static final long serialVersionUID = 1L;
     public String dep;
-    // public String mcastaddr;
     RemoteMulticastServerObj_Impl remoteServerObj;
     private boolean isOn = false;
 
@@ -24,10 +23,6 @@ public class Mesa implements Serializable {
         return dep;
     }
 
-    public void setDep(String dep) {
-        this.dep = dep;
-    }
-
     public void setState(boolean isOn) {
         this.isOn = isOn;
     }
@@ -35,9 +30,4 @@ public class Mesa implements Serializable {
     public HashMap<String, Integer> getNum_eleitores() {
         return num_eleitores;
     }
-
-    public void setNum_eleitores(HashMap<String, Integer> num_eleitores) {
-        this.num_eleitores = num_eleitores;
-    }
-
 }

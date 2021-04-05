@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Pessoa implements Serializable {
@@ -66,44 +65,7 @@ public class Pessoa implements Serializable {
         return val_cc;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setFuncao(String funcao) {
-        this.funcao = funcao;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setDep() {
-        this.dep = dep;
-    }
-
-    public void setContacto(String contacto) {
-        this.contacto = contacto;
-    }
-
-    public void setMorada(String morada) {
-        this.morada = morada;
-    }
-
-    public void setNum_CC(String num_cc) {
-        this.num_cc = num_cc;
-    }
-
-    public void setVal_CC(String val_cc) {
-        this.val_cc = val_cc;
-    }
-
     public HashMap<String, String> getLocal_momento_voto() {
         return local_momento_voto;
     }
-
-    public void setLocal_momento_voto() {
-        this.local_momento_voto = local_momento_voto;
-    }
-
 }

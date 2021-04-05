@@ -44,32 +44,7 @@ public class ListaCandidato implements Serializable {
         return this.nome_eleicao;
     }
 
-    public void setNome_lista() {
-        this.nome_lista = nome_lista;
-    }
-
-    public void setTipo_lista() {
-        this.tipo_lista = tipo_lista;
-    }
-
-    public void setNum_pessoas_lista() {
-        this.num_pessoas_lista = num_pessoas_lista;
-    }
-
-    public void setLista() {
-        this.lista = lista;
-    }
-
-    public void setNome_eleicao() {
-        this.nome_eleicao = nome_eleicao;
-    }
-
     public Integer getNum_votos() {
         return this.num_votos;
     }
-
-    public void setNum_votos() {
-        this.num_votos = num_votos;
-    }
-
 }

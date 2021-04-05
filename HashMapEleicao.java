@@ -19,16 +19,7 @@ public class HashMapEleicao implements Serializable {
         return mape;
     }
 
-    public void setMape() {
-        this.mape = mape;
-    }
-
     public HashMap<String, Mesa> getMapm() {
         return mapm;
     }
-
-    public void setMapm() {
-        this.mapm = mapm;
-    }
-
 }
