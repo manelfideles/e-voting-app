@@ -282,12 +282,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     // Método que dá print das Mesas existentes
     public void printMesasExistentes() throws RemoteException {
-        // Percorre mapm 
+        // Percorre mapm ( { dep = Mesa } )
         for (Map.Entry m : this.objeto.hme.mapm.entrySet()) {
             System.out.println(m.toString());
         }
     }
 
+    // Método que verifica as mesas que estão ativas
     public void checkActiveMesas(AdminConsole_I ac) throws RemoteException {
         // ping a todas as mesas de mapm
         for (Map.Entry<String, Mesa> m : this.objeto.hme.mapm.entrySet()) {
@@ -296,7 +297,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
-    // ping às mesas de voto por rmi
+    // Método que dá ping às mesas de voto por rmi
     public void ping(Mesa m, AdminConsole_I ac) throws RemoteException {
         int i = 0;
         ac.print_on_admin_console("\nPinging Mesa " + m.getDep() + "\n");
@@ -319,6 +320,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
+    // Método que torna uma mesa ativa
     public void subscribeMesa(String dep, RemoteMulticastServerObj_Impl remoteServerObj) throws RemoteException {
         Mesa m = this.objeto.hme.mapm.get(dep);
         m.remoteServerObj = remoteServerObj;
@@ -332,6 +334,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
+    // Método que torna uma mesa desativa
     public void unsubscribeMesa(String dep) throws RemoteException {
         Mesa m = this.objeto.hme.mapm.get(dep);
         m.remoteServerObj = null;
@@ -345,6 +348,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
+    // Método que confere o Login
     public boolean confereLogin(String cc, String password) throws RemoteException {
         Pessoa p = getVoter(cc);
         if (p != null) {
@@ -355,10 +359,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return false;
     }
 
+    // Método que vai atualizar os dados da persistant storage conforme as mudanças que foram feitas vindas do MulticastServer
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
+        // atualiza o local_momento_voto do eleitor
         this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
+        // atualiza o número de votos de uma dada eleição
         this.objeto.hme.mape.get(nome_eleicao).num_total_votos++;
         boolean existe = false;
+        // atualiza número de pessoas que votaram em cada uma das mesas
         HashMap<String, Integer> n_e = this.objeto.hme.mapm.get(DEP).getNum_eleitores();
         for (Map.Entry mapElement : n_e.entrySet()) {
             if (mapElement.getKey().equals(nome_eleicao)) {
@@ -369,9 +377,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 break;
             }
         }
+        // se até ao momento, numa certa mesa não existe a eleição na qual o eleitor votou, adicionamos essa eleição com 1 voto
         if (!existe) {
             n_e.put(nome_eleicao,1);
         }
+        // atualiza o número de votos da lista de candidatos/branco/nulo
         switch (nome_lista) {
         case "voto_branco":
             this.objeto.hme.mape.get(nome_eleicao).num_votos_branco++;
@@ -380,6 +390,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             this.objeto.hme.mape.get(nome_eleicao).num_votos_nulo++;
             break;
         default:
+            // caso tenha votado numa lista de candidatos
             ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape.get(nome_eleicao).lista_lista_candidato;
             for (HashMap<String, ListaCandidato> elem : llc) {
                 for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
@@ -390,9 +401,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
             break;
         }
+        // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
 
+    // Método que vai retornar as listas de candidatos existentes na eleição escolhida pelo eleitor
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
         int j = 1;
         HashMap<Integer, String> out = new HashMap<>();
@@ -404,12 +417,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 }
             }
         }
+        // adicionamos também voto branco e nulo pois também é são opções de voto
         out.put(j, "voto_branco");
         j++;
         out.put(j, "voto_nulo");
+        // retornamos uma lista enumerada de listas de candidatos/branco/nulo
         return out;
     }
 
+    // Método que escreve para a persistant storage
     public void WriteObjectToFile(Object obj) throws RemoteException {
         try {
             FileOutputStream fileOut = new FileOutputStream(RMIServer.outputFilePath);
@@ -421,6 +437,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
+    // Método que lê da persistant storage
     public Object ReadObjectFromFile(String outputFilePath) throws Exception {
         FileInputStream fileIn = new FileInputStream(RMIServer.outputFilePath);
         ObjectInputStream objectIn = new ObjectInputStream(fileIn);
@@ -429,14 +446,17 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return obj;
     }
 
+    // Método que dá return do Objeto (aka todos os dados)
     public Objeto returnObjeto() throws RemoteException {
         return this.objeto;
     }
 
+    // Método que dá print de "Running"
     public void sayHello() throws RemoteException {
         System.out.println("Running");
     }
 
+    // Método que dá sempre return true, usamos para saber se um RMI Server está ou não a funcionar
     public boolean returnIsAlive() throws RemoteException {
         return true;
     }
@@ -454,9 +474,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         try {
 
             File file = new File(outputFilePath);
-            if(file.length() != 0) { // se o fs.txt tiver dados escritos
+            // caso o fs.txt tiver dados escritos
+            if(file.length() != 0) {
                 rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
             }
+            // caso o fs.txt não tiver dados escritos
             else {
                 rmis.objeto = new Objeto();
             }
@@ -465,7 +487,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             System.out.println("RMIServer ready.");
 
         } catch (FileNotFoundException e) {
-            System.out.println("entrei!");
+            System.out.println("FileNotFoundException!");
             rmis.objeto = new Objeto();
         } catch (Exception re) {
             System.out.println("Exception in RMIServer.main: " + re);
@@ -474,10 +496,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             while (rmiFails) {
                 rmiFails = false;
 
+                // caso o RMI Server principal der problemas, dar 5 pings a ver se volta a funcionar
+                // caso não volte a funcionar, o RMI Server secundário assume-se como primário
                 while (ping<5) {
                     try {
                         r = LocateRegistry.getRegistry(PORT_r);
                         rmis2 = (RMIServer_I) r.lookup("RMI_Server");
+                        // se entrar no if é porque o RMI Server primário está funcional
                         if (rmis2.returnIsAlive()) {
                             Thread.sleep(1000);
                             ping = 0;
@@ -485,11 +510,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                             System.out.println("RMIServer primario esta funcional");
                         }
                     } catch (Exception ke) {
+                        // se entrar aqui é porque o RMI Server primário está a ter problemas e então vamos dar 5 pings para ver se ele recupera
                         ping++;
                         System.out.println("ping: " + ping);
                     }
                 }
 
+                // caso o RMI Server primário não recupere, o RMI Server secundário vai assumir-se como primário
                 try {
                     File file = new File(outputFilePath);
                     if(file.length() != 0) {
