@@ -636,7 +636,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             case "3": // "3.Sair"
                                 break;
                             }
-
                         } catch (RemoteException e) {
                             int contador = 0;
                             while (contador < 30) {

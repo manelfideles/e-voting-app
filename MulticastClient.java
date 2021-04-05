@@ -148,6 +148,7 @@ public class MulticastClient extends Thread {
                                         .println("O CC inserido e o user registado nao sao compativeis! A bloquear...");
                                 blocked = true;
                                 busy = false;
+                                cleanup(session, voting_socket, voting_group);
                             }
                         } else if (type.equals("bulletin")) {
                             System.out.println("\nBem vindo ao eVoting!\n");
