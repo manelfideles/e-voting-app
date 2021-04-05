@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.List;
@@ -16,7 +15,10 @@ public class MulticastClient extends Thread {
     String DEP;
     private boolean busy = false;
     private boolean blocked = true;
+    boolean hasRecovered = false;
     String id = UUID.randomUUID().toString();
+    String read_user, read_password;
+    int sendTries = 1;
 
     public static void main(String[] args) {
         MulticastClient client = new MulticastClient();
@@ -36,6 +38,15 @@ public class MulticastClient extends Thread {
         }
     }
 
+    public void cleanup(Session session, MulticastSocket voting_socket, InetAddress voting_group) throws IOException {
+        session.destroy();
+        read_user = null;
+        read_password = null;
+        busy = false;
+        blocked = true;
+        voting_socket.leaveGroup(voting_group);
+    }
+
     public void run() {
         MulticastSocket terminal_socket = null;
         MulticastSocket voting_socket = null;
@@ -43,36 +54,60 @@ public class MulticastClient extends Thread {
 
         try {
             readConfigFile("MulticastConfig.txt");
+            Session session = new Session("session.txt");
+            boolean sessionWasCreated = session.create();
+            read_user = null;
+            read_password = null;
+            if (sessionWasCreated == false) {
+                List<String> userInfo = session.restore();
+                if (userInfo != null) {
+                    read_user = userInfo.get(0);
+                    read_password = userInfo.get(1);
+                }
+            }
+
             String cc = null;
-            Session session = null;
+            String bulletin = null;
 
             // configura
-
             terminal_socket = new MulticastSocket(PORT);
-            terminal_socket.setSoTimeout(120 * 1000);
             voting_socket = new MulticastSocket(PORT);
-            voting_socket.setSoTimeout(120 * 1000);
             InetAddress terminals_group = InetAddress.getByName(TERMINALS);
             InetAddress voting_group = InetAddress.getByName(VOTE);
             terminal_socket.joinGroup(terminals_group);
 
             // helpers
-            DatagramPacket packet;
+            DatagramPacket packet = null;
             Message msg = new Message();
             ThreadOps op = new ThreadOps();
             Scanner keyboardScanner = new Scanner(System.in);
             String opcao_eleicao = null;
+            int socketTimeout = 5;
 
             while (true) {
                 try {
                     if (blocked) {
+                        socketTimeout = 0;
+                        terminal_socket.setSoTimeout(socketTimeout);
+                        voting_socket.setSoTimeout(socketTimeout);
                         System.out.println(
                                 "\nTerminal Bloqueado. Dirija-se a mesa de voto para desbloquear um terminal.");
-                    }
-                    if (!busy) {
-                        packet = op.receivePacket(terminal_socket);
                     } else {
-                        packet = op.receivePacket(voting_socket);
+                        if (busy) {
+                            socketTimeout = 3;
+                            terminal_socket.setSoTimeout(socketTimeout * 1000);
+                            voting_socket.setSoTimeout(socketTimeout * 1000);
+                        } else {
+                            socketTimeout = 120;
+                            terminal_socket.setSoTimeout(socketTimeout * 1000);
+                            voting_socket.setSoTimeout(socketTimeout * 1000);
+                        }
+                    }
+
+                    if (!busy) {
+                        packet = op.receivePacket(terminal_socket, socketTimeout);
+                    } else {
+                        packet = op.receivePacket(voting_socket, socketTimeout);
                     }
 
                     String type = msg.getTypeFromPacket(packet);
@@ -84,64 +119,84 @@ public class MulticastClient extends Thread {
                         if (type.equals("request") && busy == false) {
                             op.sendPacket(msg.make(id, "acknowledge", null), terminal_socket, terminals_group, PORT);
                             cc = msg.getContentFromPacket(packet, "; ");
-                            // session = new Session(cc);
                             blocked = false;
                         } else if (type.equals("reqreply")) {
-                            // tenta recuperar sessao se houver session file
-                            // if(!session.restoreSession()) {
-                            // session.saveSession([cc, password]);
-                            // }
-
-                            // Login data
-                            System.out.print("CC: ");
-                            String read_user = keyboardScanner.nextLine();
-                            System.out.print("Password: ");
-                            String read_password = keyboardScanner.nextLine();
+                            if (read_user == null && read_password == null) {
+                                System.out.print("CC: ");
+                                read_user = keyboardScanner.nextLine();
+                                System.out.print("Password: ");
+                                read_password = keyboardScanner.nextLine();
+                                session.save(read_user, read_password);
+                            }
 
                             // Envia login data com id
                             busy = true;
-                            op.sendPacket(
-                                    msg.make(id, "login", "username | " + read_user + "; password | " + read_password),
-                                    voting_socket, voting_group, PORT);
-                            voting_socket.joinGroup(voting_group);
+                            System.out.println("SENDER: " + sender + " TYPE: " + type);
+                            System.out.println(read_user + " " + read_password);
 
-                            System.out.println("Boletim:");
-                            msg.splitMakeList(msg.getContentFromPacket(packet, "reqreply; "));
-                            opcao_eleicao = msg.getOpcaoEleicao(packet, "reqreply; ");
+                            if (cc.equals(read_user)) {
+                                op.sendPacket(
+                                        msg.make(id, "login",
+                                                "username | " + read_user + "; password | " + read_password),
+                                        voting_socket, voting_group, PORT);
+                                System.out.println("User autenticado!");
+                                voting_socket.joinGroup(voting_group);
+                                bulletin = msg.getContentFromPacket(packet, "reqreply; ");
+                                opcao_eleicao = msg.getOpcaoEleicao(packet, "reqreply; "); // eleicao escolhida
+                            } else {
+                                System.out
+                                        .println("O CC inserido e o user registado nao sao compativeis! A bloquear...");
+                                blocked = true;
+                                busy = false;
+                            }
                         } else if (type.equals("bulletin")) {
-                            // apresenta em-vindas
-                            System.out.println(
-                                    msg.packetToString(packet).substring(msg.packetToString(packet).indexOf(": ")));
+                            System.out.println("\nBem vindo ao eVoting!\n");
+                            System.out.println("Boletim:");
+                            if (bulletin != null) {
+                                msg.splitMakeList(bulletin);
+                            } else {
+                                System.out.println("Boletim esta null (???)");
+                            }
 
                             // recebe input
-                            System.out.print("\nInsert your vote: ");
+                            System.out.print("\nInsira o seu voto: ");
                             String vote = keyboardScanner.nextLine();
 
                             // Spams packets to server until confirmation is received
                             System.out.println("Aguarde...");
                             op.sendPacket(msg.make(id, "vote", vote + "; " + opcao_eleicao), voting_socket,
                                     voting_group, PORT);
-                        } else if (type.equals("success")) {
-                            System.out.println("Vote sent!");
-                            busy = false;
-                            blocked = true;
-                            voting_socket.leaveGroup(voting_group);
+
                         } else if (type.equals("error")) {
                             System.out.println("Wrong credentials!");
-                            busy = false;
-                            blocked = true;
-                            voting_socket.leaveGroup(voting_group);
+                            cleanup(session, voting_socket, voting_group);
+                        } else if (type.equals("success")) {
+                            System.out.println("Vote sent!");
+                            cleanup(session, voting_socket, voting_group);
                         }
                     }
-                } catch (SocketException se) {
-                    blocked = true;
+                } catch (IOException se) {
+                    // if (!hasRecovered) {
+                    // System.out.println("Ping " + sendTries + " : Failed");
+                    // sendTries++;
+                    // // hasRecovered = false;
+                    // blocked = false;
+                    // busy = false;
+                    // continue;
+                    // }
                 }
             }
         } catch (IOException ioe) {
+            System.out.println("AAAAAAAAAAA");
             ioe.printStackTrace();
         } finally {
-            voting_socket.close();
-            terminal_socket.close();
+            try {
+                voting_socket.close();
+                terminal_socket.close();
+            } catch (NullPointerException ex) {
+                System.out.println("Sockets a null");
+                ex.printStackTrace();
+            }
         }
     }
 }

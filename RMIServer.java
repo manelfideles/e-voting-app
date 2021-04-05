@@ -51,8 +51,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // mapp = { num_cc = Pessoa }
         HashMap<String, Pessoa> mapp = this.objeto.hmp.hmp.get("HashMapPessoas");
         // adicionar uma nova pessoa a mapp
-        mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password,
-                 pessoa.dep, pessoa.contacto, pessoa.morada, pessoa.num_cc, pessoa.val_cc));
+        mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep, pessoa.contacto,
+                pessoa.morada, pessoa.num_cc, pessoa.val_cc));
         // adicionar mapp ao objeto
         this.objeto.hmp.hmp.put("HashMapPessoas", mapp);
         // escrever para a Persistant Storage
@@ -63,8 +63,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void cria_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - cria_eleicao");
         // adicionar uma nova eleição a mape ( mape = { titulo = Eleição } )
-        this.objeto.hme.mape.put(eleicao.titulo, new Eleicao(eleicao.ano_i, eleicao.mes_i,
-                eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
+        this.objeto.hme.mape.put(eleicao.titulo,
+                new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
                         eleicao.descricao, eleicao.restricao, "", eleicao.lista_lista_candidato, eleicao.date_i,
                         eleicao.date_f));
@@ -101,17 +101,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return e.getDate_f().before(d);
     }
 
-    // Método que altera propriedades de uma eleição (propriedades textuais e instantes de início e fim da eleição)
+    // Método que altera propriedades de uma eleição (propriedades textuais e
+    // instantes de início e fim da eleição)
     public void altera_eleicao(Eleicao eleicao) throws RemoteException {
         System.out.println("RMI SERVER - altera_eleicao");
         // e = eleição que queremos alterar
         Eleicao e = this.objeto.hme.mape.get(eleicao.old_titulo);
-        // faz alterações no value (descrição, restrição e lista_lista_candidato não são alteradas)
+        // faz alterações no value (descrição, restrição e lista_lista_candidato não são
+        // alteradas)
         this.objeto.hme.mape.replace(eleicao.old_titulo,
                 new Eleicao(eleicao.ano_i, eleicao.mes_i, eleicao.dia_i, eleicao.hora_i, eleicao.minuto_i,
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
-                        e.descricao, e.restricao, eleicao.old_titulo, e.lista_lista_candidato,
-                        eleicao.date_i, eleicao.date_f));
+                        e.descricao, e.restricao, eleicao.old_titulo, e.lista_lista_candidato, eleicao.date_i,
+                        eleicao.date_f));
         // faz alterações na key (nome da eleição)
         this.objeto.hme.mape.put(eleicao.titulo, this.objeto.hme.mape.remove(eleicao.old_titulo));
         // escrever para a Persistant Storage
@@ -129,13 +131,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
-            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à lista de candidatos que queremos criar
+            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à
+            // lista de candidatos que queremos criar
             // Se entrar é porque vamos criar a lista de candidatos no e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
                 // Cria hm ( { nome_lista = ListaCandidato } )
                 HashMap<String, ListaCandidato> hm = new HashMap<>();
                 hm.put(lista_candidato.nome_lista, lista_candidato);
-                // Adiciona hm na lista_lista_candidato do e ( [ { nome_lista = ListaCandidato }, { nome_lista = ListaCandidato }, ... ] )
+                // Adiciona hm na lista_lista_candidato do e ( [ { nome_lista = ListaCandidato
+                // }, { nome_lista = ListaCandidato }, ... ] )
                 e.lista_lista_candidato.add(hm);
             }
         }
@@ -143,7 +147,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(this.objeto);
     }
 
-    // Método que retorna a descrição de uma dada eleição (Estudante, Docente ou Funcionário)
+    // Método que retorna a descrição de uma dada eleição (Estudante, Docente ou
+    // Funcionário)
     public String returnTipo_lista(String titulo) throws RemoteException {
         Eleicao e = this.objeto.hme.mape.get(titulo);
         return e.getDescricao();
@@ -153,12 +158,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void remove_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - remove_lista_candidatos");
         int i = 0;
-        // Vai servir para saber quando já podemos sair do ciclo de pesquisa pois já removemos o que queriamos
+        // Vai servir para saber quando já podemos sair do ciclo de pesquisa pois já
+        // removemos o que queriamos
         boolean v = false;
         // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
-            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à lista de candidatos que queremos remover
+            // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à
+            // lista de candidatos que queremos remover
             // Se entrar é porque vamos remover a lista de candidatos do e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
                 // Percorre a lista_lista_candidato de e ( [ nome_lista = ListaCandidato ] )
@@ -166,10 +173,11 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     for (Map.Entry mapElement2 : elem.entrySet()) {
                         String lc = (String) mapElement2.getKey();
                         // Verifica se o nome da lista é igual à key
-                        // Se entrar é porque vamos remover a lista de candidatos da lista_lista_candidato do e
+                        // Se entrar é porque vamos remover a lista de candidatos da
+                        // lista_lista_candidato do e
                         if (lista_candidato.nome_lista.equals(lc)) {
                             e.lista_lista_candidato.remove(i);
-                            v=true;
+                            v = true;
                             WriteObjectToFile(this.objeto);
                             break;
                         }
@@ -206,14 +214,16 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("RMI SERVER - consulta_estado_mesas");
     }
 
-    // Método que consulta a informação de voto (local e momento em votou cada eleitor)
+    // Método que consulta a informação de voto (local e momento em votou cada
+    // eleitor)
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
         System.out.println("RMI SERVER - consulta_info_voto");
         // Dá return de hmp ( { "HashMapPessoas" = mapp } | mapp = { num_cc = Pessoa } )
         return this.objeto.hmp.hmp;
     }
 
-    // Método que consulta o número de eleitores que votaram até ao momento em cada mesa de voto (numa dada eleição)
+    // Método que consulta o número de eleitores que votaram até ao momento em cada
+    // mesa de voto (numa dada eleição)
     public HashMap<String, Mesa> consulta_eleitores() throws RemoteException {
         System.out.println("RMI SERVER - consulta_eleitores");
         // ( { dep = Mesa } )
@@ -244,8 +254,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 if (hmss.isEmpty()) {
                     // O eleitor só pode votar em eleições que correspondam à sua função
                     // &&
-                    // O eleitor só pode votar em eleições que não tenham restrições ou cujas restrições correspondam ao departamento do eleitor
-                    if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                    // O eleitor só pode votar em eleições que não tenham restrições ou cujas
+                    // restrições correspondam ao departamento do eleitor
+                    if (e.getDescricao().equals(p.getFuncao())
+                            && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
                         i++;
                     }
@@ -256,8 +268,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     if (!hmss.containsKey(e.getTitulo())) {
                         // O eleitor só pode votar em eleições que correspondam à sua função
                         // &&
-                        // O eleitor só pode votar em eleições que não tenham restrições ou cujas restrições correspondam ao departamento do eleitor
-                        if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                        // O eleitor só pode votar em eleições que não tenham restrições ou cujas
+                        // restrições correspondam ao departamento do eleitor
+                        if (e.getDescricao().equals(p.getFuncao())
+                                && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                             hme.put(i, e);
                             i++;
                         }
@@ -269,7 +283,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return hme;
     }
 
-    // Método que vai procurar na persistant storage uma pessoa com o cc que pretendemos
+    // Método que vai procurar na persistant storage uma pessoa com o cc que
+    // pretendemos
     public Pessoa getVoter(String cc) throws RemoteException {
         // dá return de um mapp ( { num_cc = Pessoa } )
         return this.objeto.hmp.hmp.get("HashMapPessoas").get(cc);
@@ -294,7 +309,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // ping a todas as mesas de mapm
         for (Map.Entry<String, Mesa> m : this.objeto.hme.mapm.entrySet()) {
             if (m.getValue().remoteServerObj != null)
-                this.ping(m.getValue(), ac);
+                ping(m.getValue(), ac);
         }
     }
 
@@ -306,8 +321,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             // pergunta
             try {
                 ac.print_on_admin_console("Ping " + i + " > ");
-                m.remoteServerObj.ping();
-                ac.print_on_admin_console("\n");
+                if (m.remoteServerObj.ping()) {
+                    ac.print_on_admin_console("Successful\n\n");
+                }
             } catch (RemoteException ex) {
                 m.setState(false);
                 unsubscribeMesa(m.getDep());
@@ -349,8 +365,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         }
     }
 
-    // Método que vai atualizar os dados da persistant storage conforme as mudanças que foram feitas vindas do MulticastServer
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
+    // Método que vai atualizar os dados da persistant storage conforme as mudanças
+    // que foram feitas vindas do MulticastServer
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d)
+            throws RemoteException {
         // atualiza o local_momento_voto do eleitor
         this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         // atualiza o número de votos de uma dada eleição
@@ -367,9 +385,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 break;
             }
         }
-        // se até ao momento, numa certa mesa não existe a eleição na qual o eleitor votou, adicionamos essa eleição com 1 voto
+        // se até ao momento, numa certa mesa não existe a eleição na qual o eleitor
+        // votou, adicionamos essa eleição com 1 voto
         if (!existe) {
-            n_e.put(nome_eleicao,1);
+            n_e.put(nome_eleicao, 1);
         }
         // atualiza o número de votos da lista de candidatos/branco/nulo
         switch (nome_lista) {
@@ -381,7 +400,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             break;
         default:
             // caso tenha votado numa lista de candidatos
-            ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape.get(nome_eleicao).lista_lista_candidato;
+            ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape
+                    .get(nome_eleicao).lista_lista_candidato;
             for (HashMap<String, ListaCandidato> elem : llc) {
                 for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
                     if (entry.getKey().equals(nome_lista)) {
@@ -395,7 +415,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         WriteObjectToFile(this.objeto);
     }
 
-    // Método que vai retornar as listas de candidatos existentes na eleição escolhida pelo eleitor
+    // Método que vai retornar as listas de candidatos existentes na eleição
+    // escolhida pelo eleitor
     public HashMap<Integer, String> getListasFromEleicaoEscolhida(Eleicao e) throws RemoteException {
         int j = 1;
         HashMap<Integer, String> out = new HashMap<>();
@@ -446,7 +467,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         System.out.println("Running");
     }
 
-    // Método que dá sempre return true, usamos para saber se um RMI Server está ou não a funcionar
+    // Método que dá sempre return true, usamos para saber se um RMI Server está ou
+    // não a funcionar
     public boolean returnIsAlive() throws RemoteException {
         return true;
     }
@@ -465,7 +487,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
             File file = new File(outputFilePath);
             // caso o fs.txt tiver dados escritos
-            if(file.length() != 0) {
+            if (file.length() != 0) {
                 rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
             }
             // caso o fs.txt não tiver dados escritos
@@ -486,9 +508,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             while (rmiFails) {
                 rmiFails = false;
 
-                // caso o RMI Server principal dê problemas, dar 5 pings a ver se volta a funcionar
+                // caso o RMI Server principal dê problemas, dar 5 pings a ver se volta a
+                // funcionar
                 // caso não volte a funcionar, o RMI Server secundário assume-se como primário
-                while (ping<5) {
+                while (ping < 5) {
                     try {
                         r = LocateRegistry.getRegistry(PORT_r);
                         rmis2 = (RMIServer_I) r.lookup("RMI_Server");
@@ -500,19 +523,20 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                             System.out.println("RMIServer primario esta funcional");
                         }
                     } catch (Exception ke) {
-                        // se entrar aqui é porque o RMI Server primário está a ter problemas e então vamos dar 5 pings para ver se ele recupera
+                        // se entrar aqui é porque o RMI Server primário está a ter problemas e então
+                        // vamos dar 5 pings para ver se ele recupera
                         ping++;
                         System.out.println("ping: " + ping);
                     }
                 }
 
-                // caso o RMI Server primário não recupere, o RMI Server secundário vai assumir-se como primário
+                // caso o RMI Server primário não recupere, o RMI Server secundário vai
+                // assumir-se como primário
                 try {
                     File file = new File(outputFilePath);
-                    if(file.length() != 0) {
+                    if (file.length() != 0) {
                         rmis.objeto = (Objeto) rmis.ReadObjectFromFile("fs.txt");
-                    }
-                    else {
+                    } else {
                         rmis.objeto = new Objeto();
                     }
                     r = LocateRegistry.createRegistry(PORT_r);
