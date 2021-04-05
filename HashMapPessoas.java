@@ -16,9 +16,4 @@ public class HashMapPessoas implements Serializable {
     public HashMap<String, HashMap<String, Pessoa>> getHashMapPessoas() {
         return hmp;
     }
-
-    public void setHashMapPessoas() {
-        this.hmp = hmp;
-    }
-
 }

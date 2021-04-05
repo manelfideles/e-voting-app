@@ -113,7 +113,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                     System.out.println("------------MENU PRINCIPAL------------\n"
                             + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n" + "______________________________________\n"
                             + "1.Registar Pessoa\n" + "2.Criar Eleicao\n" + "3.Alterar Propriedades de uma Eleicao\n"
-                            + "4.Gerir Candidatos\n" + "5.Gerir Mesas\n" + "6.Consultar Informacao de Voto\n"
+                            + "4.Gerir Candidatos\n" + "5.Ping Mesas\n" + "6.Consultar Informacao de Voto\n"
                             + "7.Consultar Numero de Eleitores\n" + "8.Consultar Resultados\n" + "9.Print Objeto\n"
                             + "10.Sair\n" + "______________________________________\n");
                     System.out.print("Escolha: ");
@@ -654,106 +654,24 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                         break;
                     case "5":
-                        try {
-                            System.out.println(
-                                    "---------MENU GERE MESAS----------\n" + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
-                                            + "______________________________________\n" + "1.Adicionar Mesa\n"
-                                            + "2.Remover Mesa\n" + "3.Pingar\n" + "4.Sair\n"
-                                            + "______________________________________\n");
-                            System.out.print("Escolha: ");
-                            opcao = reader.readLine();
-                            switch (opcao) {
-                            case "1": // "1.Adicionar Mesa"
-                                System.out.print("> Departamento onde quer adicionar a Mesa: ");
-                                dep = reader.readLine();
-                                System.out.println("Vou guardar os dados de uma Mesa");
-                                System.out.print("> Departamento onde esta a Mesa: " + dep);
-                                System.out
-                                        .println("----------------------------------------------------------------\n");
-                                /*
-                                 * while (true) { try { rmis.subscribeMesa(dep); break; } catch (RemoteException
-                                 * e) { int contador=0; while(contador<30) { try { Thread.sleep(1000); rmis =
-                                 * (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                                 * rmis.sayHello(); break;
-                                 * 
-                                 * }catch(NotBoundException | InterruptedException | RemoteException m){
-                                 * contador++; if(contador==30) System.exit(-1); } } } }
-                                 */
+                        while (true) {
+                            try {
+                                rmis.checkActiveMesas(ac);
                                 break;
-                            case "2": // "2.Remover Mesa"
-                                System.out.print("> Departamento onde esta a Mesa: ");
-                                dep = reader.readLine();
-                                System.out.println("Vou remover os dados de uma Mesa");
-                                System.out.print("> Departamento onde estava a Mesa: " + dep);
-                                System.out
-                                        .println("----------------------------------------------------------------\n");
-                                while (true) {
-                                    try {
-                                        rmis.unsubscribeMesa(dep);
-                                        break;
-                                    } catch (RemoteException e) {
-                                        int contador = 0;
-                                        while (contador < 30) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
-                                                rmis.sayHello();
-                                                break;
-                                            } catch (NotBoundException | InterruptedException | RemoteException m) {
-                                                contador++;
-                                                if (contador == 30)
-                                                    System.exit(-1);
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            case "3": // "3.Pingar"
-                                while (true) {
+                            } catch (RemoteException e) {
+                                int contador = 0;
+                                while (contador < 30) {
                                     try {
                                         Thread.sleep(1000);
                                         rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
                                         rmis.sayHello();
                                         break;
-                                    } catch (RemoteException e) {
-                                        int contador = 0;
-                                        while (contador < 30) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969)
-                                                        .lookup("RMI_Server");
-                                                rmis.sayHello();
-                                                break;
 
-                                            } catch (NotBoundException | InterruptedException | RemoteException m) {
-                                                contador++;
-                                                if (contador == 30)
-                                                    System.exit(-1);
-                                            }
-                                        }
-                                    } catch (InterruptedException ie) {
-                                        ie.printStackTrace();
+                                    } catch (NotBoundException | InterruptedException | RemoteException m) {
+                                        contador++;
+                                        if (contador == 30)
+                                            System.exit(-1);
                                     }
-                                }
-                                break;
-                            case "4": // "4.Sair"
-                                break;
-                            }
-                            break;
-
-                        } catch (RemoteException e) {
-                            int contador = 0;
-                            while (contador < 30) {
-                                try {
-                                    Thread.sleep(1000);
-                                    rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup("RMI_Server");
-                                    rmis.sayHello();
-                                    break;
-                                } catch (NotBoundException | InterruptedException | RemoteException m) {
-                                    contador++;
-                                    if (contador == 30)
-                                        System.exit(-1);
                                 }
                             }
                         }

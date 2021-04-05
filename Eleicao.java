@@ -122,87 +122,15 @@ public class Eleicao implements Serializable {
         return restricao;
     }
 
-    public void setAno_i() {
-        this.ano_i = ano_i;
-    }
-
-    public void setMes_i() {
-        this.mes_i = mes_i;
-    }
-
-    public void setDia_i() {
-        this.dia_i = dia_i;
-    }
-
-    public void setHora_i() {
-        this.hora_i = hora_i;
-    }
-
-    public void setMinuto_i() {
-        this.minuto_i = minuto_i;
-    }
-
-    public void setAno_f() {
-        this.ano_f = ano_f;
-    }
-
-    public void setMes_f() {
-        this.mes_f = mes_f;
-    }
-
-    public void setDia_f() {
-        this.dia_f = dia_f;
-    }
-
-    public void setHora_f() {
-        this.hora_f = hora_f;
-    }
-
-    public void setMinuto_f() {
-        this.minuto_f = minuto_f;
-    }
-
-    public void setDate_i() {
-        this.date_i = date_i;
-    }
-
-    public void setDate_f() {
-        this.date_f = date_f;
-    }
-
-    public void setTitulo() {
-        this.titulo = titulo;
-    }
-
-    public void setDescricao() {
-        this.descricao = descricao;
-    }
-
-    public void setRestricao() {
-        this.restricao = restricao;
-    }
-
     public Integer getNum_votos_branco() {
         return num_votos_branco;
-    }
-
-    public void setNum_votos_branco(int num_votos_branco) {
-        this.num_votos_branco = num_votos_branco;
     }
 
     public Integer getNum_votos_nulo() {
         return num_votos_nulo;
     }
 
-    public void setNum_votos_nulo(int num_votos_nulo) {
-        this.num_votos_nulo = num_votos_nulo;
-    }
-
     public Integer getNum_total_votos() {
         return num_total_votos;
-    }
-
-    public void setNum_total_votos(int num_total_votos) {
-        this.num_total_votos = num_total_votos;
     }
 }

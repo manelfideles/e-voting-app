@@ -56,16 +56,7 @@ public class Objeto implements Serializable {
         return hmp;
     }
 
-    public void setHMP() {
-        this.hmp = hmp;
-    }
-
     public HashMapEleicao getHME() {
         return hme;
     }
-
-    public void setHME() {
-        this.hme = hme;
-    }
-
 }

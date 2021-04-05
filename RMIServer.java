@@ -321,8 +321,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             // pergunta
             try {
                 ac.print_on_admin_console("Ping " + i + " > ");
-                if (m.remoteServerObj.ping()) {
+                if (m.remoteServerObj != null) {
+                    m.remoteServerObj.ping();
                     ac.print_on_admin_console("Successful\n\n");
+                }
+                else {
+                    ac.print_on_admin_console("A mesa esta desligada!\n");
                 }
             } catch (RemoteException ex) {
                 m.setState(false);
