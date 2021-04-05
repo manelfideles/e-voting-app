@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.*;
 
-
 public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     private static final long serialVersionUID = 1L;
 
@@ -20,7 +19,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
 
     public Objeto objeto;
-
 
     public RMIServer() throws RemoteException {
         super();
@@ -172,13 +170,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             boolean check_voto = check_eleicao_voto(e.getTitulo());
             if (check_voto) {
                 if (hmss.isEmpty()) {
-                    if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                    if (e.getDescricao().equals(p.getFuncao())
+                            && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                         hme.put(i, e);
                         i++;
                     }
                 } else {
                     if (!hmss.containsKey(e.getTitulo())) {
-                        if (e.getDescricao().equals(p.getFuncao()) && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
+                        if (e.getDescricao().equals(p.getFuncao())
+                                && (e.getRestricao().equals(p.getDep()) || e.getRestricao().equals("0"))) {
                             hme.put(i, e);
                             i++;
                         }
@@ -208,7 +208,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // ping a todas as mesas de mapm
         for (Map.Entry<String, Mesa> m : this.objeto.hme.mapm.entrySet()) {
             if (m.getValue().remoteServerObj != null)
-                this.ping(m.getValue(), ac);
+                ping(m.getValue(), ac);
         }
     }
 
@@ -220,8 +220,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             // pergunta
             try {
                 ac.print_on_admin_console("Ping " + i + " > ");
-                m.remoteServerObj.ping();
-                ac.print_on_admin_console("\n");
+                if (m.remoteServerObj.ping()) {
+                    ac.print_on_admin_console("Successful\n\n");
+                }
             } catch (RemoteException ex) {
                 m.setState(false);
                 unsubscribeMesa(m.getDep());
@@ -271,7 +272,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return false;
     }
 
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d)
+            throws RemoteException {
         this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         this.objeto.hme.mape.get(nome_eleicao).num_total_votos++;
 
@@ -287,7 +289,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
         }
         if (!existe) {
-            n_e.put(nome_eleicao,1);
+            n_e.put(nome_eleicao, 1);
         }
 
         switch (nome_lista) {
@@ -298,7 +300,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             this.objeto.hme.mape.get(nome_eleicao).num_votos_nulo++;
             break;
         default:
-            ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape.get(nome_eleicao).lista_lista_candidato;
+            ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape
+                    .get(nome_eleicao).lista_lista_candidato;
             for (HashMap<String, ListaCandidato> elem : llc) {
                 for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
                     if (entry.getKey().equals(nome_lista)) {
