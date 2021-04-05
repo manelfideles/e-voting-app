@@ -112,7 +112,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                         eleicao.ano_f, eleicao.mes_f, eleicao.dia_f, eleicao.hora_f, eleicao.minuto_f, eleicao.titulo,
                         e.descricao, e.restricao, eleicao.old_titulo, e.lista_lista_candidato,
                         eleicao.date_i, eleicao.date_f));
-        // faz alterações na key
+        // faz alterações na key (nome da eleição)
         this.objeto.hme.mape.put(eleicao.titulo, this.objeto.hme.mape.remove(eleicao.old_titulo));
         // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
@@ -230,6 +230,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que vai dar return do boletim-voto eleições
     public HashMap<Integer, Eleicao> getBulletin(Pessoa p) throws RemoteException {
         int i = 1;
+        // ( { 1=alfa, 2=beta, ... } )
         HashMap<Integer, Eleicao> hme = new HashMap<>();
         // Percorre mape ( { titulo = Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
@@ -346,17 +347,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                 System.out.println("Mesa " + dep + " desligou-se do RMIServer");
             }
         }
-    }
-
-    // Método que confere o Login
-    public boolean confereLogin(String cc, String password) throws RemoteException {
-        Pessoa p = getVoter(cc);
-        if (p != null) {
-            if (p.getPassword().equals(password))
-                return true;
-            return false;
-        }
-        return false;
     }
 
     // Método que vai atualizar os dados da persistant storage conforme as mudanças que foram feitas vindas do MulticastServer
@@ -496,7 +486,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             while (rmiFails) {
                 rmiFails = false;
 
-                // caso o RMI Server principal der problemas, dar 5 pings a ver se volta a funcionar
+                // caso o RMI Server principal dê problemas, dar 5 pings a ver se volta a funcionar
                 // caso não volte a funcionar, o RMI Server secundário assume-se como primário
                 while (ping<5) {
                     try {
