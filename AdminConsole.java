@@ -428,8 +428,8 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             boolean verify_date = true, verify_nome_eleicao;
                             System.out.println("-----MENU GERE LISTAS CANDIDATOS------\n"
                                     + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n"
-                                    + "______________________________________\n" + "1.Estudantes\n" + "2.Docentes\n"
-                                    + "3.Funcionarios\n" + "4.Sair\n" + "______________________________________\n");
+                                    + "______________________________________\n" + "1.Adicionar Lista\n" + "2.Remover Lista\n"
+                                    + "3.Sair\n" + "______________________________________\n");
                             System.out.print("Escolha: ");
                             opcao = reader.readLine();
                             switch (opcao) {
@@ -513,15 +513,12 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 for (String l : lista) {
                                     System.out.println("> " + l);
                                 }
-                                System.out
-                                        .println("----------------------------------------------------------------\n");
+                                System.out.println("----------------------------------------------------------------\n");
                                 lista_candidato = new ListaCandidato(nome_lista, tipo_lista, num_pessoas_lista, lista,
                                         nome_eleicao);
                                 while (true) {
                                     try {
-                                        Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
-                                        rmis.sayHello();
+                                        rmis.cria_lista_candidatos(lista_candidato);
                                         break;
                                     } catch (RemoteException e) {
                                         int contador = 0;
@@ -538,8 +535,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                                     System.exit(-1);
                                             }
                                         }
-                                    } catch (InterruptedException ie) {
-                                        ie.printStackTrace();
                                     }
                                 }
                                 break;
@@ -615,9 +610,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 lista_candidato = new ListaCandidato(nome_lista, "0", 0, lista, nome_eleicao);
                                 while (true) {
                                     try {
-                                        Thread.sleep(1000);
-                                        rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
-                                        rmis.sayHello();
+                                        rmis.remove_lista_candidatos(lista_candidato);
                                         break;
                                     } catch (RemoteException e) {
                                         int contador = 0;
@@ -634,8 +627,6 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                                     System.exit(-1);
                                             }
                                         }
-                                    } catch (InterruptedException ie) {
-                                        ie.printStackTrace();
                                     }
                                 }
                                 break;
