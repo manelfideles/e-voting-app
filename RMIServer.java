@@ -317,13 +317,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void ping(Mesa m, AdminConsole_I ac) throws RemoteException {
         int i = 0;
         ac.print_on_admin_console("\nPinging Mesa " + m.getDep() + "\n");
-        while (i < 3) {
+        while (i < 1) {
             // pergunta
             try {
-                ac.print_on_admin_console("Ping " + i + " > ");
+                ac.print_on_admin_console("Ping > ");
                 if (m.remoteServerObj != null) {
                     m.remoteServerObj.ping();
-                    ac.print_on_admin_console("Successful\n\n");
+                    ac.print_on_admin_console("Successful\n");
                 }
                 else {
                     ac.print_on_admin_console("A mesa esta desligada!\n");
@@ -416,9 +416,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                         break;
                     }
                 }
-                // escrever para a Persistant Storage
-                WriteObjectToFile(this.objeto);
         }
+        // escrever para a Persistant Storage
+        WriteObjectToFile(this.objeto);
     }
 
     // Método que vai retornar as listas de candidatos existentes na eleição
