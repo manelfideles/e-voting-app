@@ -371,8 +371,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
 
     // Método que vai atualizar os dados da persistant storage conforme as mudanças
     // que foram feitas vindas do MulticastServer
-    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d)
-            throws RemoteException {
+    public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
         // atualiza o local_momento_voto do eleitor
         this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         // atualiza o número de votos de uma dada eleição
@@ -394,29 +393,32 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         if (!existe) {
             n_e.put(nome_eleicao, 1);
         }
+        existe = false;
         // atualiza o número de votos da lista de candidatos/branco/nulo
         switch (nome_lista) {
-        case "voto_branco":
-            this.objeto.hme.mape.get(nome_eleicao).num_votos_branco++;
-            break;
-        case "voto_nulo":
-            this.objeto.hme.mape.get(nome_eleicao).num_votos_nulo++;
-            break;
-        default:
-            // caso tenha votado numa lista de candidatos
-            ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape
-                    .get(nome_eleicao).lista_lista_candidato;
-            for (HashMap<String, ListaCandidato> elem : llc) {
-                for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
-                    if (entry.getKey().equals(nome_lista)) {
-                        entry.getValue().num_votos++;
+            case "voto_branco":
+                this.objeto.hme.mape.get(nome_eleicao).num_votos_branco++;
+                break;
+            case "voto_nulo":
+                this.objeto.hme.mape.get(nome_eleicao).num_votos_nulo++;
+                break;
+            default:
+                // caso tenha votado numa lista de candidatos
+                ArrayList<HashMap<String, ListaCandidato>> llc = this.objeto.hme.mape.get(nome_eleicao).lista_lista_candidato;
+                for (HashMap<String, ListaCandidato> elem : llc) {
+                    for (Entry<String, ListaCandidato> entry : elem.entrySet()) {
+                        if (entry.getKey().equals(nome_lista)) {
+                            existe = true;
+                            entry.getValue().num_votos++;
+                        }
+                    }
+                    if (existe) {
+                        break;
                     }
                 }
-                break;
+                // escrever para a Persistant Storage
+                WriteObjectToFile(this.objeto);
         }
-        // escrever para a Persistant Storage
-        WriteObjectToFile(this.objeto);
-    }
     }
 
     // Método que vai retornar as listas de candidatos existentes na eleição
