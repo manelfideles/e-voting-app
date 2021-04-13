@@ -66,6 +66,9 @@ public class MulticastClient extends Thread {
                 }
             }
 
+//            System.out.println(read_user);
+//            System.out.println(read_password);
+
             String cc = null;
             String bulletin = null;
 
