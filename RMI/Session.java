@@ -1,3 +1,5 @@
+package RMI;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +13,7 @@ public class Session {
     FileWriter fw;
 
     /**
-     * Session constructor. Creates new file if 'session.txt' is not present in
+     * RMI.Session constructor. Creates new file if 'session.txt' is not present in
      * user.dir, otherwise this function will restore a previous session file.
      * 
      * @param path to session file

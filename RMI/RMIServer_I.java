@@ -1,3 +1,7 @@
+package RMI;
+
+import MULTICAST.RemoteMulticastServerObj_Impl;
+
 import java.rmi.*;
 import java.util.HashMap;
 import java.util.*;

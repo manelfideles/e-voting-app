@@ -1,3 +1,7 @@
+package RMI;
+
+import MULTICAST.RemoteMulticastServerObj_Impl;
+
 import java.io.*;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -19,7 +23,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // ArrayList das Admin Consoles que se ligam ao RMI Server
     static ArrayList<AdminConsole_I> admin_consoles = new ArrayList<>();
 
-    // Objeto que é escrito para o fs.txt e que tem os dados todos
+    // RMI.Objeto que é escrito para o fs.txt e que tem os dados todos
     public Objeto objeto;
 
     // Builder
@@ -35,26 +39,26 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException {
         System.out.println("Subscribing " + name);
         admin_consoles.add(ac);
-        System.out.println("Just added AdminConsole to admin_consoles");
+        System.out.println("Just added RMI.AdminConsole to admin_consoles");
     }
 
     // Método que remove as Admin Consoles da ArrayList
     public void unsubscribe(AdminConsole_I ac) throws RemoteException {
         System.out.println("Unsubscribing Admin Console");
         admin_consoles.remove(admin_consoles.indexOf(ac));
-        System.out.println("Just removed AdminConsole to admin_consoles");
+        System.out.println("Just removed RMI.AdminConsole to admin_consoles");
     }
 
     // Método que regista uma pessoa
     public void regista_pessoa(Pessoa pessoa) throws RemoteException {
         System.out.println("RMI SERVER - regista_pessoa");
-        // mapp = { num_cc = Pessoa }
-        HashMap<String, Pessoa> mapp = this.objeto.hmp.hmp.get("HashMapPessoas");
+        // mapp = { num_cc = RMI.Pessoa }
+        HashMap<String, Pessoa> mapp = this.objeto.hmp.hmp.get("RMI.HashMapPessoas");
         // adicionar uma nova pessoa a mapp
         mapp.put(pessoa.num_cc, new Pessoa(pessoa.nome, pessoa.funcao, pessoa.password, pessoa.dep, pessoa.contacto,
                 pessoa.morada, pessoa.num_cc, pessoa.val_cc));
         // adicionar mapp ao objeto
-        this.objeto.hmp.hmp.put("HashMapPessoas", mapp);
+        this.objeto.hmp.hmp.put("RMI.HashMapPessoas", mapp);
         // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
     }
@@ -128,18 +132,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que cria lista de candidatos
     public void cria_lista_candidatos(ListaCandidato lista_candidato) throws RemoteException {
         System.out.println("RMI SERVER - cria_lista_candidatos");
-        // Percorre mape ( { titulo = Eleicao } )
+        // Percorre mape ( { titulo = RMI.Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à
             // lista de candidatos que queremos criar
             // Se entrar é porque vamos criar a lista de candidatos no e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
-                // Cria hm ( { nome_lista = ListaCandidato } )
+                // Cria hm ( { nome_lista = RMI.ListaCandidato } )
                 HashMap<String, ListaCandidato> hm = new HashMap<>();
                 hm.put(lista_candidato.nome_lista, lista_candidato);
-                // Adiciona hm na lista_lista_candidato do e ( [ { nome_lista = ListaCandidato
-                // }, { nome_lista = ListaCandidato }, ... ] )
+                // Adiciona hm na lista_lista_candidato do e ( [ { nome_lista = RMI.ListaCandidato
+                // }, { nome_lista = RMI.ListaCandidato }, ... ] )
                 e.lista_lista_candidato.add(hm);
             }
         }
@@ -161,14 +165,14 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         // Vai servir para saber quando já podemos sair do ciclo de pesquisa pois já
         // removemos o que queriamos
         boolean v = false;
-        // Percorre mape ( { titulo = Eleicao } )
+        // Percorre mape ( { titulo = RMI.Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             // Verifica se o titulo da eleição é igual ao campo nome_eleicao que pertence à
             // lista de candidatos que queremos remover
             // Se entrar é porque vamos remover a lista de candidatos do e
             if (e.titulo.equals(lista_candidato.nome_eleicao)) {
-                // Percorre a lista_lista_candidato de e ( [ nome_lista = ListaCandidato ] )
+                // Percorre a lista_lista_candidato de e ( [ nome_lista = RMI.ListaCandidato ] )
                 for (HashMap<String, ListaCandidato> elem : e.lista_lista_candidato) {
                     for (Map.Entry mapElement2 : elem.entrySet()) {
                         String lc = (String) mapElement2.getKey();
@@ -194,7 +198,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que cria uma mesa
     public void cria_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - cria_mesa");
-        // Adiciona uma mesa ( { dep = Mesa } )
+        // Adiciona uma mesa ( { dep = RMI.Mesa } )
         this.objeto.hme.mapm.put(mesa.dep, mesa);
         // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
@@ -203,7 +207,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que remove uma mesa
     public void remove_mesa(Mesa mesa) throws RemoteException {
         System.out.println("RMI SERVER - remove_mesa");
-        // Remove uma mesa ( { dep = Mesa } )
+        // Remove uma mesa ( { dep = RMI.Mesa } )
         this.objeto.hme.mapm.remove(mesa.dep);
         // escrever para a Persistant Storage
         WriteObjectToFile(this.objeto);
@@ -218,7 +222,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // eleitor)
     public HashMap<String, HashMap<String, Pessoa>> consulta_info_voto() throws RemoteException {
         System.out.println("RMI SERVER - consulta_info_voto");
-        // Dá return de hmp ( { "HashMapPessoas" = mapp } | mapp = { num_cc = Pessoa } )
+        // Dá return de hmp ( { "RMI.HashMapPessoas" = mapp } | mapp = { num_cc = RMI.Pessoa } )
         return this.objeto.hmp.hmp;
     }
 
@@ -226,7 +230,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // mesa de voto (numa dada eleição)
     public HashMap<String, Mesa> consulta_eleitores() throws RemoteException {
         System.out.println("RMI SERVER - consulta_eleitores");
-        // ( { dep = Mesa } )
+        // ( { dep = RMI.Mesa } )
         return this.objeto.hme.mapm;
     }
 
@@ -242,7 +246,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         int i = 1;
         // ( { 1=alfa, 2=beta, ... } )
         HashMap<Integer, Eleicao> hme = new HashMap<>();
-        // Percorre mape ( { titulo = Eleicao } )
+        // Percorre mape ( { titulo = RMI.Eleicao } )
         for (Map.Entry mapElement : this.objeto.hme.mape.entrySet()) {
             Eleicao e = (Eleicao) mapElement.getValue();
             // hmss vai ter as eleições que o eleitor ja votou
@@ -286,19 +290,19 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que vai procurar na persistant storage uma pessoa com o cc que
     // pretendemos
     public Pessoa getVoter(String cc) throws RemoteException {
-        // dá return de um mapp ( { num_cc = Pessoa } )
-        return this.objeto.hmp.hmp.get("HashMapPessoas").get(cc);
+        // dá return de um mapp ( { num_cc = RMI.Pessoa } )
+        return this.objeto.hmp.hmp.get("RMI.HashMapPessoas").get(cc);
     }
 
-    // Método que vai buscar uma Mesa procurando pelo Dep
+    // Método que vai buscar uma RMI.Mesa procurando pelo Dep
     public Mesa getMesaByDep(String dep) throws RemoteException {
-        // dá return de Mesa
+        // dá return de RMI.Mesa
         return this.objeto.hme.mapm.get(dep);
     }
 
     // Método que dá print das Mesas existentes
     public void printMesasExistentes() throws RemoteException {
-        // Percorre mapm ( { dep = Mesa } )
+        // Percorre mapm ( { dep = RMI.Mesa } )
         for (Map.Entry m : this.objeto.hme.mapm.entrySet()) {
             System.out.println(m.toString());
         }
@@ -316,7 +320,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     // Método que dá ping às mesas de voto por rmi
     public void ping(Mesa m, AdminConsole_I ac) throws RemoteException {
         int i = 0;
-        ac.print_on_admin_console("\nPinging Mesa " + m.getDep() + "\n");
+        ac.print_on_admin_console("\nPinging RMI.Mesa " + m.getDep() + "\n");
         while (i < 1) {
             // pergunta
             try {
@@ -348,9 +352,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         m.setState(true);
         for (AdminConsole_I ac : admin_consoles) {
             try {
-                ac.print_on_admin_console("Mesa " + dep + " ligou-se ao RMIServer\n");
+                ac.print_on_admin_console("RMI.Mesa " + dep + " ligou-se ao RMI.RMIServer\n");
             } catch (RemoteException e) {
-                System.out.println("Mesa " + dep + " ligou-se ao RMIServer");
+                System.out.println("RMI.Mesa " + dep + " ligou-se ao RMI.RMIServer");
             }
         }
     }
@@ -362,18 +366,18 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         m.setState(false);
         for (AdminConsole_I ac : admin_consoles) {
             try {
-                ac.print_on_admin_console("Mesa " + dep + " desligou-se de RMIServer\n");
+                ac.print_on_admin_console("RMI.Mesa " + dep + " desligou-se de RMI.RMIServer\n");
             } catch (Exception ex) {
-                System.out.println("Mesa " + dep + " desligou-se do RMIServer");
+                System.out.println("RMI.Mesa " + dep + " desligou-se do RMI.RMIServer");
             }
         }
     }
 
     // Método que vai atualizar os dados da persistant storage conforme as mudanças
-    // que foram feitas vindas do MulticastServer
+    // que foram feitas vindas do MULTICAST.MulticastServer
     public void atualiza(String num_cc, String nome_lista, String nome_eleicao, String DEP, Date d) throws RemoteException {
         // atualiza o local_momento_voto do eleitor
-        this.objeto.hmp.hmp.get("HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
+        this.objeto.hmp.hmp.get("RMI.HashMapPessoas").get(num_cc).local_momento_voto.put(nome_eleicao, DEP + " " + d);
         // atualiza o número de votos de uma dada eleição
         this.objeto.hme.mape.get(nome_eleicao).num_total_votos++;
         boolean existe = false;
@@ -463,7 +467,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
         return obj;
     }
 
-    // Método que dá return do Objeto (aka todos os dados)
+    // Método que dá return do RMI.Objeto (aka todos os dados)
     public Objeto returnObjeto() throws RemoteException {
         return this.objeto;
     }
@@ -480,7 +484,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
     }
 
     public static void main(String[] args) throws RemoteException {
-        // Usage javac RMIServer.java && java RMIServer hostname/endereço_ip
+        // Usage javac RMI.RMIServer.java && java RMI.RMIServer hostname/endereço_ip
         System.getProperties().put("java.security.policy", "policy.all");
         // System.setProperty("java.rmi.server.hostname", args[0]);
         System.setSecurityManager(new RMISecurityManager());
@@ -504,13 +508,13 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
             }
             r = LocateRegistry.createRegistry(PORT_r);
             r.rebind("RMI_Server", rmis);
-            System.out.println("RMIServer ready.");
+            System.out.println("RMI.RMIServer ready.");
 
         } catch (FileNotFoundException e) {
             System.out.println("FileNotFoundException!");
             rmis.objeto = new Objeto();
         } catch (Exception re) {
-            System.out.println("Exception in RMIServer.main: " + re);
+            System.out.println("Exception in RMI.RMIServer.main: " + re);
 
             boolean rmiFails = true;
             while (rmiFails) {
@@ -528,7 +532,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                             Thread.sleep(1000);
                             ping = 0;
                             System.out.println("ping: " + ping);
-                            System.out.println("RMIServer primario esta funcional");
+                            System.out.println("RMI.RMIServer primario esta funcional");
                         }
                     } catch (Exception ke) {
                         // se entrar aqui é porque o RMI Server primário está a ter problemas e então
@@ -549,7 +553,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServer_I {
                     }
                     r = LocateRegistry.createRegistry(PORT_r);
                     r.rebind("RMI_Server", rmis);
-                    System.out.println("RMIServer ready.");
+                    System.out.println("RMI.RMIServer ready.");
                 } catch (FileNotFoundException e) {
                     rmis.objeto = new Objeto();
                 } catch (RemoteException | InterruptedException b) {

@@ -1,3 +1,5 @@
+package RMI;
+
 import java.net.DatagramPacket;
 import java.util.HashMap;
 import java.util.Map;

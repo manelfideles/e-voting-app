@@ -1,3 +1,10 @@
+package MULTICAST;
+
+import RMI.Eleicao;
+import RMI.Message;
+import RMI.Pessoa;
+import RMI.RMIServer_I;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -23,7 +30,7 @@ public class MulticastServer extends Thread {
 
     public static void main(String[] args) {
         // Usage:
-        // javac MulticastClient.java && java MulticastClient lookupAddress hostnameAddr
+        // javac MULTICAST.MulticastClient.java && java MULTICAST.MulticastClient lookupAddress hostnameAddr
         lookupString = "RMI_Server";
         // hostnameAddr = args[1];
         System.out.println(lookupString);
@@ -264,7 +271,7 @@ class TerminalThread extends Thread {
                     while (true) {
                         try {
                             rmis.unsubscribeMesa(this.DEP);
-                            System.out.println("Mesa " + this.DEP + " desligada.");
+                            System.out.println("RMI.Mesa " + this.DEP + " desligada.");
                             System.exit(0);
                             break;
                         } catch (RemoteException e) {
