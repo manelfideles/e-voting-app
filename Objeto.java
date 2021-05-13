@@ -1,5 +1,3 @@
-package rmiserver;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -13,7 +11,7 @@ public class Objeto implements Serializable {
         // Pessoas
         HashMap<String, Pessoa> mapp = new HashMap<>();
         HashMap<String, HashMap<String, Pessoa>> hmp = new HashMap<>();
-        hmp.put("rmiserver.HashMapPessoas", mapp);
+        hmp.put("HashMapPessoas", mapp);
 
         // Eleicoes
         HashMap<String, Eleicao> mape = new HashMap<>();
@@ -41,7 +39,7 @@ public class Objeto implements Serializable {
             mapm.put("CdA", new Mesa("CdA", null));
         }
 
-        // rmiserver.Objeto
+        // Objeto
         HashMapPessoas hashmappessoas = new HashMapPessoas(hmp);
         HashMapEleicao hashmapeleicao = new HashMapEleicao(mape, mapm);
 

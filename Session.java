@@ -1,5 +1,3 @@
-package rmiserver;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +11,7 @@ public class Session {
     FileWriter fw;
 
     /**
-     * rmiserver.Session constructor. Creates new file if 'session.txt' is not present in
+     * Session constructor. Creates new file if 'session.txt' is not present in
      * user.dir, otherwise this function will restore a previous session file.
      * 
      * @param path to session file

@@ -1,5 +1,3 @@
-package rmiserver;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -18,7 +16,7 @@ public class Mesa implements Serializable {
     }
 
     public String toString() {
-        return "rmiserver.Mesa:" + dep + "; State: " + isOn;
+        return "Mesa:" + dep + "; State: " + isOn;
     }
 
     public String getDep() {
