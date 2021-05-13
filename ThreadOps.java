@@ -1,4 +1,4 @@
-package MULTICAST;
+package rmiserver;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

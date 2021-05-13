@@ -1,7 +1,4 @@
-package MULTICAST;
-
-import RMI.Message;
-import RMI.Session;
+package rmiserver;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,6 +1,4 @@
-package RMI;
-
-import MULTICAST.RemoteMulticastServerObj_Impl;
+package rmiserver;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,7 +18,7 @@ public class Mesa implements Serializable {
     }
 
     public String toString() {
-        return "RMI.Mesa:" + dep + "; State: " + isOn;
+        return "rmiserver.Mesa:" + dep + "; State: " + isOn;
     }
 
     public String getDep() {

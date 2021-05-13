@@ -1,4 +1,4 @@
-package MULTICAST;
+package rmiserver;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

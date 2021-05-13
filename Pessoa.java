@@ -1,4 +1,4 @@
-package RMI;
+package rmiserver;
 
 import java.io.Serializable;
 import java.util.HashMap;

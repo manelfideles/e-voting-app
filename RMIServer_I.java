@@ -1,12 +1,18 @@
-package RMI;
-
-import MULTICAST.RemoteMulticastServerObj_Impl;
+package rmiserver;
 
 import java.rmi.*;
 import java.util.HashMap;
 import java.util.*;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface RMIServer_I extends Remote {
+
+    public boolean userMatchesPassword(String user, String password) throws RemoteException;
+
+    public ArrayList<String> getAllUsers() throws RemoteException;
+
     public void print_on_rmi_server(String s) throws RemoteException;
 
     public void subscribe(String name, AdminConsole_I ac) throws RemoteException;

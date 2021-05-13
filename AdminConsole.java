@@ -1,5 +1,3 @@
-package RMI;
-
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -25,7 +23,7 @@ while (true) {
         while(contador<30) {
             try {
                 Thread.sleep(1000);
-                rmis = (RMI.RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
+                rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                 rmis.sayHello();
                 break;
             }catch(NotBoundException | InterruptedException | RemoteException m){
@@ -73,7 +71,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
     }
 
     public static void main(String[] args) {
-        // Usage javac RMI.AdminConsole.java && java RMI.AdminConsole endereço_ip
+        // Usage javac AdminConsole.java && java AdminConsole endereço_ip
         // System.setProperty("java.rmi.server.hostname", args[0]);
         String lookupString = "RMI_Server";
         // Variáveis Gerais
@@ -115,14 +113,14 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                 rmis = (RMIServer_I) LocateRegistry.getRegistry(6969).lookup(lookupString);
                 ac = new AdminConsole(lookupString);
                 rmis.subscribe("Admin Console", ac);
-                System.out.println("Client sent subscription to RMI.RMIServer");
+                System.out.println("Client sent subscription to RMIServer");
 
                 do {
                     System.out.println("------------MENU PRINCIPAL------------\n"
                             + "* ESCOLHA UMA DAS OPCOES DISPONIVEIS *\n" + "______________________________________\n"
-                            + "1.Registar RMI.Pessoa\n" + "2.Criar RMI.Eleicao\n" + "3.Alterar Propriedades de uma RMI.Eleicao\n"
+                            + "1.Registar Pessoa\n" + "2.Criar Eleicao\n" + "3.Alterar Propriedades de uma Eleicao\n"
                             + "4.Gerir Candidatos\n" + "5.Ping Mesas\n" + "6.Consultar Informacao de Voto\n"
-                            + "7.Consultar Numero de Eleitores\n" + "8.Consultar Resultados\n" + "9.Print RMI.Objeto\n"
+                            + "7.Consultar Numero de Eleitores\n" + "8.Consultar Resultados\n" + "9.Print Objeto\n"
                             + "10.Sair\n" + "______________________________________\n");
                     System.out.print("Escolha: ");
                     option = reader.readLine();
@@ -301,7 +299,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         break;
                     case "3": // "3.Alterar Propriedades de uma Eleição"
                         boolean check_date = true, check_name;
-                        System.out.print("> Título da RMI.Eleicao: ");
+                        System.out.print("> Título da Eleicao: ");
                         old_titulo = reader.readLine();
                         while (true) {
                             try {
@@ -436,7 +434,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             opcao = reader.readLine();
                             switch (opcao) {
                             case "1": // "1.Adicionar Lista"
-                                System.out.print("> Nome da RMI.Eleicao: ");
+                                System.out.print("> Nome da Eleicao: ");
                                 nome_eleicao = reader.readLine();
                                 while (true) {
                                     try {
@@ -542,7 +540,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                                 break;
                             case "2": // "2.Remover Lista"
                                 boolean check_eleicao_before = true;
-                                System.out.print("> Nome da RMI.Eleicao: ");
+                                System.out.print("> Nome da Eleicao: ");
                                 nome_eleicao = reader.readLine();
                                 while (true) {
                                     try {
@@ -675,10 +673,10 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                         break;
                     case "6": // "6.Consultar Informação de Voto"
-                        System.out.println("RMI.AdminConsole - consulta_info_voto");
+                        System.out.println("AdminConsole - consulta_info_voto");
                         while (true) {
                             try {
-                                // hmp ( { "RMI.HashMapPessoas" = mapp } | mapp = { num_cc = RMI.Pessoa } )
+                                // hmp ( { "HashMapPessoas" = mapp } | mapp = { num_cc = Pessoa } )
                                 HashMap<String, HashMap<String, Pessoa>> hmp = rmis.consulta_info_voto();
                                 // Percorre hmp
                                 for (Map.Entry mapElement : hmp.entrySet()) {
@@ -709,10 +707,10 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
 
                         break;
                     case "7": // "7.Consultar Número de Eleitores"
-                        System.out.println("RMI.AdminConsole - consulta_eleitores");
+                        System.out.println("AdminConsole - consulta_eleitores");
                         while (true) {
                             try {
-                                // ( { dep = RMI.Mesa } )
+                                // ( { dep = Mesa } )
                                 HashMap<String, Mesa> mapm = rmis.consulta_eleitores();
                                 // Percorre mapm
                                 for (Map.Entry mapElement : mapm.entrySet()) {
@@ -739,7 +737,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                         }
                         break;
                     case "8": // "8.Consultar Resultados"
-                        System.out.println("RMI.AdminConsole - consulta_resultados");
+                        System.out.println("AdminConsole - consulta_resultados");
                         while (true) {
                             try {
                                 // ( mape = { titulo = Eleição } )
@@ -790,7 +788,7 @@ public class AdminConsole extends UnicastRemoteObject implements AdminConsole_I 
                             }
                         }
                         break;
-                    case "9": // "9.Print RMI.Objeto"
+                    case "9": // "9.Print Objeto"
                         while (true) {
                             try {
                                 if (rmis.returnObjeto() != null) {
